@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """ Python code to start a RIPE Atlas UDM (User-Defined
 Measurement). This one is for running DNS NSID queries (find the
