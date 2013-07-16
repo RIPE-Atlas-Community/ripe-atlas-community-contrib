@@ -65,7 +65,8 @@ _key = _auth.readline()[:-1]
 _auth.close()
 
 _url = base_url + "/?key=%s" % _key
-_url_probes = base_url + "/%s/?fields=" 
+_url_probes = base_url + "/%s/?fields=probes,status"
+_url_status = base_url + "/%s/?fields=status" 
 _url_results = base_url + "/%s/result/" 
 
 class Measurement():
@@ -131,6 +132,7 @@ class Measurement():
                                        (self.num_probes * maximum_time_for_results_factor)
             start = time.time()
             elapsed = 0
+            result_data = None
             while not enough and elapsed < maximum_time_for_results:
                 if self.notification is not None:
                     self.notification(results_delay)
@@ -152,7 +154,9 @@ class Measurement():
                         # have sent only a part of its measurements.
                         enough = True
                     else:
-                        status = result_data["status"]["name"]
+                        conn = urllib2.urlopen(JsonRequest(_url_status % self.id))
+                        result_status = json.load(conn) 
+                        status = result_status["status"]["name"]
                         if status == "Ongoing":
                             # Wait a bit more
                             pass
@@ -163,9 +167,11 @@ class Measurement():
                                    result_data["status"])
                     conn.close()
                 except urllib2.HTTPError as e:
-                    # TODO: handle 404: we may have no result file at
-                    # all for some time
-                    raise ResultError(e.read())
+                    if e.code != 404: # Yes, we may have no result file at
+                        # all for some time
+                        raise ResultError(e.code + " " + e.reason)
+            if result_data is None:
+                raise ResultError("No results retrieved")
         else:
             try:
                 conn = urllib2.urlopen(request)
