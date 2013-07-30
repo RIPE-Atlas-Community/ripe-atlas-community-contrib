@@ -169,7 +169,7 @@ class Measurement():
                 except urllib2.HTTPError as e:
                     if e.code != 404: # Yes, we may have no result file at
                         # all for some time
-                        raise ResultError(e.code + " " + e.reason)
+                        raise ResultError(str(e.code) + " " + e.reason)
             if result_data is None:
                 raise ResultError("No results retrieved")
         else:
