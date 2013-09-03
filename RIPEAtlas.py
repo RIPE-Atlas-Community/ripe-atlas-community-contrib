@@ -5,6 +5,9 @@
 <http://atlas.ripe.net/> probes using the UDM (User Defined
 Measurements) creation API.
 
+DOES NOT WORK! 
+RIPEAtlas.RequestSubmissionError: Status 500, reason "{"error_message": "Sorry, this request could not be processed. Please try again later."}"
+
 Authorization key is expected in $HOME/.atlas/auth
 
 Stéphane Bortzmeyer <bortzmeyer+ripe@nic.fr>
@@ -88,7 +91,8 @@ class Measurement():
             self.id = results["measurements"][0]
             conn.close()
         except urllib2.HTTPError as e:
-            raise RequestSubmissionError("%s" % e.read())
+            raise RequestSubmissionError("Status %s, reason \"%s\"" % \
+                                         (e.code, e.read()))
 
         # Find out how many probes were actually allocated to this measurement
         enough = False
