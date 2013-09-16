@@ -5,10 +5,8 @@
 <http://atlas.ripe.net/> probes using the UDM (User Defined
 Measurements) creation API.
 
-DOES NOT WORK! 
-RIPEAtlas.RequestSubmissionError: Status 500, reason "{"error_message": "Sorry, this request could not be processed. Please try again later."}"
-
-Authorization key is expected in $HOME/.atlas/auth
+Authorization key is expected in $HOME/.atlas/auth or have to be
+provided in the constructor's arguments.
 
 Stéphane Bortzmeyer <bortzmeyer+ripe@nic.fr>
 
@@ -64,11 +62,12 @@ class JsonRequest(urllib2.Request):
 class Measurement():
     """ An Atlas measurement, identified by its ID (such as #1010569) in the field "id" """
 
-    def __init__(self, data, sleep_notification=None, key=None):
+    def __init__(self, data, wait=True, sleep_notification=None, key=None):
         """ Creates a measurement."data" must be a dictionary (*not* a JSON string) having the members
-        requested by the Atlas documentation. "sleep_notification" is a lambda taking one parameter, the
+        requested by the Atlas documentation. "wait" should be set to False for periodic (not
+        oneoff) measurements. "sleep_notification" is a lambda taking one parameter, the
         sleep delay: when the module has to sleep, it calls this lambda, allowing you to be informed of
-        the delay. """
+        the delay. "key" is the API key. If None, it will be read in the configuration file."""        
         if not key:
             if not os.path.exists(authfile):
                 raise AuthFileNotFound("Authentication file %s not found" % authfile)
@@ -95,6 +94,8 @@ class Measurement():
             raise RequestSubmissionError("Status %s, reason \"%s\"" % \
                                          (e.code, e.read()))
 
+        if not wait:
+            return
         # Find out how many probes were actually allocated to this measurement
         enough = False
         requested = data["probes"][0]["requested"] 
@@ -122,7 +123,7 @@ class Measurement():
                 conn.close()
             except urllib2.HTTPError as e:
                 raise FieldsQueryError("%s" % e.read())
-
+          
     def results(self, wait=True, percentage_required=0.9):
         """ Retrieves the result."wait" indicates if you are willing to wait until the measurement
         is over (otherwise, you'll get partial results). "percentage_required" is meaningful only
