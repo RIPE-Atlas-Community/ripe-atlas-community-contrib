@@ -5,10 +5,11 @@ import argparse
 import nagiosplugin
 
 class Measurement(nagiosplugin.Resource):
-  def __init__(self, target, ip_version, probes):
+  def __init__(self, target, ip_version, probes, key):
     self.target = target
     self.ip_version = ip_version
     self.probes = probes
+    self.key = key
 
   def probe(self):
     data = { "definitions": [ { "target": self.target,
@@ -32,7 +33,7 @@ class Measurement(nagiosplugin.Resource):
                          { "requested": max([int(self.probes * 0.2), 1]),
                            "type": "area",
                            "value": "South-East" } ] }
-    measurement = RIPEAtlas.Measurement(data)
+    measurement = RIPEAtlas.Measurement(data, key=self.key)
     results = measurement.results(wait=True, percentage_required=0.5)
     if (results):
       failed = [result for result in results if result["rcvd"] < result["sent"]]
@@ -46,9 +47,10 @@ def main():
   argp.add_argument("-t", "--target", required=True, help="Target hostname")
   argp.add_argument("-p", "--probes", default=100, type=int, help="How many probes to use")
   argp.add_argument("-6", "--ipv6", action='store_true', help="Use IPv6")
+  argp.add_argument("-k", "--key", required=True, help="API key")
   args = argp.parse_args()
 
-  check = nagiosplugin.Check(Measurement(args.target, 6 if args.ipv6 else 4, args.probes),
+  check = nagiosplugin.Check(Measurement(args.target, 6 if args.ipv6 else 4, args.probes, args.key),
                              nagiosplugin.ScalarContext("failed", args.warning, args.critical, fmt_metric="{value} failed results from probes"))
   check.main(timeout=900)
 
