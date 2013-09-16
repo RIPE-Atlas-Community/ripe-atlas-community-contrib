@@ -20,7 +20,7 @@ import json
 import time
 import urllib2
 
-_authfile = "%s/.atlas/auth" % os.environ['HOME']
+authfile = "%s/.atlas/auth" % os.environ['HOME']
 base_url = "https://atlas.ripe.net/api/v1/measurement"
 
 # The following parameters are currently not settable. Anyway, be
@@ -61,28 +61,29 @@ class JsonRequest(urllib2.Request):
         self.add_header("Content-Type", "application/json")
         self.add_header("Accept", "application/json")
 
-if not os.path.exists(_authfile):
-    raise AuthFileNotFound("Authentication file %s not found" % _authfile)
-_auth = open(_authfile)
-_key = _auth.readline()[:-1]
-_auth.close()
-
-_url = base_url + "/?key=%s" % _key
-_url_probes = base_url + "/%s/?fields=probes,status"
-_url_status = base_url + "/%s/?fields=status" 
-_url_results = base_url + "/%s/result/" 
-
 class Measurement():
     """ An Atlas measurement, identified by its ID (such as #1010569) in the field "id" """
 
-    def __init__(self, data, sleep_notification=None):
+    def __init__(self, data, sleep_notification=None, key=None):
         """ Creates a measurement."data" must be a dictionary (*not* a JSON string) having the members
         requested by the Atlas documentation. "sleep_notification" is a lambda taking one parameter, the
         sleep delay: when the module has to sleep, it calls this lambda, allowing you to be informed of
         the delay. """
+        if not key:
+            if not os.path.exists(authfile):
+                raise AuthFileNotFound("Authentication file %s not found" % authfile)
+            auth = open(authfile)
+            key = auth.readline()[:-1]
+            auth.close()
+
+        self.url = base_url + "/?key=%s" % key
+        self.url_probes = base_url + "/%s/?fields=probes,status"
+        self.url_status = base_url + "/%s/?fields=status" 
+        self.url_results = base_url + "/%s/result/" 
+
         self.json_data = json.dumps(data)
         self.notification = sleep_notification
-        request = JsonRequest(_url)
+        request = JsonRequest(self.url)
         try:
             # Start the measurement
             conn = urllib2.urlopen(request, self.json_data)
@@ -104,7 +105,7 @@ class Measurement():
                 self.notification(fields_delay)
             time.sleep(fields_delay)
             fields_delay *= 2
-            request = JsonRequest(_url_probes % self.id)
+            request = JsonRequest(self.url_probes % self.id)
             try:
                 conn = urllib2.urlopen(request)
                 # Now, parse the answer
@@ -142,7 +143,7 @@ class Measurement():
                     self.notification(results_delay)
                 time.sleep(results_delay) 
                 results_delay *= 2
-                request = JsonRequest(_url_results % self.id)
+                request = JsonRequest(self.url_results % self.id)
                 attempts += 1
                 elapsed = time.time() - start
                 try:
@@ -158,7 +159,7 @@ class Measurement():
                         # have sent only a part of its measurements.
                         enough = True
                     else:
-                        conn = urllib2.urlopen(JsonRequest(_url_status % self.id))
+                        conn = urllib2.urlopen(JsonRequest(self.url_status % self.id))
                         result_status = json.load(conn) 
                         status = result_status["status"]["name"]
                         if status == "Ongoing":
