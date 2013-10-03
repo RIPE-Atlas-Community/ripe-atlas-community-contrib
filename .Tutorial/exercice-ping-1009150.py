@@ -22,6 +22,7 @@ for probe in results:
         if test.has_key('rtt'):
             probe_ok = True
             break
+    if not probe_ok:
         unreachable.add(probe['prb_id'])
 if len(unreachable) == 0:
     print "All probes were reachable"
