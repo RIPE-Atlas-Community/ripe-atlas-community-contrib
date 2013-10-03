@@ -14,7 +14,7 @@ results = json.loads(file.read())
 
 
 # Main loop over the results
-unreachable = 0
+unreachable = set()
 for probe in results:
     # Per-test loop
     probe_ok = False
@@ -22,12 +22,12 @@ for probe in results:
         if test.has_key('rtt'):
             probe_ok = True
             break
-    if not probe_ok:
-        unreachable += 1
-        print "Probe %s has a problem" % probe['prb_id']
-if unreachable == 0:
+        unreachable.add(probe['prb_id'])
+if len(unreachable) == 0:
     print "All probes were reachable"
-elif unreachable == 1:
+elif len(unreachable) == 1:
     print "One probe was unreachable"
-elif unreachable > 1:
-    print "%d probes were unreachable" % unreachable
+else:
+    print "%d probes were unreachable" % len(unreachable)
+for prb_id in unreachable:
+    print "Probe %s has a problem" % prb_id
