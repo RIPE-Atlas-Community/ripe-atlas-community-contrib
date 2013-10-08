@@ -15,10 +15,12 @@
 			    thereis (access test :rtt))
 		  collect probe))
        (unreachable (length probes)))
-  (cond
-    ((= 1 unreachable)
+  (case unreachable
+    (0
+     (format t "All probes were reachable~%"))
+    (1
      (format t "One probe was unreachable~%"))
-    ((< 1 unreachable)
+    (otherwise
      (format t "~D probes were unreachable~%" unreachable)))
   (loop for probe in probes
      do (format t "Probe ~S has a problem~%" (access probe :prb--id))))
