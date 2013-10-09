@@ -13,7 +13,6 @@ Stéphane Bortzmeyer <bortzmeyer+ripe@nic.fr>
 """
 
 import os
-import sys
 import json
 import time
 import urllib2
