@@ -9,9 +9,6 @@ use -l to run it on specific probes instead.
 
 It outputs the ID of the measurements.
 
-Warning: the code is not really clean (DNS query hardwired, etc), it
-is meant to be used as an example, not as a ready-made program.
-
 Stephane Bortzmeyer <bortzmeyer@nic.fr>
 """
 
@@ -28,12 +25,15 @@ import string
 # Default values
 family = 4
 selection = "area"
+query = "fr"
+qtype = "SOA"
+num_probes = 500
 
 # Parameters
 descr =  "Check identity of %s anycast instance"
 data = { "definitions": [
     {"packets": 1, "use_NSID": True,
-      "query_argument": "fr", "query_class": "IN", "query_type": "SOA",
+      "query_argument": query, "query_class": "IN", "query_type": qtype,
       "type": "dns", "is_oneoff": True} ],
          "probes": []}
 authfile = "%s/.atlas/auth" % os.environ['HOME']
@@ -48,13 +48,14 @@ class JsonRequest(urllib2.Request):
         self.add_header("Accept", "application/json")
     
 def usage(msg=None):
-    print >>sys.stderr, "Usage: %s [-4] [-6] [-l N,N,N...] target" % sys.argv[0]
+    print >>sys.stderr, "Usage: %s [-4] [-6] [-q name] [-n N] [-l N,N,N...] target" % sys.argv[0]
     if msg is not None:
         print >>sys.stderr, msg
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "46l:h",
-                               ["list_probes=", "help"])
+    optlist, args = getopt.getopt (sys.argv[1:], "46q:t:n:l:h",
+                               ["list_probes=", "type=", "number=", 
+                                "query=", "help"])
     for option, value in optlist:
         if option == "--help" or option == "-h":
             usage()
@@ -62,6 +63,12 @@ try:
         elif option == "--list_probes" or option == "-l":
             probes = string.split(value, ',')
             selection = "list"
+        elif option == "--query" or option == "-q":
+            query = value
+        elif option == "--type" or option == "-t":
+            qtype = value
+        elif option == "--number" or option == "-n":
+            num_probes = int(value)
         elif option == "-4":
             family = "4"
         elif option == "-6":
@@ -80,9 +87,11 @@ if len(args) != 1:
 target = args[0]
 data["definitions"][0]["af"] = family
 data["definitions"][0]["target"] = target
+data["definitions"][0]["query"] = query
+data["definitions"][0]["query_type"] = qtype
 data["definitions"][0]["description"] = descr % target
 if selection == "area":
-    data["probes"].append({ "requested": 500, "type": "area" })
+    data["probes"].append({ "requested": num_probes, "type": "area" })
 elif selection == "list":
     data["probes"].append({ "requested": len(probes), "type": "probes", "value": string.join(probes,',') })
 else:
