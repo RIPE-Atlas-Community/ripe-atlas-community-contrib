@@ -46,6 +46,12 @@ class RequestSubmissionError(Exception):
 class FieldsQueryError(Exception):
     pass
 
+class MeasurementNotFound(Exception):
+    pass
+
+class MeasurementAccessError(Exception):
+    pass
+
 class ResultError(Exception):
     pass
 
@@ -61,12 +67,22 @@ class JsonRequest(urllib2.Request):
 class Measurement():
     """ An Atlas measurement, identified by its ID (such as #1010569) in the field "id" """
 
-    def __init__(self, data, wait=True, sleep_notification=None, key=None):
-        """ Creates a measurement."data" must be a dictionary (*not* a JSON string) having the members
+    def __init__(self, data, wait=True, sleep_notification=None, key=None, id=None):
+        """
+        Creates a measurement."data" must be a dictionary (*not* a JSON string) having the members
         requested by the Atlas documentation. "wait" should be set to False for periodic (not
         oneoff) measurements. "sleep_notification" is a lambda taking one parameter, the
         sleep delay: when the module has to sleep, it calls this lambda, allowing you to be informed of
-        the delay. "key" is the API key. If None, it will be read in the configuration file."""        
+        the delay. "key" is the API key. If None, it will be read in the configuration file.
+
+        If "data" is None and id is not, a dummy measurement will be created, mapped to
+         the existing measurement having this ID.
+        """
+
+        if data is None and id is None:
+            raise RequestSubmissionError("No data and no measurement ID")
+        
+        # TODO: when creating a dummy measurement, a key may not be necessary if the measurement is public
         if not key:
             if not os.path.exists(authfile):
                 raise AuthFileNotFound("Authentication file %s not found" % authfile)
@@ -79,56 +95,71 @@ class Measurement():
         self.url_status = base_url + "/%s/?fields=status" 
         self.url_results = base_url + "/%s/result/" 
 
-        self.json_data = json.dumps(data)
-        self.notification = sleep_notification
-        request = JsonRequest(self.url)
-        try:
-            # Start the measurement
-            conn = urllib2.urlopen(request, self.json_data)
-            # Now, parse the answer
-            results = json.load(conn)
-            self.id = results["measurements"][0]
-            conn.close()
-        except urllib2.HTTPError as e:
-            raise RequestSubmissionError("Status %s, reason \"%s\"" % \
-                                         (e.code, e.read()))
-
-        if not wait:
-            return
-        # Find out how many probes were actually allocated to this measurement
-        enough = False
-        requested = data["probes"][0]["requested"] 
-        fields_delay = fields_delay_base + (requested * fields_delay_factor)
-        while not enough:
-            # Let's be patient
-            if self.notification is not None:
-                self.notification(fields_delay)
-            time.sleep(fields_delay)
-            fields_delay *= 2
-            request = JsonRequest(self.url_probes % self.id)
+        if data is not None:
+            self.json_data = json.dumps(data)
+            self.notification = sleep_notification
+            request = JsonRequest(self.url)
             try:
-                conn = urllib2.urlopen(request)
+                # Start the measurement
+                conn = urllib2.urlopen(request, self.json_data)
                 # Now, parse the answer
-                meta = json.load(conn)
-                if meta["status"]["name"] == "Specified" or \
-                       meta["status"]["name"] == "Scheduled":
-                    # Not done, loop
-                    pass
-                elif meta["status"]["name"] == "Ongoing":
-                    enough = True
-                    self.num_probes = len(meta["probes"])
-                else:
-                    raise InternalError("Internal error, unexpected status when querying the measurement fields: \"%s\"" % meta["status"])
+                results = json.load(conn)
+                self.id = results["measurements"][0]
                 conn.close()
             except urllib2.HTTPError as e:
-                raise FieldsQueryError("%s" % e.read())
-          
+                raise RequestSubmissionError("Status %s, reason \"%s\"" % \
+                                             (e.code, e.read()))
+
+            if not wait:
+                return
+            # Find out how many probes were actually allocated to this measurement
+            enough = False
+            requested = data["probes"][0]["requested"] 
+            fields_delay = fields_delay_base + (requested * fields_delay_factor)
+            while not enough:
+                # Let's be patient
+                if self.notification is not None:
+                    self.notification(fields_delay)
+                time.sleep(fields_delay)
+                fields_delay *= 2
+                request = JsonRequest(self.url_probes % self.id)
+                try:
+                    conn = urllib2.urlopen(request)
+                    # Now, parse the answer
+                    meta = json.load(conn)
+                    if meta["status"]["name"] == "Specified" or \
+                           meta["status"]["name"] == "Scheduled":
+                        # Not done, loop
+                        pass
+                    elif meta["status"]["name"] == "Ongoing":
+                        enough = True
+                        self.num_probes = len(meta["probes"])
+                    else:
+                        raise InternalError("Internal error, unexpected status when querying the measurement fields: \"%s\"" % meta["status"])
+                    conn.close()
+                except urllib2.HTTPError as e:
+                    raise FieldsQueryError("%s" % e.read())
+        else:
+            self.id = id
+            try:
+                conn = urllib2.urlopen(JsonRequest(self.url_status % self.id))
+            except urllib2.HTTPError as e:
+                if e.code == 404:
+                    raise MeasurementNotFound
+                else:
+                    raise MeasurementAccessError("%s" % e.read())
+            result_status = json.load(conn) 
+            status = result_status["status"]["name"]
+            # TODO: test status
+            self.num_probes = None # TODO: get it from the status?
+            
     def results(self, wait=True, percentage_required=0.9):
         """ Retrieves the result."wait" indicates if you are willing to wait until the measurement
         is over (otherwise, you'll get partial results). "percentage_required" is meaningful only
         when you wait and it indicates the percentage of the allocated probes that have to report
         before the function returns (warning: the measurement may stop even if not enough probes
         reported so you always have to check the actual number of reporting probes in the result). """
+        request = JsonRequest(self.url_results % self.id)
         if wait:
             enough = False
             attempts = 0
@@ -143,7 +174,6 @@ class Measurement():
                     self.notification(results_delay)
                 time.sleep(results_delay) 
                 results_delay *= 2
-                request = JsonRequest(self.url_results % self.id)
                 attempts += 1
                 elapsed = time.time() - start
                 try:
