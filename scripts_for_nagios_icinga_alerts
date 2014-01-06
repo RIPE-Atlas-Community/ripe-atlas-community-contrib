@@ -1,0 +1,26 @@
+Scripts for alerts
+
+RIPE Atlas functionality: 
+https://atlas.ripe.net/docs/status-checks/
+
+Examples of home-made scripts for using RIPE Atlas for automatic notifications using existing monitoring systems (nagios, icing and similar) 
+
+Wolfgang Nagele: 
+
+check_http -S -H atlas.ripe.net -j HEAD -d 'X-RIPE-Atlas-Global-Alert: 0' -u /api/v1/status-checks/<msm_id>/?key=<api_key>
+
+& https://www.nagios-plugins.org/doc/man/check_http.html 
+
+
+Stephane Bortzmeyer 
+
+Here is what I use in Icinga :
+
+define service {
+     use generic-service
+     host_name madiba
+     service_description Test_Atlas
+     check_command check_http!-I atlas.ripe.net  -r 'global_alert":false' --ssl=1 -u /api/v1/status-checks/1040425/?permitted_total_alerts=1
+}
+
+
