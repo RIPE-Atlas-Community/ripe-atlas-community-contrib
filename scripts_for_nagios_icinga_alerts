@@ -29,45 +29,54 @@ Michael Friedrich:
 Modifed the example above for usage with Icinga 2
 https://wiki.icinga.org/display/howtos/RIPE+Atlas+Monitoring
 
-object CheckCommand "ripe-atlas" inherits "plugin-check-command" {
-  command = [ "$plugindir$/check_http",
-              "-I", "$address$",
+object CheckCommand "ripe-atlas" {
+  import "plugin-check-command"
+
+  command = [ PluginDir + "/check_http",
+              "-I", "$apiaddress$",
               "-r", "$apiresult$",
               "--ssl=1",
               "-u", "/api/v$apiversion$/status-checks/$measureid$/?permitted_total_alerts=$critalerts$",
               "-t", "$timeout$"
-  ],
+  ]
 
-  macros = {
-    apiresult = "global_alert\":false",
-    apiversion = "1",
-    measureid = "1040425",
-    critalerts = "1",
-    timeout = 30
-  }
+  vars.apiaddress = "atlas.ripe.net"
+  vars.apiresult = "global_alert\":false"
+  vars.apiversion = "1"
+  vars.critalerts = "1"
+  vars.timeout = 30
 }
 
+object Host "RIPE Atlas" {
+  import "generic-host"
 
-object Host "RIPE Atlas" inherits "generic-host" {
-  services["atlas #1040425"] = {
-    templates = [ "generic-service" ],
-    macros = {
-      apiresult = "global_alert\":false",
-      measureid = "1040425",
-      critalerts = "1"
-    },
-    check_command = "ripe-atlas"
-  },
-  services["ping6"] = {
-    templates = [ "generic-service" ],
-    check_command = "ping6"
-  },
+  address = "atlas.ripe.net",
+  address6 = "2001:67c:2e8:22::c100:69e"
 
-  macros = {
-    address = "atlas.ripe.net",
-    address6 = "2001:67c:2e8:22::c100:69e"
-  },
+  vars.measureid = "1040425"
+}
 
-  check = "ping6"
+object Host "RIPE Lab" {
+  import "generic-host"
+
+  address = "labs.ripe.net",
+  address6 = "2001:67c:2e8:22::c100:699"
+
+  //uncomment to apply service
+  //vars.measureid = "1040425"
+}
+
+apply Service "atlas" {
+  import "generic-service"
+
+  check_command = "ripe-atlas"
+
+  vars.apiresult = "global_alert\":false"
+  vars.critalerts = "1"
+
+  vars.measureid = "$host.vars.measureid$"
+
+  assign where match("RIPE*", host.name)
+  ignore where !host.vars.measureid
 }
 
