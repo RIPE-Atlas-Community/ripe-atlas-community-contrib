@@ -25,8 +25,14 @@ class Items:
 def by_num(l, r):
     return -cmp(ns_names[l].num, ns_names[r].num)
 
+def usage(msg=None):
+    print >>sys.stderr, "Usage: %s [-f file] [-d measurement]" % sys.argv[0]
+    if msg is not None:
+        print >>sys.stderr, msg
+
 # Try measurement #1008591 for instance
 
+results = None
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "f:d:", ["file=","data-api="])
     for option, value in optlist:
@@ -42,7 +48,12 @@ try:
 except getopt.error, reason:
     usage(reason)
     sys.exit(1)
-
+if results is None:
+    if len(args) == 1:
+        results = json.loads(open(args[0]).read())
+    else:
+        usage("One of -f or -d is mandatory")
+        sys.exit(1)
 net_failures = 0
 nsid_failures = 0
 successes = 0
