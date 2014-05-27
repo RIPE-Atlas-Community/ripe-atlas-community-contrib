@@ -55,6 +55,9 @@ class MeasurementAccessError(Exception):
 class ResultError(Exception):
     pass
 
+class IncompatibleArguments(Exception):
+    pass
+
 class InternalError(Exception):
     pass
 
@@ -94,6 +97,7 @@ class Measurement():
         self.url_probes = base_url + "/%s/?fields=probes,status"
         self.url_status = base_url + "/%s/?fields=status" 
         self.url_results = base_url + "/%s/result/" 
+        self.url_latest = base_url + "-latest/%s/?versions=%s"
 
         if data is not None:
             self.json_data = json.dumps(data)
@@ -153,13 +157,23 @@ class Measurement():
             # TODO: test status
             self.num_probes = None # TODO: get it from the status?
             
-    def results(self, wait=True, percentage_required=0.9):
-        """ Retrieves the result."wait" indicates if you are willing to wait until the measurement
-        is over (otherwise, you'll get partial results). "percentage_required" is meaningful only
-        when you wait and it indicates the percentage of the allocated probes that have to report
-        before the function returns (warning: the measurement may stop even if not enough probes
-        reported so you always have to check the actual number of reporting probes in the result). """
-        request = JsonRequest(self.url_results % self.id)
+    def results(self, wait=True, percentage_required=0.9, latest=None):
+        """Retrieves the result. "wait" indicates if you are willing to wait until
+        the measurement is over (otherwise, you'll get partial
+        results). "percentage_required" is meaningful only when you wait
+        and it indicates the percentage of the allocated probes that
+        have to report before the function returns (warning: the
+        measurement may stop even if not enough probes reported so you
+        always have to check the actual number of reporting probes in
+        the result). "latest" indicates that you want to retrieve only
+        the last N results (by default, you get all the results).
+        """
+        if latest is not None:
+            wait = False
+        if latest is None:
+            request = JsonRequest(self.url_results % self.id)
+        else:
+            request = JsonRequest(self.url_latest% (self.id, latest))
         if wait:
             enough = False
             attempts = 0
