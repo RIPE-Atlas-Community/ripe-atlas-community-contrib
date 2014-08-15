@@ -39,7 +39,7 @@ try:
         if option == "--file" or option == "-f":
             results = json.loads(open(value).read())
         elif option == "--data-api" or option == "-d":
-            url = "https://udm01.atlas.ripe.net/api/v1/measurement/" + value + "/result/"
+            url = "https://atlas.ripe.net/api/v1/measurement/" + value + "/result/"
             results = json.load(urllib.urlopen(url))
         else:
             usage("Unknown option %s" % option)
