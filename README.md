@@ -33,6 +33,6 @@ find here, there are other independently hosted projects available as well:
 * **[USC-NSL's RIPE Atlas applications](https://github.com/USC-NSL/ripe-atlas)**:
   A set of client applications for issuing measurements to the RIPE Atlas network
 
-* **[GoogleEarth visualizaiton for RIEP Atlas traceroutes] https://github.com/mathias4github/ripe-atlas-traceroute2kml)** 
+* **[GoogleEarth visualizaiton for RIPE Atlas traceroutes](https://github.com/mathias4github/ripe-atlas-traceroute2kml)** 
   A Python script which reads results from RIPE Atlas traceroute measurements (both IPv4 and IPv6) and generates a *.kml file.
 
