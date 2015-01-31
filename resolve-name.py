@@ -25,6 +25,10 @@ import dns.message
 
 import RIPEAtlas
 
+# Default values
+country = None # World-wide
+asn = None # All
+area = None # World-wide
 requested = 500
 qtype = 'A'
 measurement_id = None
@@ -42,15 +46,24 @@ def usage(msg=None):
     --help or -h : this message
     --type or -t : query type (default is %s)
     --requested=N or -r N : requests N probes (default is %s)
+    --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
+    --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
+    --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --measurement-ID=N or -m N : do not start a measurement, just analyze a former one
     """ % (qtype, requested)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:t:hm:s",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:hm:s",
                                ["requested=", "type=", "sort", "help"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
+        elif option == "--country" or option == "-c":
+            country = value
+        elif option == "--area" or option == "-a":
+            area = value
+        elif option == "--asn" or option == "-n":
+            asn = value
         elif option == "--requested" or option == "-r":
             requested = int(value)
         elif option == "--sort" or option == "-s":
@@ -81,7 +94,31 @@ if measurement_id is None:
                            "query_class": "IN", "query_type": qtype, 
                            "recursion_desired": True}],
          "probes": [{"requested": requested, "type": "area", "value": "WW"}] }
-    
+    if country is not None:
+        if asn is not None or area is not None:
+            usage("Specify country *or* area *or* ASn")
+            sys.exit(1)
+        data["probes"][0]["type"] = "country"
+        data["probes"][0]["value"] = country
+        data["definitions"][0]["description"] += (" from %s" % country)
+    elif area is not None:
+        if asn is not None or country is not None:
+            usage("Specify country *or* area *or* ASn")
+            sys.exit(1)
+        data["probes"][0]["type"] = "area"
+        data["probes"][0]["value"] = area
+        data["definitions"][0]["description"] += (" from %s" % area)
+    elif asn is not None:
+        if area is not None or country is not None:
+            usage("Specify country *or* area *or* ASn")
+            sys.exit(1)
+        data["probes"][0]["type"] = "asn"
+        data["probes"][0]["value"] = asn
+        data["definitions"][0]["description"] += (" from AS #%s" % asn)
+    else:
+        data["probes"][0]["type"] = "area"
+        data["probes"][0]["value"] = "WW"
+
     measurement = RIPEAtlas.Measurement(data,
                                     lambda delay: sys.stderr.write(
         "Sleeping %i seconds...\n" % delay))
@@ -94,7 +131,7 @@ if measurement_id is None:
 else:
     measurement = RIPEAtlas.Measurement(data=None, id=measurement_id)
     results = measurement.results(wait=False)
-    
+
 probes = 0
 successes = 0
 
@@ -102,22 +139,24 @@ qtype_num = dns.rdatatype.from_text(qtype) # Raises dns.rdatatype.UnknownRdataty
 sets = collections.defaultdict(Set)
 for result in results:
     probes += 1
-    if result.has_key("result"):
-        try:
-            answer = result['result']['abuf'] + "=="
-            content = base64.b64decode(answer)
-            msg = dns.message.from_wire(content)
-            successes += 1
-            myset = []
-            for rrset in msg.answer:
-                for rdata in rrset:
-                    if rdata.rdtype == qtype_num:
-                        myset.append(str(rdata))
-            myset.sort()
-            set_str = " ".join(myset)
-            sets[set_str].total += 1
-        except dns.message.TrailingJunk:
-            print "Probe %s failed (trailing junk)" % result['prb_id']
+    if result.has_key("resultset"):
+        for result_i in result['resultset']:
+            if result_i.has_key("result"):
+                try:
+                    answer = result_i['result']['abuf'] + "=="
+                    content = base64.b64decode(answer)
+                    msg = dns.message.from_wire(content)
+                    successes += 1
+                    myset = []
+                    for rrset in msg.answer:
+                        for rdata in rrset:
+                            if rdata.rdtype == qtype_num:
+                                myset.append(str(rdata))
+                    myset.sort()
+                    set_str = " ".join(myset)
+                    sets[set_str].total += 1
+                except dns.message.TrailingJunk:
+                    print "Probe %s failed (trailing junk)" % result['prb_id']
 if sort:
     sets_data = sorted(sets, key=lambda s: sets[s].total, reverse=True)
 else:
