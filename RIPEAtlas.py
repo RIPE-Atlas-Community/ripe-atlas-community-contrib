@@ -139,7 +139,7 @@ class Measurement():
                         enough = True
                         self.num_probes = len(meta["probes"])
                     else:
-                        raise InternalError("Internal error, unexpected status when querying the measurement fields: \"%s\"" % meta["status"])
+                        raise InternalError("Internal error in #%s, unexpected status when querying the measurement fields: \"%s\"" % (self.id, meta["status"]))
                     conn.close()
                 except urllib2.HTTPError as e:
                     raise FieldsQueryError("%s" % e.read())
