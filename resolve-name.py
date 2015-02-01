@@ -32,6 +32,7 @@ area = None # World-wide
 requested = 500
 qtype = 'A'
 measurement_id = None
+nameserver = None
 sort = False
 
 class Set():
@@ -50,11 +51,13 @@ def usage(msg=None):
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --measurement-ID=N or -m N : do not start a measurement, just analyze a former one
+    --nameserver=IPaddr or -e IPaddr : query this name server (default is to query the probe's resolver)
     """ % (qtype, requested)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:hm:s",
-                               ["requested=", "type=", "sort", "help"])
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:s",
+                               ["requested=", "type=", "country=", "area=", "asn=", "nameserver=",
+                                "sort", "help"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
@@ -70,6 +73,8 @@ try:
             sort = True
         elif option == "--measurement-ID" or option == "-m":
             measurement_id = value
+        elif option == "--nameserver" or option == "-e":
+            nameserver = value
         elif option == "--help" or option == "-h":
             usage()
             sys.exit(0)
@@ -89,7 +94,7 @@ domainname = args[0]
 
 if measurement_id is None:
     data = { "definitions": [{ "type": "dns", "af": 4, "is_oneoff": True, 
-                           "use_probe_resolver": True, "query_argument": domainname,
+                           "query_argument": domainname,
                            "description": "DNS resolution of %s" % domainname,
                            "query_class": "IN", "query_type": qtype, 
                            "recursion_desired": True}],
@@ -118,7 +123,12 @@ if measurement_id is None:
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
-
+    if nameserver is None:
+        data["definitions"][0]["use_probe_resolver"] = True
+    else:
+        data["definitions"][0]["use_probe_resolver"] = False
+        data["definitions"][0]["target"] = nameserver
+        
     measurement = RIPEAtlas.Measurement(data,
                                     lambda delay: sys.stderr.write(
         "Sleeping %i seconds...\n" % delay))
@@ -157,6 +167,22 @@ for result in results:
                     sets[set_str].total += 1
                 except dns.message.TrailingJunk:
                     print "Probe %s failed (trailing junk)" % result['prb_id']
+    elif result.has_key("result"):
+            try:
+                answer = result['result']['abuf'] + "=="
+                content = base64.b64decode(answer)
+                msg = dns.message.from_wire(content)
+                successes += 1
+                myset = []
+                for rrset in msg.answer:
+                    for rdata in rrset:
+                        if rdata.rdtype == qtype_num:
+                            myset.append(str(rdata))
+                myset.sort()
+                set_str = " ".join(myset)
+                sets[set_str].total += 1
+            except dns.message.TrailingJunk:
+                print "Probe %s failed (trailing junk)" % result['prb_id']
 if sort:
     sets_data = sorted(sets, key=lambda s: sets[s].total, reverse=True)
 else:
