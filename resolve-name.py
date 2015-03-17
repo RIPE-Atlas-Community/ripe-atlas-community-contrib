@@ -34,6 +34,7 @@ qtype = 'A'
 measurement_id = None
 nameserver = None
 sort = False
+only_one_per_probe = True
 
 class Set():
     def __init__(self):
@@ -46,6 +47,7 @@ def usage(msg=None):
     print >>sys.stderr, """Options are:
     --help or -h : this message
     --type or -t : query type (default is %s)
+    --severalperprobe or -p : count all the resolvers of each probe (default is to count only the first to reply)
     --requested=N or -r N : requests N probes (default is %s)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
@@ -55,9 +57,9 @@ def usage(msg=None):
     """ % (qtype, requested)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:s",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:sp",
                                ["requested=", "type=", "country=", "area=", "asn=", "nameserver=",
-                                "sort", "help"])
+                                "sort", "help", "severalperprobe"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
@@ -78,6 +80,8 @@ try:
         elif option == "--help" or option == "-h":
             usage()
             sys.exit(0)
+        elif option == "--severalperprobe" or option == "-p":
+            only_one_per_probe = False
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -167,6 +171,8 @@ for result in results:
                     sets[set_str].total += 1
                 except dns.message.TrailingJunk:
                     print "Probe %s failed (trailing junk)" % result['prb_id']
+            if only_one_per_probe:
+                break
     elif result.has_key("result"):
             try:
                 answer = result['result']['abuf'] + "=="
