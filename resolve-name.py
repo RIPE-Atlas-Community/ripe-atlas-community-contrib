@@ -35,6 +35,7 @@ measurement_id = None
 nameserver = None
 sort = False
 only_one_per_probe = True
+ip_family = 4
 
 class Set():
     def __init__(self):
@@ -47,6 +48,7 @@ def usage(msg=None):
     print >>sys.stderr, """Options are:
     --help or -h : this message
     --type or -t : query type (default is %s)
+    --ipv6 or -6 : contact only the IPv6 probes (do not affect the selection of the DNS resolvers)
     --severalperprobe or -p : count all the resolvers of each probe (default is to count only the first to reply)
     --requested=N or -r N : requests N probes (default is %s)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
@@ -57,9 +59,9 @@ def usage(msg=None):
     """ % (qtype, requested)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:sp",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:sp6",
                                ["requested=", "type=", "country=", "area=", "asn=", "nameserver=",
-                                "sort", "help", "severalperprobe"])
+                                "sort", "help", "severalperprobe", "ipv6"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
@@ -82,6 +84,8 @@ try:
             sys.exit(0)
         elif option == "--severalperprobe" or option == "-p":
             only_one_per_probe = False
+        elif option == "--ipv6" or option == "-6":
+            ip_family = 6
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -97,7 +101,7 @@ if len(args) != 1:
 domainname = args[0]
 
 if measurement_id is None:
-    data = { "definitions": [{ "type": "dns", "af": 4, "is_oneoff": True, 
+    data = { "definitions": [{ "type": "dns", "af": ip_family, "is_oneoff": True, 
                            "query_argument": domainname,
                            "description": "DNS resolution of %s" % domainname,
                            "query_class": "IN", "query_type": qtype, 
