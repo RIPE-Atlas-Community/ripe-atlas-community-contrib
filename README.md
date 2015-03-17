@@ -4,9 +4,6 @@ Contained here are contributions by the community of the RIPE Atlas
 visualizations, tools for analysing measurements data.  In addition to what you
 find here, there are other independently hosted projects available as well:
 
-* **[Atlas-Blocked](https://github.com/b4ldr/atlas-blocked)**: A project to test 
-  if a website is being blocked/filtered by using RIPE Atlas.
-
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
   probes based on their area.
@@ -36,7 +33,19 @@ find here, there are other independently hosted projects available as well:
 * **[GoogleEarth visualizaiton for RIPE Atlas traceroutes](https://github.com/mathias4github/ripe-atlas-traceroute2kml)** 
   A Python script which reads results from RIPE Atlas traceroute measurements (both IPv4 and IPv6) and generates a *.kml file.
 
+* **[Rumy gem - API wrapper](https://github.com/EddyShure/ripe-atlas)** "ripe-atlas" is a minimalistic API wrapper for the RIPE Atlas API. It is written entirely in Ruby.
+ 
 * **[Maera](https://github.com/monrad/maera)** 
-  Maera is a tool that is able to generate latency maps from RIPE ATLAS data. Some examples: http://monrad.github.io/maera/maera/2015/03/16/welcome-to-maera.html 
+  Maera is a tool that is able to generate latency maps from RIPE ATLAS data. 
+  Some examples: http://monrad.github.io/maera/maera/2015/03/16/welcome-to-maera.html 
 
+* **[Mesh Manager](https://github.com/robert-kisteleki/ripeatlas-meshmanager)** A simple application to manage traceroute meshes with RIPE Atlas.
 
+* **[Atlas-Blocked](https://github.com/b4ldr/atlas-blocked)**: A project to test 
+  if a website is being blocked/filtered by using RIPE Atlas.
+
+* **[Mathematica](https://github.com/stumpy/atlas.ripe.net)** Mathematica utilities to visualize network measurements by atlas.ripe.net probes
+
+* **[Connection Streaming](https://github.com/astrikos/atlas-connections-stream)** RIPE ATLAS connection stream simple visualization
+
+* **[IXP Country Jedi](https://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
