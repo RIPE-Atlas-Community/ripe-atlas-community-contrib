@@ -28,6 +28,7 @@ import RIPEAtlas
 # Default values
 country = None # World-wide
 asn = None # All
+prefix = None # All
 area = None # World-wide
 requested = 500
 qtype = 'A'
@@ -36,6 +37,7 @@ nameserver = None
 sort = False
 only_one_per_probe = True
 ip_family = 4
+verbose = False
 
 class Set():
     def __init__(self):
@@ -47,21 +49,23 @@ def usage(msg=None):
     print >>sys.stderr, "Usage: %s domain-name" % sys.argv[0]
     print >>sys.stderr, """Options are:
     --help or -h : this message
+    --verbose or -v : more talkative
     --type or -t : query type (default is %s)
     --ipv6 or -6 : contact only the IPv6 probes (do not affect the selection of the DNS resolvers)
     --severalperprobe or -p : count all the resolvers of each probe (default is to count only the first to reply)
     --requested=N or -r N : requests N probes (default is %s)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
+    --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --measurement-ID=N or -m N : do not start a measurement, just analyze a former one
     --nameserver=IPaddr or -e IPaddr : query this name server (default is to query the probe's resolver)
     """ % (qtype, requested)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:sp6",
-                               ["requested=", "type=", "country=", "area=", "asn=", "nameserver=",
-                                "sort", "help", "severalperprobe", "ipv6"])
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:e:hm:sp6f:v",
+                               ["requested=", "type=", "country=", "area=", "asn=", "prefix=", "nameserver=",
+                                "sort", "help", "severalperprobe", "ipv6", "verbose"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
@@ -71,6 +75,8 @@ try:
             area = value
         elif option == "--asn" or option == "-n":
             asn = value
+        elif option == "--prefix" or option == "-f":
+            prefix = value
         elif option == "--requested" or option == "-r":
             requested = int(value)
         elif option == "--sort" or option == "-s":
@@ -86,6 +92,8 @@ try:
             only_one_per_probe = False
         elif option == "--ipv6" or option == "-6":
             ip_family = 6
+        elif option == "--verbose" or option == "-v":
+            verbose = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -108,26 +116,33 @@ if measurement_id is None:
                            "recursion_desired": True}],
          "probes": [{"requested": requested, "type": "area", "value": "WW"}] }
     if country is not None:
-        if asn is not None or area is not None:
-            usage("Specify country *or* area *or* ASn")
+        if asn is not None or area is not None or prefix is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
             sys.exit(1)
         data["probes"][0]["type"] = "country"
         data["probes"][0]["value"] = country
         data["definitions"][0]["description"] += (" from %s" % country)
     elif area is not None:
-        if asn is not None or country is not None:
-            usage("Specify country *or* area *or* ASn")
+        if asn is not None or country is not None or prefix is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
             sys.exit(1)
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = area
         data["definitions"][0]["description"] += (" from %s" % area)
     elif asn is not None:
-        if area is not None or country is not None:
-            usage("Specify country *or* area *or* ASn")
+        if area is not None or country is not None or prefix is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
             sys.exit(1)
         data["probes"][0]["type"] = "asn"
         data["probes"][0]["value"] = asn
         data["definitions"][0]["description"] += (" from AS #%s" % asn)
+    elif prefix is not None:
+        if area is not None or country is not None or asn is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
+            sys.exit(1)
+        data["probes"][0]["type"] = "prefix"
+        data["probes"][0]["value"] = prefix
+        data["definitions"][0]["description"] += (" from prefix %s" % prefix)
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
@@ -137,9 +152,12 @@ if measurement_id is None:
         data["definitions"][0]["use_probe_resolver"] = False
         data["definitions"][0]["target"] = nameserver
         
+    if verbose:
+        print data
+        
     measurement = RIPEAtlas.Measurement(data,
-                                    lambda delay: sys.stderr.write(
-        "Sleeping %i seconds...\n" % delay))
+                                        lambda delay: sys.stderr.write(
+            "Sleeping %i seconds...\n" % delay))
 
     print "Measurement #%s for %s/%s uses %i probes" % \
       (measurement.id, domainname, qtype, measurement.num_probes)
