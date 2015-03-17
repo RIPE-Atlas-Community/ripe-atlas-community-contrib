@@ -36,3 +36,7 @@ find here, there are other independently hosted projects available as well:
 * **[GoogleEarth visualizaiton for RIPE Atlas traceroutes](https://github.com/mathias4github/ripe-atlas-traceroute2kml)** 
   A Python script which reads results from RIPE Atlas traceroute measurements (both IPv4 and IPv6) and generates a *.kml file.
 
+* **[Maera](https://github.com/monrad/maera)** 
+  Maera is a tool that is able to generate latency maps from RIPE ATLAS data. Some examples: http://monrad.github.io/maera/maera/2015/03/16/welcome-to-maera.html 
+
+
