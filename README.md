@@ -21,11 +21,21 @@ Created during Hackathon in March 2015:
 
 * **[bgp-traceroutes](https://github.com/wires/bgp-traceroutes)** by Jelle Herold 
 
-OTHER Tools 
+* **[Ripe Map](https://github.com/opendatacity/ripe-map)** by Michael & Katja 
+
+* **[ZeeRover DNS](https://github.com/USC-NSL/RIPE2015HackAThon)** by Matt Clader & Ruwaifa Anwar 
+
+* **[BGP Atlas Monitor (BAM!)](https://github.com/guedou/bam)** by Guillaume Valadon Francois Contant Mathias Handsche Thomas Holterbach
+
+* **[treetracert](https://github.com/cjdelisle/treetracert)** by CJdeLisle 
+
+* **[R for RIPE Atlas](https://github.com/tlevine/rripe-atlas)** by Tom Levine 
 
 * **[DistanceCheck](https://github.com/cod3monk/RIPE-OpenIPMap-distancecheck)** Distance Checking Tool for OpenIPMap Based on RIPE Atlas Traceroute Data
 
 * **[CLI traceroute](https://github.com/emileaben/cmdline-atlas-trace)** Do RIPE Atlas traceroutes on the commandline
+
+OTHER Tools 
 
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
