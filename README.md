@@ -31,7 +31,7 @@ Created during Hackathon in March 2015:
 
 * **[BGP Atlas Monitor (BAM!)](https://github.com/guedou/bam)** by Guillaume Valadon Francois Contant Mathias Handsche Thomas Holterbach
 
-* **[Probes Flowing Landscape](https://github.com/vinayakh/ripe-atlas-probedis) Distribution of Ripe Atlas Probes by geo over time, by Vinayak Hegde
+* **[Probes Flowing Landscape](https://github.com/vinayakh/ripe-atlas-probedis)** Distribution of Ripe Atlas Probes by geo over time, by Vinayak Hegde
 
 * **[DistanceCheck](https://github.com/cod3monk/RIPE-OpenIPMap-distancecheck)** Distance Checking Tool for OpenIPMap Based on RIPE Atlas Traceroute Data
 
