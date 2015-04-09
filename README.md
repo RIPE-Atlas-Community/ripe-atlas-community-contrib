@@ -1,8 +1,8 @@
 # RIPE Atlas Community Contrib
 
-(Collection of links to other independently hosted projects)
+(Collection of links to other tools)
 
-In the main repositoryare contributions by the community of the RIPE Atlas
+In the main repository are contributions by the community of the RIPE Atlas
 visualizations, tools for analysing measurements data.  
 
 Below are the links to other independantly hosted projects: 
@@ -11,13 +11,15 @@ Created during Hackathon in March 2015:
 
 * **[Traceroute consistency check](https://github.com/vdidonato/Traceroute-consistency-check)** by Valentino
 
-* **[Disco](https://github.com/merlijntishauser/ripe-hackathon-disco)** by Team Disco 
-
 * **[sBucket](https://github.com/cod3monk/RIPE-Atlas-sbucket)** by Jullian 
  
 * **[anycast](https://github.com/tlevine/ripe-atlas-anycast)** by Tom Levine 
 
 * **[anycast-work](https://github.com/shane-kerr/ripe-atlas-anycast-work)** by Shane Kerr 
+
+* **[treetracert](https://github.com/cjdelisle/treetracert)** by CJdeLisle 
+
+* **[R for RIPE Atlas](https://github.com/tlevine/rripe-atlas)** by Tom Levine 
 
 * **[bgp-traceroutes](https://github.com/wires/bgp-traceroutes)** by Jelle Herold 
 
@@ -25,11 +27,11 @@ Created during Hackathon in March 2015:
 
 * **[ZeeRover DNS](https://github.com/USC-NSL/RIPE2015HackAThon)** by Matt Clader & Ruwaifa Anwar 
 
+* **[Disco](https://github.com/merlijntishauser/ripe-hackathon-disco)** by Team Disco 
+
 * **[BGP Atlas Monitor (BAM!)](https://github.com/guedou/bam)** by Guillaume Valadon Francois Contant Mathias Handsche Thomas Holterbach
 
-* **[treetracert](https://github.com/cjdelisle/treetracert)** by CJdeLisle 
-
-* **[R for RIPE Atlas](https://github.com/tlevine/rripe-atlas)** by Tom Levine 
+* **[Probes Flowing Landscape](https://github.com/vinayakh/ripe-atlas-probedis) Distribution of Ripe Atlas Probes by geo over time, by Vinayak Hegde
 
 * **[DistanceCheck](https://github.com/cod3monk/RIPE-OpenIPMap-distancecheck)** Distance Checking Tool for OpenIPMap Based on RIPE Atlas Traceroute Data
 
