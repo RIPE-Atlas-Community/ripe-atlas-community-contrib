@@ -89,3 +89,5 @@ OTHER Tools
 
 * **[WebGL](https://github.com/danielquinn/RIPE-Atlas-WebGL-Globe-Prototype)**
 Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
+
+* **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
