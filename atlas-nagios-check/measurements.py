@@ -94,7 +94,6 @@ class Measurment:
 
 
 class MeasurmentSSL(Measurment):
-    '''Object for an atlas SSL Measurment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate object'''
@@ -150,7 +149,6 @@ class MeasurmentSSL(Measurment):
 
 
 class MeasurmentPing(Measurment):
-    '''Object for an atlas Ping Measurment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate object'''
@@ -196,7 +194,6 @@ class MeasurmentPing(Measurment):
 
 
 class MeasurmentHTTP(Measurment):
-    '''Object for an atlas HTTP Measurment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate object'''
@@ -239,7 +236,6 @@ class MeasurmentHTTP(Measurment):
                 self.check_status(args.status_code, message)
 
 class MeasurmentDns(Measurment):
-    '''Parent class for a dns measuerment'''
     rcode = None
     questions = []
     answers = []
@@ -316,7 +312,6 @@ class MeasurmentDns(Measurment):
 
 
 class MeasurmentDnsA(MeasurmentDns):
-    '''class for a dns A measuerment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -344,7 +339,6 @@ class MeasurmentDnsA(MeasurmentDns):
                     self.check_string( args.answer, answer.address, 'address', message)
 
 class MeasurmentDnsAAAA(MeasurmentDns):
-    '''class for a dns AAAA measuerment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -372,7 +366,6 @@ class MeasurmentDnsAAAA(MeasurmentDns):
                     self.check_string( args.answer, answer.address, 'address', message)
 
 class MeasurmentDnsCH(MeasurmentDns):
-    '''class for a dns AAAA measuerment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -414,7 +407,6 @@ class MeasurmentDnsCH(MeasurmentDns):
                                 'id.server', message)
 
 class MeasurmentDnsNS(MeasurmentDns):
-    '''class for a dns NS measuerment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -442,7 +434,6 @@ class MeasurmentDnsNS(MeasurmentDns):
                     self.check_string( args.answer, answer.target, 'target', message)
 
 class MeasurmentDnsMX(MeasurmentDns):
-    '''class for a dns MX measuerment'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -484,7 +475,6 @@ class MeasurmentDnsMX(MeasurmentDns):
 
 
 class MeasurmentDnsDS(MeasurmentDns):
-    '''class for a dns DS measuerment'''
     
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -543,7 +533,6 @@ class MeasurmentDnsDS(MeasurmentDns):
                 message.add_error(self.probe_id, 'Digest Type ({}) not found'.format(args.delegation_key))
 
 class MeasurmentDnsDNSKEY(MeasurmentDns):
-    '''class for a dns DNSKEY measurement'''
 
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
@@ -582,7 +571,6 @@ class MeasurmentDnsDNSKEY(MeasurmentDns):
                                 'dnskey algo', message)
 
 class MeasurmentDnsSOA(MeasurmentDns):
-    '''class for a dns SOA measuerment'''
     
     def __init__(self, probe_id, payload):
         '''Initiate Object'''
