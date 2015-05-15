@@ -16,6 +16,7 @@ Stephane Bortzmeyer <bortzmeyer@nic.fr>
 import json
 import sys
 import time
+import string
 import base64
 import getopt
 import collections
@@ -169,7 +170,7 @@ for result in results:
                     for rrset in msg.answer:
                         for rdata in rrset:
                             if rdata.rdtype == qtype_num:
-                                myset.append(str(rdata))
+                                myset.append(string.lower(str(rdata)))
                     myset.sort()
                     set_str = " ".join(myset)
                     sets[set_str].total += 1
@@ -187,7 +188,7 @@ for result in results:
                 for rrset in msg.answer:
                     for rdata in rrset:
                         if rdata.rdtype == qtype_num:
-                            myset.append(str(rdata))
+                            myset.append(string.lower(str(rdata)))
                 myset.sort()
                 set_str = " ".join(myset)
                 sets[set_str].total += 1
