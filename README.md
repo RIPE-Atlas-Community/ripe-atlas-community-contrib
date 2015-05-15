@@ -1,8 +1,43 @@
 # RIPE Atlas Community Contrib
 
-Contained here are contributions by the community of the RIPE Atlas
-visualizations, tools for analysing measurements data.  In addition to what you
-find here, there are other independently hosted projects available as well:
+(Collection of links to other tools)
+
+In the main repository are contributions by the community of the RIPE Atlas
+visualizations, tools for analysing measurements data.  
+
+Below are the links to other independantly hosted projects: 
+
+Created during Hackathon in March 2015: 
+
+* **[Traceroute consistency check](https://github.com/vdidonato/Traceroute-consistency-check)** by Valentino
+
+* **[sBucket](https://github.com/cod3monk/RIPE-Atlas-sbucket)** by Jullian 
+ 
+* **[anycast](https://github.com/tlevine/ripe-atlas-anycast)** by Tom Levine 
+
+* **[anycast-work](https://github.com/shane-kerr/ripe-atlas-anycast-work)** by Shane Kerr 
+
+* **[treetracert](https://github.com/cjdelisle/treetracert)** by CJdeLisle 
+
+* **[R for RIPE Atlas](https://github.com/tlevine/rripe-atlas)** by Tom Levine 
+
+* **[bgp-traceroutes](https://github.com/wires/bgp-traceroutes)** by Jelle Herold 
+
+* **[Ripe Map](https://github.com/opendatacity/ripe-map)** by Michael & Katja 
+
+* **[ZeeRover DNS](https://github.com/USC-NSL/RIPE2015HackAThon)** by Matt Clader & Ruwaifa Anwar 
+
+* **[Disco](https://github.com/merlijntishauser/ripe-hackathon-disco)** by Team Disco 
+
+* **[BGP Atlas Monitor (BAM!)](https://github.com/guedou/bam)** by Guillaume Valadon Francois Contant Mathias Handsche Thomas Holterbach
+
+* **[Probes Flowing Landscape](https://github.com/vinayakh/ripe-atlas-probedis)** Distribution of Ripe Atlas Probes by geo over time, by Vinayak Hegde
+
+* **[DistanceCheck](https://github.com/cod3monk/RIPE-OpenIPMap-distancecheck)** Distance Checking Tool for OpenIPMap Based on RIPE Atlas Traceroute Data
+
+* **[CLI traceroute](https://github.com/emileaben/cmdline-atlas-trace)** Do RIPE Atlas traceroutes on the commandline
+
+OTHER Tools 
 
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
@@ -49,3 +84,10 @@ find here, there are other independently hosted projects available as well:
 * **[Connection Streaming](https://github.com/astrikos/atlas-connections-stream)** RIPE ATLAS connection stream simple visualization
 
 * **[IXP Country Jedi](https://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
+
+* **[SrikanthKS/VisualTrace](https://github.com/SrikanthKS/VisualTrace)** Web based Visual traceroute is an application which plots live traceroute command on Google maps. Our application gets the source and destination from user and submits the traceroute request to a third party internet measurement service, RIPE Atlas REST
+
+* **[WebGL](https://github.com/danielquinn/RIPE-Atlas-WebGL-Globe-Prototype)**
+Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
+
+* **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
