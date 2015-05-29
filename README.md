@@ -62,8 +62,8 @@ OTHER Tools
 * **[Sagan](https://github.com/RIPE-NCC/ripe.atlas.sagan)**: A parsing library
   for RIPE Atlas measurement results, actively maintained by the RIPE Atlas team.
 
-* **[USC-NSL's RIPE Atlas applications](https://github.com/USC-NSL/ripe-atlas)**:
-  A set of client applications for issuing measurements to the RIPE Atlas network
+* **[USC-NSL's RIPE Atlas scripts](https://github.com/USC-NSL/ripe-atlas)**:
+  Python command-line scripts and library for issuing measurements to the RIPE Atlas network.
 
 * **[GoogleEarth visualizaiton for RIPE Atlas traceroutes](https://github.com/mathias4github/ripe-atlas-traceroute2kml)** 
   A Python script which reads results from RIPE Atlas traceroute measurements (both IPv4 and IPv6) and generates a *.kml file.
