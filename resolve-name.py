@@ -197,6 +197,8 @@ for result in results:
             if only_one_per_probe:
                 break
     elif result.has_key("result"):
+            # TODO: timeouts (and may be other errors) return the same
+            # empty set, we should analyze more deeply.
             try:
                 answer = result['result']['abuf'] + "=="
                 content = base64.b64decode(answer)
