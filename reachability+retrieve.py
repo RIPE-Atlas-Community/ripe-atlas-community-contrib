@@ -32,6 +32,8 @@ verbose = False
 requested = 5 # Probes
 tests = 3 # ICMP packets per probe
 percentage_required = 0.9
+exclude = None
+include = None
 
 def is_ip_address(str):
     try:
@@ -54,14 +56,17 @@ def usage(msg=None):
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
+    --include TAGS or -i TAGS : limits the measurements to probes with these tags (a comma-separated list)
+    --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
     --requested=N or -r N : requests N probes (default is %s)
     --tests=N or -t N : send N ICMP packets from each probe (default is %s)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=",
+                                "exclude=", "include=",
                                 "tests=", "verbose", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
@@ -78,6 +83,10 @@ try:
             requested = int(value)
         elif option == "--tests" or option == "-t":
             tests = int(value)
+        elif option == "--exclude" or option == "-e":
+            exclude = string.split(value, ",")
+        elif option == "--include" or option == "-i":
+            include = string.split(value, ",")
         elif option == "--verbose" or option == "-v":
             verbose = True
         elif option == "--help" or option == "-h":
@@ -135,7 +144,12 @@ elif prefix is not None:
 else:
     data["probes"][0]["type"] = "area"
     data["probes"][0]["value"] = "WW"
-    
+if include is not None or exclude is not None:
+    data["probes"][0]["tags"] = {}
+if include is not None:
+    data["probes"][0]["tags"]["include"] = include
+if exclude is not None:
+    data["probes"][0]["tags"]["exclude"] = exclude
 if string.find(target, ':') > -1:
     af = 6
 else:
