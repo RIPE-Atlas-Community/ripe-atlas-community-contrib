@@ -27,6 +27,7 @@ import RIPEAtlas
 country = None # World-wide
 asn = None # All
 area = None # World-wide
+prefix = None # All
 verbose = False
 requested = 5 # Probes
 tests = 3 # ICMP packets per probe
@@ -52,14 +53,15 @@ def usage(msg=None):
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
+    --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
     --requested=N or -r N : requests N probes (default is %s)
     --tests=N or -t N : send N ICMP packets from each probe (default is %s)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vh",
-                               ["requested=", "country=", "area=", "asn=", "percentage=",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:",
+                               ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=",
                                 "tests=", "verbose", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
@@ -68,6 +70,8 @@ try:
             area = value
         elif option == "--asn" or option == "-n":
             asn = value
+        elif option == "--prefix" or option == "-f":
+            prefix = value
         elif option == "--percentage" or option == "-p":
             percentage_required = float(value)
         elif option == "--requested" or option == "-r":
@@ -101,26 +105,33 @@ data = { "definitions": [
          "probes": [
              { "requested": requested} ] }
 if country is not None:
-    if asn is not None or area is not None:
-        usage("Specify country *or* area *or* ASn")
+    if asn is not None or area is not None or prefix is not None:
+        usage("Specify country *or* area *or* ASn *or* prefix")
         sys.exit(1)
     data["probes"][0]["type"] = "country"
     data["probes"][0]["value"] = country
     data["definitions"][0]["description"] += (" from %s" % country)
 elif area is not None:
         if asn is not None or country is not None:
-            usage("Specify country *or* area *or* ASn")
+            usage("Specify country *or* area *or* ASn *or* prefix")
             sys.exit(1)
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = area
         data["definitions"][0]["description"] += (" from %s" % area)
 elif asn is not None:
         if area is not None or country is not None:
-            usage("Specify country *or* area *or* ASn")
+            usage("Specify country *or* area *or* ASn *or* prefix")
             sys.exit(1)
         data["probes"][0]["type"] = "asn"
         data["probes"][0]["value"] = asn
         data["definitions"][0]["description"] += (" from AS #%s" % asn)
+elif prefix is not None:
+        if area is not None or country is not None or asn is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
+            sys.exit(1)
+        data["probes"][0]["type"] = "prefix"
+        data["probes"][0]["value"] = prefix
+        data["definitions"][0]["description"] += (" from prefix %s" % prefix)
 else:
     data["probes"][0]["type"] = "area"
     data["probes"][0]["value"] = "WW"
