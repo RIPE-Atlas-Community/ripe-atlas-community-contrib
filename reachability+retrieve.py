@@ -20,6 +20,7 @@ import sys
 import time
 import getopt
 import socket
+import collections
 
 import RIPEAtlas
 
@@ -34,7 +35,12 @@ tests = 3 # ICMP packets per probe
 percentage_required = 0.9
 exclude = None
 include = None
+display_probes = False
 
+class Set():
+    def __init__(self):
+        self.failed = True
+        
 def is_ip_address(str):
     try:
         addr = socket.inet_pton(socket.AF_INET6, str)
@@ -52,7 +58,8 @@ def usage(msg=None):
     print >>sys.stderr, """Options are:
     --verbose or -v : makes the program more talkative
     --help or -h : this message
-    --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
+    --displayprobes or -o : display the failing probes numbers (WARNING: may create a big list)
+     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
@@ -64,10 +71,10 @@ def usage(msg=None):
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:o",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=",
                                 "exclude=", "include=",
-                                "tests=", "verbose", "help"])
+                                "tests=", "verbose", "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -89,6 +96,8 @@ try:
             include = string.split(value, ",")
         elif option == "--verbose" or option == "-v":
             verbose = True
+        elif option == "--displayprobes" or option == "-o":
+            display_probes = True
         elif option == "--help" or option == "-h":
             usage()
             sys.exit(0)
@@ -172,12 +181,17 @@ num_error = 0
 num_timeout = 0
 num_tests = 0
 print("%s probes reported" % len(rdata))
+if display_probes:
+    failed_probes = collections.defaultdict(Set)
 for result in rdata:
+    probe_ok = False
+    probe = result["prb_id"]
     for test in result["result"]:
         num_tests += 1
         if test.has_key("rtt"):
             total_rtt += int(test["rtt"])
             num_rtt += 1
+            probe_ok = True
         elif test.has_key("error"):
             num_error += 1
         elif test.has_key("x"):
@@ -185,6 +199,8 @@ for result in rdata:
         else:
             print >>sys.stderr, ("Result has no field rtt, or x or error")
             sys.exit(1)
+    if display_probes and not probe_ok:
+        failed_probes[probe].failed = True
 print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
 if num_rtt == 0:
     print("No successful test")
@@ -193,3 +209,5 @@ else:
           (num_rtt, num_rtt*100.0/num_tests, 
            num_error, num_error*100.0/num_tests, 
            num_timeout, num_timeout*100.0/num_tests, total_rtt/num_rtt))
+if display_probes:
+    print failed_probes.keys()
