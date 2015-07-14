@@ -33,6 +33,7 @@ verbose = False
 requested = 5 # Probes
 tests = 3 # ICMP packets per probe
 percentage_required = 0.9
+the_probes = None
 exclude = None
 include = None
 display_probes = False
@@ -62,6 +63,7 @@ def usage(msg=None):
      --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
+    --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
     --include TAGS or -i TAGS : limits the measurements to probes with these tags (a comma-separated list)
     --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
@@ -71,8 +73,8 @@ def usage(msg=None):
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:o",
-                               ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:os:",
+                               ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
                                 "exclude=", "include=",
                                 "tests=", "verbose", "displayprobes", "help"])
     for option, value in optlist:
@@ -86,6 +88,8 @@ try:
             prefix = value
         elif option == "--percentage" or option == "-p":
             percentage_required = float(value)
+        elif option == "--probes" or option == "-s":
+            the_probes = value # Splitting (and syntax checking...) delegated to Atlas
         elif option == "--requested" or option == "-r":
             requested = int(value)
         elif option == "--tests" or option == "-t":
@@ -117,42 +121,51 @@ if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
 
+if the_probes is not None:
+    requested = len(string.split(the_probes,","))
 data = { "definitions": [
            { "target": target, "description": "Ping %s" % target,
            "type": "ping", "is_oneoff": True, "packets": tests} ],
          "probes": [
              { "requested": requested} ] }
-if country is not None:
-    if asn is not None or area is not None or prefix is not None:
-        usage("Specify country *or* area *or* ASn *or* prefix")
+if the_probes is not None:
+    if country is not None or area is not None or asn is not None:
+        usage("Specify the probes ID *or* country *or* area *or* ASn")
         sys.exit(1)
-    data["probes"][0]["type"] = "country"
-    data["probes"][0]["value"] = country
-    data["definitions"][0]["description"] += (" from %s" % country)
-elif area is not None:
-        if asn is not None or country is not None:
-            usage("Specify country *or* area *or* ASn *or* prefix")
-            sys.exit(1)
-        data["probes"][0]["type"] = "area"
-        data["probes"][0]["value"] = area
-        data["definitions"][0]["description"] += (" from %s" % area)
-elif asn is not None:
-        if area is not None or country is not None:
-            usage("Specify country *or* area *or* ASn *or* prefix")
-            sys.exit(1)
-        data["probes"][0]["type"] = "asn"
-        data["probes"][0]["value"] = asn
-        data["definitions"][0]["description"] += (" from AS #%s" % asn)
-elif prefix is not None:
-        if area is not None or country is not None or asn is not None:
-            usage("Specify country *or* area *or* ASn *or* prefix")
-            sys.exit(1)
-        data["probes"][0]["type"] = "prefix"
-        data["probes"][0]["value"] = prefix
-        data["definitions"][0]["description"] += (" from prefix %s" % prefix)
+    data["probes"][0]["type"] = "probes"
+    data["probes"][0]["value"] = the_probes
 else:
-    data["probes"][0]["type"] = "area"
-    data["probes"][0]["value"] = "WW"
+    if country is not None:
+        if asn is not None or area is not None or prefix is not None:
+            usage("Specify country *or* area *or* ASn *or* prefix")
+            sys.exit(1)
+        data["probes"][0]["type"] = "country"
+        data["probes"][0]["value"] = country
+        data["definitions"][0]["description"] += (" from %s" % country)
+    elif area is not None:
+            if asn is not None or country is not None:
+                usage("Specify country *or* area *or* ASn *or* prefix")
+                sys.exit(1)
+            data["probes"][0]["type"] = "area"
+            data["probes"][0]["value"] = area
+            data["definitions"][0]["description"] += (" from %s" % area)
+    elif asn is not None:
+            if area is not None or country is not None:
+                usage("Specify country *or* area *or* ASn *or* prefix")
+                sys.exit(1)
+            data["probes"][0]["type"] = "asn"
+            data["probes"][0]["value"] = asn
+            data["definitions"][0]["description"] += (" from AS #%s" % asn)
+    elif prefix is not None:
+            if area is not None or country is not None or asn is not None:
+                usage("Specify country *or* area *or* ASn *or* prefix")
+                sys.exit(1)
+            data["probes"][0]["type"] = "prefix"
+            data["probes"][0]["value"] = prefix
+            data["definitions"][0]["description"] += (" from prefix %s" % prefix)
+    else:
+        data["probes"][0]["type"] = "area"
+        data["probes"][0]["value"] = "WW"
 if include is not None or exclude is not None:
     data["probes"][0]["tags"] = {}
 if include is not None:
