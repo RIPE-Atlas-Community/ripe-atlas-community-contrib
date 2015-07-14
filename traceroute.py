@@ -60,6 +60,7 @@ def usage(msg=None):
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --old_measurement MSMID or - o MSMID : uses the probes of measurement #MSMID
     --requested=N or -r N : requests N probes (default is %s)
+    --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
     """ % (requested, percentage_required)
 
@@ -110,6 +111,8 @@ if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
 
+if the_probes is not None:
+    requested = len(string.split(the_probes,","))
 data = { "definitions": [
            { "target": target, "description": "Traceroute %s" % target,
            "type": "traceroute", "is_oneoff": True, "protocol": protocol} ],
