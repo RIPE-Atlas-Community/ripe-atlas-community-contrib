@@ -28,6 +28,7 @@ selection = "area"
 query = "fr"
 qtype = "SOA"
 num_probes = 500
+one_area = False
 
 # Parameters
 descr =  "Check identity of %s anycast instance"
@@ -53,8 +54,9 @@ def usage(msg=None):
         print >>sys.stderr, msg
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "46q:t:n:l:h",
-                               ["list_probes=", "type=", "number=", 
+    optlist, args = getopt.getopt (sys.argv[1:], "46q:t:n:l:ho",
+                               ["list_probes=", "type=", "number=",
+                                "one_area",
                                 "query=", "help"])
     for option, value in optlist:
         if option == "--help" or option == "-h":
@@ -65,6 +67,8 @@ try:
             selection = "list"
         elif option == "--query" or option == "-q":
             query = value
+        elif option == "--one_area" or option == "-o":
+            one_area = True
         elif option == "--type" or option == "-t":
             qtype = value
         elif option == "--number" or option == "-n":
@@ -105,7 +109,11 @@ auth.close()
 url = "https://atlas.ripe.net/api/v1/measurement/?key=%s" % key
 
 if selection == "area":
-    for area in ["WW", "West", "North-East", "South-East", "North-Central", "South-Central"]:
+    if one_area:
+        list_areas = ["WW", ]
+    else:
+        list_areas = ["WW", "West", "North-East", "South-East", "North-Central", "South-Central"]
+    for area in list_areas:
         data["probes"][0]["value"] = area
         json_data = json.dumps(data)
         try:
