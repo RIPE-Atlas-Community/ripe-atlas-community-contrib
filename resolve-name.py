@@ -36,6 +36,7 @@ requested = 500
 qtype = 'A'
 measurement_id = None
 display_probes = False
+display_resolvers = False
 nameserver = None
 sort = False
 only_one_per_probe = True
@@ -54,6 +55,8 @@ def usage(msg=None):
     --help or -h : this message
     --verbose or -v : more talkative
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
+    --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
+    --sort or -s : sort the result sets
     --type or -t : query type (default is %s)
     --ipv6 or -6 : contact only the IPv6 probes (do not affect the selection of the DNS resolvers)
     --severalperprobe or -p : count all the resolvers of each probe (default is to count only the first to reply)
@@ -68,8 +71,8 @@ def usage(msg=None):
     """ % (qtype, requested)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:sp6u:f:v",
-                               ["requested=", "type=", "displayprobes", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:sp6u:f:vl",
+                               ["requested=", "type=", "displayprobes", "displayresolvers", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
@@ -97,6 +100,8 @@ try:
             sys.exit(0)
         elif option == "--displayprobes" or option == "-o":
             display_probes = True
+        elif option == "--displayresolvers" or option == "-l":
+            display_resolvers = True
         elif option == "--severalperprobe" or option == "-p":
             only_one_per_probe = False
         elif option == "--ipv6" or option == "-6":
@@ -194,6 +199,8 @@ qtype_num = dns.rdatatype.from_text(qtype) # Raises dns.rdatatype.UnknownRdataty
 sets = collections.defaultdict(Set)
 if display_probes:
     probes_sets = collections.defaultdict(Set)
+if display_resolvers:
+    resolvers_sets = collections.defaultdict(Set)
 for result in results:
     probes += 1
     probe_id = result["prb_id"]
@@ -201,6 +208,7 @@ for result in results:
         for result_i in result['resultset']:
             if result_i.has_key("result"):
                 try:
+                    resolver = str(result_i["dst_addr"])
                     answer = result_i['result']['abuf'] + "=="
                     content = base64.b64decode(answer)
                     msg = dns.message.from_wire(content)
@@ -221,6 +229,12 @@ for result in results:
                             probes_sets[set_str].append(probe_id)
                         else:
                             probes_sets[set_str] = [probe_id,]
+                    if display_resolvers:
+                        if resolvers_sets.has_key(set_str):
+                            if not (resolver in resolvers_sets[set_str]):
+                                resolvers_sets[set_str].append(resolver)
+                        else:
+                            resolvers_sets[set_str] = [resolver,]
                 except dns.message.TrailingJunk:
                     print "Probe %s failed (trailing junk)" % result['prb_id']
             if only_one_per_probe:
@@ -229,6 +243,7 @@ for result in results:
             # TODO: timeouts (and may be other errors) return the same
             # empty set, we should analyze more deeply.
             try:
+                resolver = str(result_i["dst_addr"])
                 answer = result['result']['abuf'] + "=="
                 content = base64.b64decode(answer)
                 msg = dns.message.from_wire(content)
@@ -249,6 +264,12 @@ for result in results:
                             probes_sets[set_str].append(probe_id)
                         else:
                             probes_sets[set_str] = [probe_id,]
+                if display_resolvers:
+                        if resolvers_sets.has_key(set_str):
+                            if not (resolver in resolvers_sets[set_str]):
+                                resolvers_sets[set_str].append(resolver)
+                        else:
+                            resolvers_sets[set_str] = [resolver,]
             except dns.message.TrailingJunk:
                 print "Probe %s failed (trailing junk)" % result['prb_id']
 if sort:
@@ -259,6 +280,8 @@ for myset in sets_data:
     detail = ""
     if display_probes:
         detail = "(probes %s)" % probes_sets[myset]
+    if display_resolvers:
+        detail += "(resolvers %s)" % resolvers_sets[myset]
     print "[%s] : %i occurrences %s" % (myset, sets[myset].total, detail)
 
 print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
