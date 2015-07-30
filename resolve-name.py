@@ -206,10 +206,13 @@ for result in results:
                     msg = dns.message.from_wire(content)
                     successes += 1
                     myset = []
-                    for rrset in msg.answer:
-                        for rdata in rrset:
-                            if rdata.rdtype == qtype_num:
-                                myset.append(string.lower(str(rdata)))
+                    if msg.rcode() == dns.rcode.NOERROR:
+                        for rrset in msg.answer:
+                            for rdata in rrset:
+                                if rdata.rdtype == qtype_num:
+                                    myset.append(string.lower(str(rdata)))
+                    else:
+                        myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
                     myset.sort()
                     set_str = " ".join(myset)
                     sets[set_str].total += 1
@@ -231,10 +234,13 @@ for result in results:
                 msg = dns.message.from_wire(content)
                 successes += 1
                 myset = []
-                for rrset in msg.answer:
-                    for rdata in rrset:
-                        if rdata.rdtype == qtype_num:
-                            myset.append(string.lower(str(rdata)))
+                if msg.rcode() == dns.rcode.NOERROR:
+                    for rrset in msg.answer:
+                        for rdata in rrset:
+                            if rdata.rdtype == qtype_num:
+                                myset.append(string.lower(str(rdata)))
+                    else:
+                        myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
                 myset.sort()
                 set_str = " ".join(myset)
                 sets[set_str].total += 1
