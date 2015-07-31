@@ -209,7 +209,7 @@ for result in results:
         for result_i in result['resultset']:
             if result_i.has_key("result"):
                 try:
-                    resolver = str(result_i["dst_addr"])
+                    resolver = str(result_i['dst_addr'])
                     answer = result_i['result']['abuf'] + "=="
                     content = base64.b64decode(answer)
                     msg = dns.message.from_wire(content)
@@ -242,7 +242,7 @@ for result in results:
                 break
     elif result.has_key("result"):
             try:
-                resolver = str(result_i["dst_addr"])
+                resolver = str(result['dst_addr'])
                 answer = result['result']['abuf'] + "=="
                 content = base64.b64decode(answer)
                 msg = dns.message.from_wire(content)
@@ -253,8 +253,8 @@ for result in results:
                         for rdata in rrset:
                             if rdata.rdtype == qtype_num:
                                 myset.append(string.lower(str(rdata)))
-                    else:
-                        myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
+                else:
+                    myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
                 myset.sort()
                 set_str = " ".join(myset)
                 sets[set_str].total += 1
