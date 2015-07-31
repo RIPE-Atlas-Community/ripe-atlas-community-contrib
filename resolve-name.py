@@ -27,6 +27,7 @@ import dns.message
 import RIPEAtlas
 
 # Default values
+# TODO: bits DO and CD, UDP payload size https://atlas.ripe.net/docs/measurement-creation-api/
 country = None # World-wide
 asn = None # All
 prefix = None # All
@@ -240,8 +241,6 @@ for result in results:
             if only_one_per_probe:
                 break
     elif result.has_key("result"):
-            # TODO: timeouts (and may be other errors) return the same
-            # empty set, we should analyze more deeply.
             try:
                 resolver = str(result_i["dst_addr"])
                 answer = result['result']['abuf'] + "=="
