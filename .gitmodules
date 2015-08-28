@@ -1,0 +1,3 @@
+[submodule "ripeatlas-probe-geoselect"]
+	path = ripeatlas-probe-geoselect
+	url = https://github.com/emileaben/ripeatlas-probe-geoselect.git
