@@ -28,6 +28,7 @@ import RIPEAtlas
 country = None # World-wide
 asn = None # All
 area = None # World-wide
+old_measurement = None
 prefix = None # All
 verbose = False
 requested = 5 # Probes
@@ -65,6 +66,7 @@ def usage(msg=None):
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
+    --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
     --include TAGS or -i TAGS : limits the measurements to probes with these tags (a comma-separated list)
     --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
     --requested=N or -r N : requests N probes (default is %s)
@@ -73,10 +75,10 @@ def usage(msg=None):
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:os:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:g:e:i:os:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
                                 "exclude=", "include=",
-                                "tests=", "verbose", "displayprobes", "help"])
+                                "tests=", "verbose", "old_measurement=", "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -98,6 +100,8 @@ try:
             exclude = string.split(value, ",")
         elif option == "--include" or option == "-i":
             include = string.split(value, ",")
+        elif option == "--old_measurement" or option == "-g":
+            old_measurement = value
         elif option == "--verbose" or option == "-v":
             verbose = True
         elif option == "--displayprobes" or option == "-o":
@@ -163,6 +167,17 @@ else:
             data["probes"][0]["type"] = "prefix"
             data["probes"][0]["value"] = prefix
             data["definitions"][0]["description"] += (" from prefix %s" % prefix)
+    elif old_measurement is not None:
+            if area is not None or country is not None or asn is not None:
+                usage("Specify country *or* area *or* ASn *or* old measurement")
+                sys.exit(1)
+            data["probes"][0]["requested"] = 500 # Dummy value, anyway,
+                                                    # but necessary to get
+                                                    # all the probes
+            # TODO: the huge value of "requested" makes us wait a very long time
+            data["probes"][0]["type"] = "msm"
+            data["probes"][0]["value"] = old_measurement
+            data["definitions"][0]["description"] += (" from probes of measurement #%s" % old_measurement)
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"

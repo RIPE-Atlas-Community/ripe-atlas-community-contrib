@@ -32,6 +32,7 @@ country = None # World-wide
 asn = None # All
 prefix = None # All
 area = None # World-wide
+old_measurement = None
 probe_to_use = None
 requested = 500
 qtype = 'A'
@@ -67,13 +68,14 @@ def usage(msg=None):
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probetouse or -u N : uses only this probe
+    --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
     --measurement-ID=N or -m N : do not start a measurement, just analyze a former one
     --nameserver=IPaddr or -e IPaddr : query this name server (default is to query the probe's resolver)
     """ % (qtype, requested)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:sp6u:f:vl",
-                               ["requested=", "type=", "displayprobes", "displayresolvers", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:g:sp6u:f:vl",
+                               ["requested=", "type=", "old_measurement=", "displayprobes", "displayresolvers", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
@@ -90,6 +92,8 @@ try:
             requested = int(value)
         elif option == "--sort" or option == "-s":
             sort = True
+        elif option == "--old_measurement" or option == "-g":
+            old_measurement = value
         elif option == "--measurement-ID" or option == "-m":
             measurement_id = value
         elif option == "--probetouse" or option == "-u":
@@ -168,6 +172,17 @@ if measurement_id is None:
             data["probes"][0]["type"] = "prefix"
             data["probes"][0]["value"] = prefix
             data["definitions"][0]["description"] += (" from prefix %s" % prefix)
+        elif old_measurement is not None:
+            if area is not None or country is not None or asn is not None:
+                usage("Specify country *or* area *or* ASn *or* old measurement")
+                sys.exit(1)
+            data["probes"][0]["requested"] = 500 # Dummy value, anyway,
+                                                    # but necessary to get
+                                                    # all the probes
+            # TODO: the huge value of "requested" makes us wait a very long time
+            data["probes"][0]["type"] = "msm"
+            data["probes"][0]["value"] = old_measurement
+            data["definitions"][0]["description"] += (" from probes of measurement #%s" % old_measurement)
         else:
             data["probes"][0]["type"] = "area"
             data["probes"][0]["value"] = "WW"
