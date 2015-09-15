@@ -7,7 +7,7 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
-Created during Hackathon in March 2015: 
+Created during [Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackathon-results) in March 2015: 
 
 * **[Traceroute consistency check](https://github.com/vdidonato/Traceroute-consistency-check)** by Valentino
 
