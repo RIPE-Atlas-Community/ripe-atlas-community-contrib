@@ -39,6 +39,7 @@ qtype = 'A'
 measurement_id = None
 display_probes = False
 display_resolvers = False
+machine_readable = False
 nameserver = None
 sort = False
 only_one_per_probe = True
@@ -56,6 +57,7 @@ def usage(msg=None):
     print >>sys.stderr, """Options are:
     --help or -h : this message
     --verbose or -v : more talkative
+    --machinereadable or -b : machine-readable output, to be consumed by tools like grep or cut
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
     --sort or -s : sort the result sets
@@ -74,9 +76,9 @@ def usage(msg=None):
     """ % (qtype, requested)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:g:sp6u:f:vl",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:g:sp6u:f:vbl",
                                ["requested=", "type=", "old_measurement=", "displayprobes", "displayresolvers", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
-                                "sort", "help", "severalperprobe", "ipv6", "verbose"])
+                                "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
             qtype = value
@@ -113,6 +115,8 @@ try:
             ip_family = 6
         elif option == "--verbose" or option == "-v":
             verbose = True
+        elif option == "--machinereadable" or option == "-b":
+            machine_readable = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -191,6 +195,12 @@ if measurement_id is None:
     else:
         data["definitions"][0]["use_probe_resolver"] = False
         data["definitions"][0]["target"] = nameserver
+    if verbose and machine_readable:
+        usage("Specify verbose *or* machine-readable output")
+        sys.exit(1)
+    if (display_probes or display_resolvers) and machine_readable:
+        usage("Display probes/resolvers *or* machine-readable output")
+        sys.exit(1)
         
     if verbose:
         print data
@@ -199,8 +209,9 @@ if measurement_id is None:
                                         lambda delay: sys.stderr.write(
             "Sleeping %i seconds...\n" % delay))
 
-    print "Measurement #%s for %s/%s uses %i probes" % \
-      (measurement.id, domainname, qtype, measurement.num_probes)
+    if not machine_readable:
+        print "Measurement #%s for %s/%s uses %i probes" % \
+        (measurement.id, domainname, qtype, measurement.num_probes)
 
     measurement_id = measurement.id
     results = measurement.results(wait=True)
@@ -252,7 +263,8 @@ for result in results:
                         else:
                             resolvers_sets[set_str] = [resolver,]
                 except dns.message.TrailingJunk:
-                    print "Probe %s failed (trailing junk)" % result['prb_id']
+                    if not machine_readable:
+                        print "Probe %s failed (trailing junk)" % result['prb_id']
             if only_one_per_probe:
                 break
     elif result.has_key("result"):
@@ -285,18 +297,27 @@ for result in results:
                         else:
                             resolvers_sets[set_str] = [resolver,]
             except dns.message.TrailingJunk:
-                print "Probe %s failed (trailing junk)" % result['prb_id']
+                if not machine_readable:
+                    print "Probe %s failed (trailing junk)" % result['prb_id']
 if sort:
     sets_data = sorted(sets, key=lambda s: sets[s].total, reverse=True)
 else:
     sets_data = sets
+details = []
 for myset in sets_data:
     detail = ""
     if display_probes:
         detail = "(probes %s)" % probes_sets[myset]
     if display_resolvers:
         detail += "(resolvers %s)" % resolvers_sets[myset]
-    print "[%s] : %i occurrences %s" % (myset, sets[myset].total, detail)
-
-print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
-print ""
+    if not machine_readable:
+        print "[%s] : %i occurrences %s" % (myset, sets[myset].total, detail)
+    else:
+        details.append("[%s];%i" % (myset, sets[myset].total))
+            
+if not machine_readable:
+    print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    print ""
+else:
+    print ",".join([domainname, qtype, str(measurement.id), "%s/%s" % (len(results), measurement.num_probes), \
+                    time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())] + details)
