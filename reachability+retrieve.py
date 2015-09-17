@@ -28,6 +28,7 @@ import RIPEAtlas
 country = None # World-wide
 asn = None # All
 area = None # World-wide
+old_measurement = None
 prefix = None # All
 verbose = False
 requested = 5 # Probes
@@ -37,6 +38,7 @@ the_probes = None
 exclude = None
 include = None
 display_probes = False
+machine_readable = False
 
 class Set():
     def __init__(self):
@@ -55,9 +57,10 @@ def is_ip_address(str):
 def usage(msg=None):
     if msg:
         print >>sys.stderr, msg
-    print >>sys.stderr, "Usage: %s target-IP-address" % sys.argv[0]
+    print >>sys.stderr, "Usage: %s target-IP-address ..." % sys.argv[0]
     print >>sys.stderr, """Options are:
     --verbose or -v : makes the program more talkative
+    --machinereadable or -b : machine-readable output, to be consumed by tools like grep or cut
     --help or -h : this message
     --displayprobes or -o : display the failing probes numbers (WARNING: may create a big list)
      --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
@@ -65,6 +68,7 @@ def usage(msg=None):
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
+    --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
     --include TAGS or -i TAGS : limits the measurements to probes with these tags (a comma-separated list)
     --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
     --requested=N or -r N : requests N probes (default is %s)
@@ -73,10 +77,10 @@ def usage(msg=None):
     """ % (requested, tests, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vhf:e:i:os:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vbhf:g:e:i:os:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
                                 "exclude=", "include=",
-                                "tests=", "verbose", "displayprobes", "help"])
+                                "tests=", "verbose", "machine_readable", "old_measurement=", "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -98,8 +102,12 @@ try:
             exclude = string.split(value, ",")
         elif option == "--include" or option == "-i":
             include = string.split(value, ",")
+        elif option == "--old_measurement" or option == "-g":
+            old_measurement = value
         elif option == "--verbose" or option == "-v":
             verbose = True
+        elif option == "--machinereadable" or option == "-b":
+            machine_readable = True
         elif option == "--displayprobes" or option == "-o":
             display_probes = True
         elif option == "--help" or option == "-h":
@@ -113,21 +121,26 @@ except getopt.error, reason:
     usage(reason)
     sys.exit(1)
 
-if len(args) != 1:
-    usage()
-    sys.exit(1)
-target = args[0]
-if not is_ip_address(target):
-    print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
-    sys.exit(1)
+targets = args
 
 if the_probes is not None:
     requested = len(string.split(the_probes,","))
+if verbose and machine_readable:
+    usage("Specify verbose *or* machine-readable output")
+    sys.exit(1)
+if display_probes and machine_readable:
+    usage("Display probes *or* machine-readable output")
+    sys.exit(1)
 data = { "definitions": [
-           { "target": target, "description": "Ping %s" % target,
-           "type": "ping", "is_oneoff": True, "packets": tests} ],
+           { "type": "ping", "is_oneoff": True, "packets": tests} ],
          "probes": [
              { "requested": requested} ] }
+if include is not None or exclude is not None:
+    data["probes"][0]["tags"] = {}
+if include is not None:
+    data["probes"][0]["tags"]["include"] = include
+if exclude is not None:
+    data["probes"][0]["tags"]["exclude"] = exclude
 if the_probes is not None:
     if country is not None or area is not None or asn is not None:
         usage("Specify the probes ID *or* country *or* area *or* ASn")
@@ -163,64 +176,89 @@ else:
             data["probes"][0]["type"] = "prefix"
             data["probes"][0]["value"] = prefix
             data["definitions"][0]["description"] += (" from prefix %s" % prefix)
+    elif old_measurement is not None:
+            if area is not None or country is not None or asn is not None:
+                usage("Specify country *or* area *or* ASn *or* old measurement")
+                sys.exit(1)
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
-if include is not None or exclude is not None:
-    data["probes"][0]["tags"] = {}
-if include is not None:
-    data["probes"][0]["tags"]["include"] = include
-if exclude is not None:
-    data["probes"][0]["tags"]["exclude"] = exclude
-if string.find(target, ':') > -1:
-    af = 6
-else:
-    af = 4
-data["definitions"][0]['af'] = af
-if verbose:
-    print data
-    
-measurement = RIPEAtlas.Measurement(data)
-if verbose:
-        print "Measurement #%s to %s uses %i probes" % (measurement.id, target,
-                                                    measurement.num_probes)
 
-# Retrieve the results
-rdata = measurement.results(wait=True, percentage_required=percentage_required)
+for target in targets:
+    if not is_ip_address(target):
+        print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
+        sys.exit(1)
+    data["definitions"][0]["target"] = target
+    data["definitions"][0]["description"] = "Ping %s" % target
+    if string.find(target, ':') > -1:
+        af = 6
+    else:
+        af = 4
+    data["definitions"][0]['af'] = af
+    if old_measurement is not None:
+            data["probes"][0]["requested"] = 500 # Dummy value, anyway,
+                                                    # but necessary to get
+                                                    # all the probes
+            # TODO: the huge value of "requested" makes us wait a very long time
+            data["probes"][0]["type"] = "msm"
+            data["probes"][0]["value"] = old_measurement
+            data["definitions"][0]["description"] += (" from probes of measurement #%s" % old_measurement)
+    if verbose:
+        print data
+    measurement = RIPEAtlas.Measurement(data)
+    if old_measurement is None:
+        old_measurement = measurement.id
+    if verbose:
+            print "Measurement #%s to %s uses %i probes" % (measurement.id, target,
+                                                        measurement.num_probes)
 
-total_rtt = 0
-num_rtt = 0
-num_error = 0
-num_timeout = 0
-num_tests = 0
-print("%s probes reported" % len(rdata))
-if display_probes:
-    failed_probes = collections.defaultdict(Set)
-for result in rdata:
-    probe_ok = False
-    probe = result["prb_id"]
-    for test in result["result"]:
-        num_tests += 1
-        if test.has_key("rtt"):
-            total_rtt += int(test["rtt"])
-            num_rtt += 1
-            probe_ok = True
-        elif test.has_key("error"):
-            num_error += 1
-        elif test.has_key("x"):
-            num_timeout += 1
-        else:
-            print >>sys.stderr, ("Result has no field rtt, or x or error")
-            sys.exit(1)
-    if display_probes and not probe_ok:
-        failed_probes[probe].failed = True
-print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
-if num_rtt == 0:
-    print("No successful test")
-else:
-    print("Tests: %i successful tests (%.1f %%), %i errors (%.1f %%), %i timeouts (%.1f %%), average RTT: %i ms" % \
-          (num_rtt, num_rtt*100.0/num_tests, 
-           num_error, num_error*100.0/num_tests, 
-           num_timeout, num_timeout*100.0/num_tests, total_rtt/num_rtt))
-if display_probes:
-    print failed_probes.keys()
+    # Retrieve the results
+    rdata = measurement.results(wait=True, percentage_required=percentage_required)
+
+    total_rtt = 0
+    num_rtt = 0
+    num_error = 0
+    num_timeout = 0
+    num_tests = 0
+    if not machine_readable:
+        print("%s probes reported" % len(rdata))
+    if display_probes:
+        failed_probes = collections.defaultdict(Set)
+    for result in rdata:
+        probe_ok = False
+        probe = result["prb_id"]
+        for test in result["result"]:
+            num_tests += 1
+            if test.has_key("rtt"):
+                total_rtt += int(test["rtt"])
+                num_rtt += 1
+                probe_ok = True
+            elif test.has_key("error"):
+                num_error += 1
+            elif test.has_key("x"):
+                num_timeout += 1
+            else:
+                print >>sys.stderr, ("Result has no field rtt, or x or error")
+                sys.exit(1)
+        if display_probes and not probe_ok:
+            failed_probes[probe].failed = True
+    if not machine_readable:
+        print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    if num_rtt == 0:
+        if not machine_readable:
+            print("No successful test")
+    else:
+        if not machine_readable:
+            print("Tests: %i successful tests (%.1f %%), %i errors (%.1f %%), %i timeouts (%.1f %%), average RTT: %i ms" % \
+                (num_rtt, num_rtt*100.0/num_tests, 
+                num_error, num_error*100.0/num_tests, 
+                num_timeout, num_timeout*100.0/num_tests, total_rtt/num_rtt))
+    if len(targets) > 1 and not machine_readable:
+        print ""
+    if display_probes:
+        print failed_probes.keys()
+    if machine_readable:
+        print ",".join([target, str(measurement.id), "%s/%s" % (len(rdata),measurement.num_probes), \
+                        time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "%i" % num_rtt, \
+                        "%.1f" % (num_rtt*100.0/num_tests), "%i" % num_error, "%.1f" % (num_error*100.0/num_tests), \
+                        "%i" % num_timeout, "%.1f" % (num_timeout*100.0/num_tests), "%i" % (total_rtt/num_rtt)])
