@@ -132,7 +132,7 @@ if display_probes and machine_readable:
     usage("Display probes *or* machine-readable output")
     sys.exit(1)
 data = { "definitions": [
-           { "type": "ping", "is_oneoff": True, "packets": tests} ],
+           { "type": "ping", "is_oneoff": True, "packets": tests, "description": ""} ],
          "probes": [
              { "requested": requested} ] }
 if include is not None or exclude is not None:
