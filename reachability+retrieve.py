@@ -132,7 +132,7 @@ if display_probes and machine_readable:
     usage("Display probes *or* machine-readable output")
     sys.exit(1)
 data = { "definitions": [
-           { "type": "ping", "is_oneoff": True, "packets": tests, "description": ""} ],
+           { "type": "ping", "is_oneoff": True, "packets": tests} ],
          "probes": [
              { "requested": requested} ] }
 if include is not None or exclude is not None:
@@ -154,28 +154,24 @@ else:
             sys.exit(1)
         data["probes"][0]["type"] = "country"
         data["probes"][0]["value"] = country
-        data["definitions"][0]["description"] += (" from %s" % country)
     elif area is not None:
             if asn is not None or country is not None:
                 usage("Specify country *or* area *or* ASn *or* prefix")
                 sys.exit(1)
             data["probes"][0]["type"] = "area"
             data["probes"][0]["value"] = area
-            data["definitions"][0]["description"] += (" from %s" % area)
     elif asn is not None:
             if area is not None or country is not None:
                 usage("Specify country *or* area *or* ASn *or* prefix")
                 sys.exit(1)
             data["probes"][0]["type"] = "asn"
             data["probes"][0]["value"] = asn
-            data["definitions"][0]["description"] += (" from AS #%s" % asn)
     elif prefix is not None:
             if area is not None or country is not None or asn is not None:
                 usage("Specify country *or* area *or* ASn *or* prefix")
                 sys.exit(1)
             data["probes"][0]["type"] = "prefix"
             data["probes"][0]["value"] = prefix
-            data["definitions"][0]["description"] += (" from prefix %s" % prefix)
     elif old_measurement is not None:
             if area is not None or country is not None or asn is not None:
                 usage("Specify country *or* area *or* ASn *or* old measurement")
@@ -190,6 +186,14 @@ for target in targets:
         sys.exit(1)
     data["definitions"][0]["target"] = target
     data["definitions"][0]["description"] = "Ping %s" % target
+    if country is not None:
+        data["definitions"][0]["description"] += (" from %s" % country)
+    if area is not None:
+        data["definitions"][0]["description"] += (" from %s" % area)
+    if asn is not None:
+        data["definitions"][0]["description"] += (" from AS #%s" % asn)
+    if prefix is not None:
+        data["definitions"][0]["description"] += (" from prefix %s" % prefix)
     if string.find(target, ':') > -1:
         af = 6
     else:
