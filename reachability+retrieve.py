@@ -80,7 +80,7 @@ try:
     optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vbhf:g:e:i:os:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
                                 "exclude=", "include=",
-                                "tests=", "verbose", "machine_readable", "old_measurement=", "displayprobes", "help"])
+                                "tests=", "verbose", "machinereadable", "old_measurement=", "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -262,7 +262,11 @@ for target in targets:
     if display_probes:
         print failed_probes.keys()
     if machine_readable:
+        if num_rtt != 0:
+            percent_rtt = total_rtt/num_rtt
+        else:
+            percent_rtt = 0
         print ",".join([target, str(measurement.id), "%s/%s" % (len(rdata),measurement.num_probes), \
                         time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "%i" % num_rtt, \
                         "%.1f" % (num_rtt*100.0/num_tests), "%i" % num_error, "%.1f" % (num_error*100.0/num_tests), \
-                        "%i" % num_timeout, "%.1f" % (num_timeout*100.0/num_tests), "%i" % (total_rtt/num_rtt)])
+                        "%i" % num_timeout, "%.1f" % (num_timeout*100.0/num_tests), "%i" % (percent_rtt)])
