@@ -216,6 +216,7 @@ for result in results:
                     successes += 1
                     myset = []
                     if msg.rcode() == dns.rcode.NOERROR:
+                        # TODO handle the NODATA (NOERROR/ANSWER=0) case better than just having an empty myset?
                         for rrset in msg.answer:
                             for rdata in rrset:
                                 if rdata.rdtype == qtype_num:
@@ -249,6 +250,7 @@ for result in results:
                 successes += 1
                 myset = []
                 if msg.rcode() == dns.rcode.NOERROR:
+                    # TODO handle the NODATA (NOERROR/ANSWER=0) case differently?
                     for rrset in msg.answer:
                         for rdata in rrset:
                             if rdata.rdtype == qtype_num:
