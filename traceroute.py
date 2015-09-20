@@ -221,6 +221,8 @@ if format: # Code stolen from json2traceroute.py
                             rtt.append(hr["error"])
                         elif "x" in hr:
                             rtt.append(hr["x"])
+                        elif "edst" in hr:
+                            rtt.append("!")
                         else:
                             rtt.append(hr["rtt"])
                             hopfrom = hr["from"]
