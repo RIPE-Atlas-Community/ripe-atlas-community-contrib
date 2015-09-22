@@ -96,6 +96,11 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[IXP-country Jedi](http://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
 
+* **[OpenIPmap](https://github.com/RIPE-Atlas-Community/openipmap)** Geolocating Internet infrastructure by crowdsourcing
+
+* **[Datacenter latency map](https://github.com/RIPE-Atlas-Community/datacentre-latency-map) 
+* 
+
 
  
 
