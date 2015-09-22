@@ -106,7 +106,7 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
 
-* **[Interference](nsg-ethz/atlas_interference) Quantifying interference between measurements on the RIPE Atlas platform 
+* **[Interference](nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
 
 
  
