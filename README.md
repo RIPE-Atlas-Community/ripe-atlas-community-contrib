@@ -39,6 +39,8 @@ Created during [Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackat
 
 OTHER Tools 
 
+* **[Official RIPE Atlas CLI toolset](https://github.com/RIPE-NCC/ripe-atlas-tools/)** Official command-line client for RIPE Atlas *PULL REQUESTS WELCOME!*  
+
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
   probes based on their area.
@@ -91,3 +93,9 @@ OTHER Tools
 Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
+
+* **[IXP-country Jedi](http://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
+
+
+ 
+
