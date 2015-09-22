@@ -98,8 +98,15 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[OpenIPmap](https://github.com/RIPE-Atlas-Community/openipmap)** Geolocating Internet infrastructure by crowdsourcing
 
-* **[Datacenter latency map](https://github.com/RIPE-Atlas-Community/datacentre-latency-map) 
-* 
+* **[Datacenter latency map](https://github.com/RIPE-Atlas-Community/datacentre-latency-map)** 
+
+* **[LatencyMON](https://github.com/MaxCam/viz-atlas-latencymon)** See latencies measured from a set of RIPE Atlas probes to your service in realtime
+
+* **[API access in Go](keltia/ripe-atlas)** RIPE Atlas API access in Go.
+
+* **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
+
+* **[Interference](nsg-ethz/atlas_interference) Quantifying interference between measurements on the RIPE Atlas platform 
 
 
  
