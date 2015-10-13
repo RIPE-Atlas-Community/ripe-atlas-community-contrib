@@ -282,6 +282,9 @@ for nameserver in nameservers:
                                 resolvers_sets[set_str] = [resolver,]
                         if display_rtt:
                             sets[set_str].rtt +=  result_i['result']['rt'] 
+                    except dns.name.BadLabelType:
+                        if not machine_readable:
+                            print "Probe %s failed (bad label in name)" % result['prb_id']
                     except dns.message.TrailingJunk:
                         if not machine_readable:
                             print "Probe %s failed (trailing junk)" % result['prb_id']
@@ -321,6 +324,9 @@ for nameserver in nameservers:
                                 resolvers_sets[set_str] = [resolver,]
                     if display_rtt:
                         sets[set_str].rtt +=  result['result']['rt'] 
+                except dns.name.BadLabelType:
+                    if not machine_readable:
+                        print "Probe %s failed (bad label in name)" % result['prb_id']
                 except dns.message.TrailingJunk:
                     if not machine_readable:
                         print "Probe %s failed (trailing junk)" % result['prb_id']
