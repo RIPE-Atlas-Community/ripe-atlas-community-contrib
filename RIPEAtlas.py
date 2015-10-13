@@ -40,6 +40,9 @@ maximum_time_for_results_factor = 5
 class AuthFileNotFound(Exception):
     pass
 
+class AuthFileEmpty(Exception):
+    pass
+
 class RequestSubmissionError(Exception):
     pass
 
@@ -90,7 +93,10 @@ class Measurement():
             if not os.path.exists(authfile):
                 raise AuthFileNotFound("Authentication file %s not found" % authfile)
             auth = open(authfile)
-            key = auth.readline()[:-1]
+            key = auth.readline()
+            if key is None or key == "":
+                raise AuthFileEmpty("Authentication file %s empty or missing a end-of-line at the end" % authfile)
+            key = key.rstrip('\n')
             auth.close()
 
         self.url = base_url + "/?key=%s" % key
