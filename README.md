@@ -108,6 +108,10 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[Interference](nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
 
+* **[jAtlasX](de-cix/jAtlasX)** Access RIPE Atlas through Java 
 
- 
+* **[TestNetAnchors](olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
+
+* **[RIPE Atlas Monitoring System](Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
+
 
