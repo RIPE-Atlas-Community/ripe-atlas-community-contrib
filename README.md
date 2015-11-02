@@ -7,7 +7,9 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
-Created during [Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackathon-results) in March 2015: 
+## Tools from Dataviz Hackathon
+
+Created during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackathon-results) in March 2015: 
 
 * **[Traceroute consistency check](https://github.com/vdidonato/Traceroute-consistency-check)** by Valentino
 
@@ -37,22 +39,25 @@ Created during [Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackat
 
 * **[CLI traceroute](https://github.com/emileaben/cmdline-atlas-trace)** Do RIPE Atlas traceroutes on the commandline
 
-OTHER Tools 
+## RIPE NCC Tools 
 
 * **[Official RIPE Atlas CLI toolset](https://github.com/RIPE-NCC/ripe-atlas-tools/)** Official command-line client for RIPE Atlas *PULL REQUESTS WELCOME!*  
+
+* **[Cousteau](https://github.com/RIPE-NCC/ripe-atlas-cousteau)**: A Python 
+  client for RIPE ATLAS API, actively maintained by the RIPE Atlas team.
+
+* **[Sagan](https://github.com/RIPE-NCC/ripe.atlas.sagan)**: A parsing library
+  for RIPE Atlas measurement results, actively maintained by the RIPE Atlas team.
+
+
+## Misc Community Tools 
 
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
   probes based on their area.
 
-* **[Cousteau](https://github.com/RIPE-NCC/ripe-atlas-cousteau)**: A Python 
-  client for RIPE ATLAS API, actively maintained by the RIPE Atlas team.
-
 * **[DNSSEC tools](https://github.com/ncanceill/atlas-dnssec)**: A collection of
   tools for performing and analysing DNSSEC measurements with RIPE Atlas.
-
-* **[RIPE Atlas Command Line Manager](https://github.com/astrikos/ripe-atlas-cmdline)**:
-  Provides a command line manager.
 
 * **[RIPE Atlas Toolbox](https://github.com/pierdom/atlas-toolbox)**: A collection of
   Perl scripts for managing custom active measurements on the RIPE Atlas network
@@ -60,9 +65,6 @@ OTHER Tools
 * **[RIPE Atlas Tracepath](https://github.com/pierky/ripeatlastracepath)**: A 
   Python script/CGI which reads results from RIPE Atlas traceroute measurements
   (both IPv4 and IPv6) and shows the Autonomous Systems toward the target.
-
-* **[Sagan](https://github.com/RIPE-NCC/ripe.atlas.sagan)**: A parsing library
-  for RIPE Atlas measurement results, actively maintained by the RIPE Atlas team.
 
 * **[USC-NSL's RIPE Atlas scripts](https://github.com/USC-NSL/ripe-atlas)**:
   A set of Python command-line scripts and library for issuing measurements to the RIPE Atlas network.
@@ -76,23 +78,39 @@ OTHER Tools
   Maera is a tool that is able to generate latency maps from RIPE ATLAS data. 
   Some examples: http://monrad.github.io/maera/maera/2015/03/16/welcome-to-maera.html 
 
-* **[Mesh Manager](https://github.com/robert-kisteleki/ripeatlas-meshmanager)** A simple application to manage traceroute meshes with RIPE Atlas.
-
 * **[Atlas-Blocked](https://github.com/b4ldr/atlas-blocked)**: A project to test 
   if a website is being blocked/filtered by using RIPE Atlas.
 
 * **[Mathematica](https://github.com/stumpy/atlas.ripe.net)** Mathematica utilities to visualize network measurements by atlas.ripe.net probes
 
+* **[SrikanthKS/VisualTrace](https://github.com/SrikanthKS/VisualTrace)** Web based Visual traceroute is an application which plots live traceroute command on Google maps. Our application gets the source and destination from user and submits the traceroute request to a third party internet measurement service, RIPE Atlas REST
+
+* **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
+
+* **[API access in Go](keltia/ripe-atlas)** RIPE Atlas API access in Go.
+
+
+* **[Interference](nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
+
+* **[jAtlasX](de-cix/jAtlasX)** Access RIPE Atlas through Java 
+
+* **[TestNetAnchors](olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
+
+* **[RIPE Atlas Monitoring System](Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
+
+## NCC-staff-personal Tools
+
+* **[RIPE Atlas Command Line Manager](https://github.com/astrikos/ripe-atlas-cmdline)**:
+  Provides a command line manager.
+
+* **[Mesh Manager](https://github.com/robert-kisteleki/ripeatlas-meshmanager)** A simple application to manage traceroute meshes with RIPE Atlas.
+
 * **[Connection Streaming](https://github.com/astrikos/atlas-connections-stream)** RIPE ATLAS connection stream simple visualization
 
 * **[IXP Country Jedi](https://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
 
-* **[SrikanthKS/VisualTrace](https://github.com/SrikanthKS/VisualTrace)** Web based Visual traceroute is an application which plots live traceroute command on Google maps. Our application gets the source and destination from user and submits the traceroute request to a third party internet measurement service, RIPE Atlas REST
-
 * **[WebGL](https://github.com/danielquinn/RIPE-Atlas-WebGL-Globe-Prototype)**
 Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
-
-* **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
 
 * **[IXP-country Jedi](http://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
 
@@ -102,16 +120,6 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[LatencyMON](https://github.com/MaxCam/viz-atlas-latencymon)** See latencies measured from a set of RIPE Atlas probes to your service in realtime
 
-* **[API access in Go](keltia/ripe-atlas)** RIPE Atlas API access in Go.
-
 * **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
-
-* **[Interference](nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
-
-* **[jAtlasX](de-cix/jAtlasX)** Access RIPE Atlas through Java 
-
-* **[TestNetAnchors](olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
-
-* **[RIPE Atlas Monitoring System](Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
 
 
