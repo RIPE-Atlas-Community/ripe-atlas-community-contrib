@@ -87,16 +87,16 @@ Created during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atla
 
 * **[interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform
 
-* **[API access in Go](keltia/ripe-atlas)** RIPE Atlas API access in Go.
+* **[API access in Go](https://github.com/keltia/ripe-atlas)** RIPE Atlas API access in Go.
 
 
-* **[Interference](nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
+* **[Interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
 
-* **[jAtlasX](de-cix/jAtlasX)** Access RIPE Atlas through Java 
+* **[jAtlasX](https://github.com/de-cix/jAtlasX)** Access RIPE Atlas through Java 
 
-* **[TestNetAnchors](olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
+* **[TestNetAnchors](https://github.com/olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
 
-* **[RIPE Atlas Monitoring System](Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
+* **[RIPE Atlas Monitoring System](https://github.com/Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
 
 ## NCC-staff-personal Tools
 
