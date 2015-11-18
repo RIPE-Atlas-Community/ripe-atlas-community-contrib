@@ -204,6 +204,12 @@ if nameserver is None:
 for nameserver in nameservers:
     if nameserver is None:
         data["definitions"][0]["use_probe_resolver"] = True
+        # Exclude probes which do not have at least one working resolver
+        data["probes"][0]["tags"] = {}
+        # 2015-11-18: many tags documented in
+        # https://atlas.ripe.net/docs/probe-tags/#system-tags do not
+        # work. RIPE Atlas bug [ripe.net #1195138]
+        # data["probes"][0]["tags"]["exclude"] = ["system-resolves-a-incorrectly", "system-cannot-resolve-a"] 
     else:
         data["definitions"][0]["use_probe_resolver"] = False
         data["definitions"][0]["target"] = nameserver
@@ -249,6 +255,8 @@ for nameserver in nameservers:
     for result in results:
         probes += 1
         probe_id = result["prb_id"]
+        first_error = ""
+        probe_resolves = False
         if result.has_key("resultset"):
             for result_i in result['resultset']:
                 if result_i.has_key("result"):
@@ -260,12 +268,19 @@ for nameserver in nameservers:
                         successes += 1
                         myset = []
                         if msg.rcode() == dns.rcode.NOERROR:
+                            probe_resolves = True
                             for rrset in msg.answer:
                                 for rdata in rrset:
                                     if rdata.rdtype == qtype_num:
                                         myset.append(string.lower(str(rdata)))
                         else:
-                            myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
+                            if only_one_per_probe and \
+                              (msg.rcode() == dns.rcode.REFUSED or msg.rcode() == dns.rcode.SERVFAIL):
+                                if first_error == "":
+                                    first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
+                                continue # Try again
+                            else:
+                                myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
                         myset.sort()
                         set_str = " ".join(myset)
                         sets[set_str].total += 1
@@ -289,7 +304,7 @@ for nameserver in nameservers:
                         if not machine_readable:
                             print "Probe %s failed (trailing junk)" % result['prb_id']
                 if only_one_per_probe:
-                    break
+                        break
         elif result.has_key("result"):
                 try:
                     resolver = str(result['dst_addr'])
@@ -299,6 +314,7 @@ for nameserver in nameservers:
                     successes += 1
                     myset = []
                     if msg.rcode() == dns.rcode.NOERROR:
+                        probe_resolves = True
                         for rrset in msg.answer:
                             for rdata in rrset:
                                 # TODO problem if asking for an old
@@ -307,7 +323,13 @@ for nameserver in nameservers:
                                 if rdata.rdtype == qtype_num:
                                     myset.append(string.lower(str(rdata)))
                     else:
-                        myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
+                        if only_one_per_probe and \
+                            (msg.rcode() == dns.rcode.REFUSED or msg.rcode() == dns.rcode.SERVFAIL):
+                            if first_error == "":
+                                    first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
+                            continue # Try again
+                        else:
+                            myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
                     myset.sort()
                     set_str = " ".join(myset)
                     sets[set_str].total += 1
@@ -330,6 +352,8 @@ for nameserver in nameservers:
                 except dns.message.TrailingJunk:
                     if not machine_readable:
                         print "Probe %s failed (trailing junk)" % result['prb_id']
+        if not probe_resolves and first_error != "":
+            print "Warning, probe %s has no working resolver (first error is \"%s\")" % (probe_id, first_error)
     if sort:
         sets_data = sorted(sets, key=lambda s: sets[s].total, reverse=True)
     else:
