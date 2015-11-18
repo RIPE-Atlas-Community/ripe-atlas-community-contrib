@@ -7,9 +7,18 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
-## Tools from Dataviz Hackathon
+## Software projects from Tools-for-operators Hackathon 
 
-Created during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackathon-results) in March 2015: 
+Software projects sreated during Tools Hackathon in November 2015: 
+
+* **[Fake DNS resolver](https://github.com/shane-kerr/ripe-atlas-shrugd)** by Shane & Collin: Fake DNS resolver check using RIPE Atlas
+
+ 
+
+
+## Software projects from Dataviz Hackathon
+
+Software projects sreated during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-hackathon-results) in March 2015: 
 
 * **[Traceroute consistency check](https://github.com/vdidonato/Traceroute-consistency-check)** by Valentino
 
@@ -89,7 +98,6 @@ Created during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atla
 
 * **[API access in Go](https://github.com/keltia/ripe-atlas)** RIPE Atlas API access in Go.
 
-
 * **[Interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
 
 * **[jAtlasX](https://github.com/de-cix/jAtlasX)** Access RIPE Atlas through Java 
@@ -97,6 +105,9 @@ Created during [DataViz Hackathon](https://labs.ripe.net/Members/becha/ripe-atla
 * **[TestNetAnchors](https://github.com/olavmrk/testnet-ripe-anchors)** Test network connectivity by connecting to RIPE Atlas Anchors
 
 * **[RIPE Atlas Monitoring System](https://github.com/Flugstein/ripe-atmos)** testing environment that lets you monitor the connection quality from all over the world to your Server using the RIPE Atlas Network. 
+
+* **[RIPE Atlas Detector](https://github.com/romain-fontugne/ripeAtlasDetector)**  
+
 
 ## NCC-staff-personal Tools
 
