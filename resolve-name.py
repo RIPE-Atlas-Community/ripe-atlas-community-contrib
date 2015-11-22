@@ -206,10 +206,8 @@ for nameserver in nameservers:
         data["definitions"][0]["use_probe_resolver"] = True
         # Exclude probes which do not have at least one working resolver
         data["probes"][0]["tags"] = {}
-        # 2015-11-18: many tags documented in
-        # https://atlas.ripe.net/docs/probe-tags/#system-tags do not
-        # work. RIPE Atlas bug [ripe.net #1195138]
-        # data["probes"][0]["tags"]["exclude"] = ["system-resolves-a-incorrectly", "system-cannot-resolve-a"] 
+        data["probes"][0]["tags"]["include"] = ["system-resolves-a-correctly",
+                                                "system-resolves-aaaa-correctly"] 
     else:
         data["definitions"][0]["use_probe_resolver"] = False
         data["definitions"][0]["target"] = nameserver
