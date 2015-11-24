@@ -273,7 +273,8 @@ for nameserver in nameservers:
                                         myset.append(string.lower(str(rdata)))
                         else:
                             if only_one_per_probe and \
-                              (msg.rcode() == dns.rcode.REFUSED or msg.rcode() == dns.rcode.SERVFAIL):
+                              msg.rcode() == dns.rcode.REFUSED: # Not SERVFAIL since
+                                # it can be legitimate (DNSSEC problem, for instance)
                                 if first_error == "":
                                     first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
                                 continue # Try again
@@ -322,7 +323,7 @@ for nameserver in nameservers:
                                     myset.append(string.lower(str(rdata)))
                     else:
                         if only_one_per_probe and \
-                            (msg.rcode() == dns.rcode.REFUSED or msg.rcode() == dns.rcode.SERVFAIL):
+                            msg.rcode() == dns.rcode.REFUSED:
                             if first_error == "":
                                     first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
                             continue # Try again
