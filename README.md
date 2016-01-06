@@ -9,7 +9,7 @@ Below are the links to other independantly hosted projects:
 
 ## Software projects from Tools-for-operators Hackathon 
 
-Software projects created during Tools Hackathon in November 2015: 
+Software projects created during [Tools Hackathon in November 2015](https://labs.ripe.net/Members/becha/ripe-atlas-tools-hackathon-results): 
 
 *  **[YIN YANG ninjaX traceroute](https://github.com/bigzaqui/yinyang)** by Edward, Orlin, Sascha, Rickard: measuring asymetric paths 
 * **[Atlas Shrugd](https://github.com/shane-kerr/ripe-atlas-shrugd)** by Shane & Collin: Emulating DNS resolution using RIPE Atlas
@@ -131,5 +131,10 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 * **[LatencyMON](https://github.com/MaxCam/viz-atlas-latencymon)** See latencies measured from a set of RIPE Atlas probes to your service in realtime
 
 * **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
+
+* **[Other CLI tools by ColdHakCA](coldhakca/atlas_tools)** (SSL Measurement, Traceroute data visualization, Maxmind GeoIP data integration) 
+
+* 
+ 
 
 
