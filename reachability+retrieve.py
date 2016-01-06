@@ -29,10 +29,12 @@ country = None # World-wide
 asn = None # All
 area = None # World-wide
 old_measurement = None
+measurement_id = None
 prefix = None # All
 verbose = False
 requested = 5 # Probes
 tests = 3 # ICMP packets per probe
+by_probe = False # Default is to count by test, not by probe
 percentage_required = 0.9
 the_probes = None
 exclude = None
@@ -69,18 +71,21 @@ def usage(msg=None):
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --prefix=PREFIX or -f PREFIX : limits the measurements to one IP prefix (default is all prefixes)
     --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
+    --measurement_ID=N or -m N : do not start a measurement, just analyze a former one 
     --include TAGS or -i TAGS : limits the measurements to probes with these tags (a comma-separated list)
     --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
     --requested=N or -r N : requests N probes (default is %s)
     --tests=N or -t N : send N ICMP packets from each probe (default is %s)
+    --by_probe : count the percentage of success by probe, not by test (useless if --tests=1)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
     """ % (requested, tests, percentage_required)
-
+    
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:vbhf:g:e:i:os:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:m:vbhf:g:e:i:os:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
-                                "exclude=", "include=",
-                                "tests=", "verbose", "machinereadable", "old_measurement=", "displayprobes", "help"])
+                                "exclude=", "include=", "by_probe",
+                                "tests=", "verbose", "machinereadable", "old_measurement=", "measurement_ID=",
+                                "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -104,8 +109,12 @@ try:
             include = string.split(value, ",")
         elif option == "--old_measurement" or option == "-g":
             old_measurement = value
+        elif option == "--measurement_ID" or option == "-m":
+            measurement_id = value
         elif option == "--verbose" or option == "-v":
             verbose = True
+        elif option == "--by_probe":
+            by_probe = True
         elif option == "--machinereadable" or option == "-b":
             machine_readable = True
         elif option == "--displayprobes" or option == "-o":
@@ -207,30 +216,41 @@ for target in targets:
             data["probes"][0]["type"] = "msm"
             data["probes"][0]["value"] = old_measurement
             data["definitions"][0]["description"] += (" from probes of measurement #%s" % old_measurement)
-    if verbose:
-        print data
-    measurement = RIPEAtlas.Measurement(data)
-    if old_measurement is None:
-        old_measurement = measurement.id
-    if verbose:
+    if measurement_id is None:
+        if verbose:
+            print data
+        measurement = RIPEAtlas.Measurement(data)
+        if old_measurement is None:
+            old_measurement = measurement.id
+        if verbose:
             print "Measurement #%s to %s uses %i probes" % (measurement.id, target,
                                                         measurement.num_probes)
-
-    # Retrieve the results
-    rdata = measurement.results(wait=True, percentage_required=percentage_required)
+        # Retrieve the results
+        rdata = measurement.results(wait=True, percentage_required=percentage_required)
+    else:
+        measurement = RIPEAtlas.Measurement(data=None, id=measurement_id)
+        rdata = measurement.results(wait=False)
+        if verbose:
+            print "%i results from already-done measurement #%s" % (len(rdata), measurement.id)
 
     total_rtt = 0
     num_rtt = 0
     num_error = 0
     num_timeout = 0
     num_tests = 0
-    if not machine_readable:
+    if by_probe:
+        probes_success = 0
+        probes_failure = 0
+        num_probes = 0
+    if not machine_readable and measurement_id is None:
         print("%s probes reported" % len(rdata))
     if display_probes:
         failed_probes = collections.defaultdict(Set)
     for result in rdata:
         probe_ok = False
         probe = result["prb_id"]
+        if by_probe:
+            num_probes += 1
         for test in result["result"]:
             num_tests += 1
             if test.has_key("rtt"):
@@ -244,19 +264,30 @@ for target in targets:
             else:
                 print >>sys.stderr, ("Result has no field rtt, or x or error")
                 sys.exit(1)
+        if by_probe:
+            if probe_ok:
+                probes_success += 1
+            else:
+                probes_failure += 1
         if display_probes and not probe_ok:
             failed_probes[probe].failed = True
     if not machine_readable:
-        print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+        print ("Test #%s done at %s" % (measurement.id, time.strftime("%Y-%m-%dT%H:%M:%SZ", measurement.time)))
     if num_rtt == 0:
         if not machine_readable:
             print("No successful test")
     else:
         if not machine_readable:
-            print("Tests: %i successful tests (%.1f %%), %i errors (%.1f %%), %i timeouts (%.1f %%), average RTT: %i ms" % \
-                (num_rtt, num_rtt*100.0/num_tests, 
-                num_error, num_error*100.0/num_tests, 
-                num_timeout, num_timeout*100.0/num_tests, total_rtt/num_rtt))
+            if not by_probe:
+                print("Tests: %i successful tests (%.1f %%), %i errors (%.1f %%), %i timeouts (%.1f %%), average RTT: %i ms" % \
+                    (num_rtt, num_rtt*100.0/num_tests, 
+                    num_error, num_error*100.0/num_tests, 
+                    num_timeout, num_timeout*100.0/num_tests, total_rtt/num_rtt))
+            else:
+                print("Tests: %i successful probes (%.1f %%), %i failed (%.1f %%), average RTT: %i ms" % \
+                    (probes_success, probes_success*100.0/num_probes, 
+                    probes_failure, probes_failure*100.0/num_probes, 
+                    total_rtt/num_rtt))
     if len(targets) > 1 and not machine_readable:
         print ""
     if display_probes:

@@ -34,7 +34,7 @@ prefix = None # All
 area = None # World-wide
 old_measurement = None
 probe_to_use = None
-requested = 500
+requested = 5
 qtype = 'A'
 measurement_id = None
 display_probes = False
@@ -74,13 +74,14 @@ def usage(msg=None):
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probetouse or -u N : uses only this probe
     --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
-    --measurement-ID=N or -m N : do not start a measurement, just analyze a former one (do *not* forget to use the same -t)
+    --measurement_ID=N or -m N : do not start a measurement, just analyze a former one (do *not* forget to use the same -t)
     --nameserver=IPaddr[,...] or -e IPaddr : query this name server (default is to query the probe's resolver)
     """ % (qtype, requested)
     
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:g:sp6u:f:vbli",
-                               ["requested=", "type=", "old_measurement=", "displayprobes", "displayresolvers",
+                               ["requested=", "type=", "old_measurement=", "measurement_ID=",
+                                "displayprobes", "displayresolvers",
                                 "displayrtt", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
@@ -100,7 +101,7 @@ try:
             sort = True
         elif option == "--old_measurement" or option == "-g":
             old_measurement = value
-        elif option == "--measurement-ID" or option == "-m":
+        elif option == "--measurement_ID" or option == "-m":
             measurement_id = value
         elif option == "--probetouse" or option == "-u":
             probe_to_use = value
@@ -229,7 +230,7 @@ for nameserver in nameservers:
                                         lambda delay: sys.stderr.write(
                 "Sleeping %i seconds...\n" % delay))
 
-        if not machine_readable:
+        if not machine_readable and verbose:
             print "Measurement #%s for %s/%s uses %i probes" % \
             (measurement.id, domainname, qtype, measurement.num_probes)
 
@@ -374,7 +375,7 @@ for nameserver in nameservers:
             details.append("[%s];%i" % (myset, sets[myset].total))
 
     if not machine_readable:
-        print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+        print ("Test #%s done at %s" % (measurement.id, time.strftime("%Y-%m-%dT%H:%M:%SZ", measurement.time)))
         print ""
     else:
         # TODO: what if we analyzed an existing measurement?
@@ -383,4 +384,4 @@ for nameserver in nameservers:
         else:
             ns = nameserver
         print ",".join([domainname, qtype, str(measurement.id), "%s/%s" % (len(results), measurement.num_probes), \
-                        time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), ns] + details)
+                        time.strftime("%Y-%m-%dT%H:%M:%SZ", measurement.time), ns] + details)

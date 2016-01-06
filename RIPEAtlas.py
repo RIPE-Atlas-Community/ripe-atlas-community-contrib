@@ -120,6 +120,7 @@ class Measurement():
                 raise RequestSubmissionError("Status %s, reason \"%s\"" % \
                                              (e.code, e.read()))
 
+            self.time = time.gmtime()
             if not wait:
                 return
             # Find out how many probes were actually allocated to this measurement
@@ -147,6 +148,7 @@ class Measurement():
                     else:
                         raise InternalError("Internal error in #%s, unexpected status when querying the measurement fields: \"%s\"" % (self.id, meta["status"]))
                     conn.close()
+                    self.time = time.gmtime(meta["start_time"])
                 except urllib2.HTTPError as e:
                     raise FieldsQueryError("%s" % e.read())
         else:
@@ -160,6 +162,7 @@ class Measurement():
                     raise MeasurementAccessError("%s" % e.read())
             result_status = json.load(conn) 
             status = result_status["status"]["name"]
+            self.time = time.gmtime(result_status["start_time"])
             # TODO: test status
             self.num_probes = None # TODO: get it from the status?
             
