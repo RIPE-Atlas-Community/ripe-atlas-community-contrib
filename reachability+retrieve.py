@@ -131,7 +131,10 @@ except getopt.error, reason:
     sys.exit(1)
 
 targets = args
-
+if len(targets) == 0:
+    usage("No target found")
+    sys.exit(1)
+    
 if the_probes is not None:
     requested = len(string.split(the_probes,","))
 if verbose and machine_readable:
