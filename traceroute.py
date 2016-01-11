@@ -35,6 +35,7 @@ protocol = "UDP"
 percentage_required = 0.9
 the_probes = None
 format = False
+do_lookup = False
 
 def is_ip_address(str):
     try:
@@ -46,6 +47,25 @@ def is_ip_address(str):
             return False
     return True
 
+def lookup_hostname(str):
+	try:
+		info = socket.getaddrinfo(str, 0, socket.AF_UNSPEC, socket.SOCK_STREAM,0, socket.AI_PASSIVE)
+		if len(info)>1:
+			print "%s returns more then one IP address please select one" % str
+			count=0
+			for ip in info:
+				count= count + 1	
+				fa, socktype, proto, canonname, sa = ip
+				print "%s - %s" % (count, sa[0])
+			selection=int(raw_input("=>"))
+			selection = selection - 1
+			selected_ip=info[selection][4][0]
+		else:
+			selected_ip=info[0][4][0]
+			print "Using IP: %s" % selected_ip
+	except socket.error:
+		return False
+       	return selected_ip 
 def usage(msg=None):
     if msg:
         print >>sys.stderr, msg
@@ -62,12 +82,13 @@ def usage(msg=None):
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
+    --do-lookup : Enables IP Lookup feature (default is disabled)
     """ % (requested, percentage_required)
 
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhs:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
-                                "protocol=", "old_measurement=", "verbose", "help"])
+                                "protocol=", "old_measurement=", "verbose", "help", "do-lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -95,6 +116,8 @@ try:
         elif option == "--help" or option == "-h":
             usage()
             sys.exit(0)
+	elif option == "--do-lookup" or option == "-l":
+	    do_lookup = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -107,6 +130,11 @@ if len(args) != 1:
     usage()
     sys.exit(1)
 target = args[0]
+
+if do_lookup is not False:
+	target = lookup_hostname(target)
+
+
 if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
