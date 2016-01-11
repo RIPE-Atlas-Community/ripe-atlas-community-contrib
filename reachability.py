@@ -147,8 +147,7 @@ data = { "definitions": [
            { "type": "ping", "is_oneoff": True, "packets": tests} ],
          "probes": [
              { "requested": requested} ] }
-if include is not None or exclude is not None:
-    data["probes"][0]["tags"] = {}
+data["probes"][0]["tags"] = {}
 if include is not None:
     data["probes"][0]["tags"]["include"] = include
 if exclude is not None:
@@ -208,8 +207,12 @@ for target in targets:
         data["definitions"][0]["description"] += (" from prefix %s" % prefix)
     if string.find(target, ':') > -1:
         af = 6
+        if include is None:
+            data["probes"][0]["tags"]["include"] = ["system-ipv6-works"]
     else:
         af = 4
+        if include is None:
+            data["probes"][0]["tags"]["include"] = ["system-ipv4-works"] # Some probes cannot do ICMP outgoing (firewall?)
     data["definitions"][0]['af'] = af
     if old_measurement is not None:
             data["probes"][0]["requested"] = 500 # Dummy value, anyway,
