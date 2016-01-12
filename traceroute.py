@@ -222,7 +222,7 @@ if format: # Code stolen from json2traceroute.py
             whois[ip] = (ASN,currenttime)
         return ASN
       except Exception as e:
-	print e
+	return e
     try:
         pkl_file = open('whois.pkl', 'rb')
         whois = pickle.load(pkl_file)
@@ -235,7 +235,10 @@ if format: # Code stolen from json2traceroute.py
             probefrom = probe["from"]
 	    if probefrom:
                	ASN = whoisrecord(probefrom)
-               	print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
+		try:
+			print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
+		except Exception as e:
+			print "From: ", probefrom," ","AS lookup error: ",e
             print "Source address: ",probe["src_addr"]
             print "Probe ID: ",probe["prb_id"]
             result = probe["result"]
@@ -250,7 +253,7 @@ if format: # Code stolen from json2traceroute.py
                         if "error" in hr:
                             rtt.append(hr["error"])
                         elif "x" in hr:
-                            rtt.append(hr["x"])
+                            rtt.append(str(hr["x"]))
                         elif "edst" in hr:
                             rtt.append("!")
                         else:
