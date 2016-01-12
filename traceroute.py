@@ -84,7 +84,7 @@ def usage(msg=None):
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    --do-lookup : Enables IP Lookup feature (default is disabled)
+    --do_lookup : Enables IP lookup feature (default is disabled)
     """ % (requested, percentage_required)
 
 try:
@@ -121,8 +121,8 @@ try:
         elif option == "--help" or option == "-h":
 	    usage()
             sys.exit(0)
-	elif option == "--do-lookup" or option == "-d":
-	    do_lookup = True
+        elif option == "--do_lookup" or option == "-d":
+            do_lookup = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
