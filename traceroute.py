@@ -86,7 +86,7 @@ def usage(msg=None):
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhs:",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhds:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
                                 "protocol=", "old_measurement=", "verbose", "help", "do-lookup"])
     for option, value in optlist:
@@ -114,9 +114,9 @@ try:
         elif option == "--format" or option == "-f":
             format = True
         elif option == "--help" or option == "-h":
-            usage()
+	    usage()
             sys.exit(0)
-	elif option == "--do-lookup" or option == "-l":
+	elif option == "--do-lookup" or option == "-d":
 	    do_lookup = True
         else:
             # Should never occur, it is trapped by getopt
@@ -209,18 +209,20 @@ if format: # Code stolen from json2traceroute.py
     from cymruwhois import Client
 
     def whoisrecord(ip):
-        currenttime = time.time()
+      try:
+	currenttime = time.time()
         ts = currenttime
         if ip in whois:
             ASN,ts = whois[ip]
         else:
             ts = 0
         if ((currenttime - ts) > 36000):
-            C = Client()
-            ASN = C.lookup(ip)
+            c = Client()
+            ASN = c.lookup(ip)
             whois[ip] = (ASN,currenttime)
         return ASN
-
+      except Exception as e:
+	print e
     try:
         pkl_file = open('whois.pkl', 'rb')
         whois = pickle.load(pkl_file)
@@ -231,9 +233,9 @@ if format: # Code stolen from json2traceroute.py
     try:
         for probe in rdata:
             probefrom = probe["from"]
-            if probefrom:
-                ASN = whoisrecord(probefrom)
-                print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
+	    if probefrom:
+               	ASN = whoisrecord(probefrom)
+               	print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
             print "Source address: ",probe["src_addr"]
             print "Probe ID: ",probe["prb_id"]
             result = probe["result"]
@@ -252,8 +254,11 @@ if format: # Code stolen from json2traceroute.py
                         elif "edst" in hr:
                             rtt.append("!")
                         else:
-                            rtt.append(hr["rtt"])
-                            hopfrom = hr["from"]
+			    try:
+                            	rtt.append(hr["rtt"])
+                            except KeyError:
+				rtt.append("*")
+			    hopfrom = hr["from"]
                             ASN = whoisrecord(hopfrom)
                     if hopfrom:
                         print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
