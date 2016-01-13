@@ -36,6 +36,7 @@ percentage_required = 0.9
 the_probes = None
 format = False
 do_lookup = False
+do_reverse_lookup = False
 
 def is_ip_address(str):
     try:
@@ -66,6 +67,15 @@ def lookup_hostname(str):
 	except socket.error:
 		return False
        	return selected_ip 
+
+def lookup_ip(ip):
+	try:
+		name, alias, addresslist = socket.gethostbyaddr(ip)
+	except Exception as e:
+		msg = "No PTR"
+		return msg
+	return name
+
 def usage(msg=None):
     if msg:
         print >>sys.stderr, msg
@@ -86,9 +96,9 @@ def usage(msg=None):
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhds:",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhdls:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
-                                "protocol=", "old_measurement=", "verbose", "help", "do-lookup"])
+                                "protocol=", "old_measurement=", "verbose", "help", "do-lookup", "do-reverse-lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -118,6 +128,8 @@ try:
             sys.exit(0)
 	elif option == "--do-lookup" or option == "-d":
 	    do_lookup = True
+	elif option == "--do-reverse-lookup" or option == "-l":
+	    do_reverse_lookup = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -264,7 +276,11 @@ if format: # Code stolen from json2traceroute.py
 			    hopfrom = hr["from"]
                             ASN = whoisrecord(hopfrom)
                     if hopfrom:
-                        print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
+			if do_reverse_lookup == False:
+                        	print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
+		    	else:
+				reverse_lookup = lookup_ip(hopfrom)
+				print hopfrom,"  ",reverse_lookup,"  ",ASN.asn,"  ",ASN.owner,"  ",
                     print rtt
                 else:
                     print "Error: ",proberesult["error"]
