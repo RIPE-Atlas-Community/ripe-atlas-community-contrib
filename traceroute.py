@@ -277,11 +277,14 @@ if format: # Code stolen from json2traceroute.py
 			    hopfrom = hr["from"]
                             ASN = whoisrecord(hopfrom)
                     if hopfrom:
-			if do_reverse_lookup == False:
-                        	print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
-		    	else:
-				reverse_lookup = lookup_ip(hopfrom)
-				print hopfrom,"  ",reverse_lookup,"  ",ASN.asn,"  ",ASN.owner,"  ",
+			try:
+				if do_reverse_lookup == False:
+                        		print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
+		    		else:
+					reverse_lookup = lookup_ip(hopfrom)
+					print hopfrom,"  ",reverse_lookup,"  ",ASN.asn,"  ",ASN.owner,"  ",
+			except Exception as e:
+				print "Lookup failed because of", e, "  ",
                     print rtt
                 else:
                     print "Error: ",proberesult["error"]
