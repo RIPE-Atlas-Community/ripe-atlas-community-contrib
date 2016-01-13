@@ -136,7 +136,7 @@ try:
 	    do_lookup = True
 	elif option == "--do_reverse_lookup" or option == "-l":
 	    do_reverse_lookup = True
-       else:
+        else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
             sys.exit(1)
