@@ -29,6 +29,7 @@ country = None # World-wide
 asn = None # All
 area = None # World-wide
 old_measurement = None
+measurement_id = None
 verbose = False
 requested = 5 # Probes
 protocol = "UDP"
@@ -89,17 +90,19 @@ def usage(msg=None):
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
     --old_measurement MSMID or - o MSMID : uses the probes of measurement #MSMID
+    --measurement_ID=N or -m N : do not start a measurement, just analyze a former one 
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    --do-lookup or -d : Enables IP Lookup feature (default is disabled)
-    --do-reverse-lookup or -l : Enables reverse IP lookup feature for Hops
+    --do_lookup : Enables IP lookup feature (default is disabled)
+    --do_reverse_lookup or -l : Enables reverse IP lookup feature for Hops
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:n:o:t:p:vhdls:",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
-                                "protocol=", "old_measurement=", "verbose", "help", "do-lookup", "do-reverse-lookup"])
+                                "protocol=", "old_measurement=",  "measurement_ID=",
+                               "verbose", "help", "do-lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -109,6 +112,8 @@ try:
             asn = value
         elif option == "--old_measurement" or option == "-o":
             old_measurement = value
+        elif option == "--measurement_ID" or option == "-m":
+            measurement_id = value
         elif option == "--protocol" or option == "-t":
             if value.upper() != "UDP" and value.upper() != "ICMP":
                 usage("Protocol must be UDP or ICMP")
@@ -127,11 +132,11 @@ try:
         elif option == "--help" or option == "-h":
 	    usage()
             sys.exit(0)
-	elif option == "--do-lookup" or option == "-d":
+	elif option == "--do_lookup" or option == "-d":
 	    do_lookup = True
-	elif option == "--do-reverse-lookup" or option == "-l":
+	elif option == "--do_reverse_lookup" or option == "-l":
 	    do_reverse_lookup = True
-        else:
+       else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
             sys.exit(1)
@@ -147,7 +152,6 @@ target = args[0]
 if do_lookup is not False:
 	target = lookup_hostname(target)
 
-
 if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
@@ -156,8 +160,8 @@ if the_probes is not None:
     requested = len(string.split(the_probes,","))
 data = { "definitions": [
            { "target": target, "description": "Traceroute %s" % target,
-           "type": "traceroute", "is_oneoff": True, "protocol": protocol} ],
-         "probes": [
+            "type": "traceroute", "is_oneoff": True, "protocol": protocol} ],
+            "probes": [
              { "requested": requested} ] }
 if the_probes is not None:
     if country is not None or area is not None or asn is not None:
@@ -207,17 +211,24 @@ if string.find(target, ':') > -1:
 else:
     af = 4
 data["definitions"][0]['af'] = af
-if verbose:
-    print data
+if measurement_id is None:
+    if verbose:
+        print data
 
-measurement = RIPEAtlas.Measurement(data)
-print "Measurement #%s %s uses %i probes" % (measurement.id,
-                                             data["definitions"][0]["description"],
-                                             measurement.num_probes)
+    measurement = RIPEAtlas.Measurement(data)
+    print "Measurement #%s %s uses %i probes" % (measurement.id,
+                                                 data["definitions"][0]["description"],
+                                                 measurement.num_probes)
 
-rdata = measurement.results(wait=True, percentage_required=percentage_required)
-print("%s probes reported" % len(rdata))
-print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    rdata = measurement.results(wait=True, percentage_required=percentage_required)
+    print("%s probes reported" % len(rdata))
+else:
+    measurement = RIPEAtlas.Measurement(data=None, id=measurement_id)
+    rdata = measurement.results(wait=False)
+    if verbose:
+            print "%i results from already-done measurement #%s" % (len(rdata), measurement.id)
+            
+print ("Test #%s done at %s" % (measurement.id, time.strftime("%Y-%m-%dT%H:%M:%SZ", measurement.time)))
 if format: # Code stolen from json2traceroute.py
     from cymruwhois import Client
 
