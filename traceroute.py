@@ -92,7 +92,8 @@ def usage(msg=None):
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    --do-lookup : Enables IP Lookup feature (default is disabled)
+    --do-lookup or -d : Enables IP Lookup feature (default is disabled)
+    --do-reverse-lookup or -l : Enables reverse IP lookup feature for Hops
     """ % (requested, percentage_required)
 
 try:
