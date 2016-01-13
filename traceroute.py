@@ -102,7 +102,7 @@ try:
     optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
                                 "protocol=", "old_measurement=",  "measurement_ID=",
-                               "verbose", "help", "do-lookup"])
+                               "verbose", "help", "do_lookup,do_reverse_lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
