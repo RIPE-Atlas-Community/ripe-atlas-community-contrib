@@ -50,9 +50,9 @@ def is_ip_address(str):
     return True
 
 def lookup_hostname(str):
-	try:
-		info = socket.getaddrinfo(str, 0, socket.AF_UNSPEC, socket.SOCK_STREAM,0, socket.AI_PASSIVE)
-		if len(info)>1:
+    try:
+        info = socket.getaddrinfo(str, 0, socket.AF_UNSPEC, socket.SOCK_STREAM,0, socket.AI_PASSIVE)
+        if len(info) > 1:
 			print "%s returns more then one IP address please select one" % str
 			count=0
 			for ip in info:
@@ -62,12 +62,12 @@ def lookup_hostname(str):
 			selection=int(raw_input("=>"))
 			selection = selection - 1
 			selected_ip=info[selection][4][0]
-		else:
+        else:
 			selected_ip=info[0][4][0]
 			print "Using IP: %s" % selected_ip
-	except socket.error:
-		return False
-       	return selected_ip 
+    except socket.error:
+        return False
+    return selected_ip
 
 def lookup_ip(ip):
 	try:
@@ -89,13 +89,13 @@ def usage(msg=None):
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
-    --old_measurement MSMID or - o MSMID : uses the probes of measurement #MSMID
+    --old_measurement MSMID or -o MSMID : uses the probes of measurement #MSMID
     --measurement_ID=N or -m N : do not start a measurement, just analyze a former one 
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    --do_lookup : Enables IP lookup feature (default is disabled)
-    --do_reverse_lookup or -l : Enables reverse IP lookup feature for Hops
+    --do_lookup : Enables IP lookup feature (default is disabled, may become interactive if the machine has several addresses)
+    --do_reverse_lookup or -l : Enables reverse IP lookup feature for hops
     """ % (requested, percentage_required)
 
 try:
@@ -130,12 +130,12 @@ try:
         elif option == "--format" or option == "-f":
             format = True
         elif option == "--help" or option == "-h":
-	    usage()
+            usage()
             sys.exit(0)
-	elif option == "--do_lookup" or option == "-d":
-	    do_lookup = True
-	elif option == "--do_reverse_lookup" or option == "-l":
-	    do_reverse_lookup = True
+        elif option == "--do_lookup" or option == "-d":
+            do_lookup = True
+        elif option == "--do_reverse_lookup" or option == "-l":
+            do_reverse_lookup = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -149,9 +149,13 @@ if len(args) != 1:
     sys.exit(1)
 target = args[0]
 
-if do_lookup is not False:
-	target = lookup_hostname(target)
-
+if do_lookup:
+    hostname = target
+    target = lookup_hostname(hostname)
+    if not target:
+        print >>sys.stderr, ("Unknown host name \"%s\"" % hostname)
+        sys.exit(1)
+        
 if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
