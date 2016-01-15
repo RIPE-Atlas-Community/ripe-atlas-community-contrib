@@ -37,6 +37,7 @@ percentage_required = 0.9
 the_probes = None
 format = False
 do_lookup = False
+do_reverse_lookup = False
 
 def is_ip_address(str):
     try:
@@ -49,9 +50,9 @@ def is_ip_address(str):
     return True
 
 def lookup_hostname(str):
-	try:
-		info = socket.getaddrinfo(str, 0, socket.AF_UNSPEC, socket.SOCK_STREAM,0, socket.AI_PASSIVE)
-		if len(info)>1:
+    try:
+        info = socket.getaddrinfo(str, 0, socket.AF_UNSPEC, socket.SOCK_STREAM,0, socket.AI_PASSIVE)
+        if len(info) > 1:
 			print "%s returns more then one IP address please select one" % str
 			count=0
 			for ip in info:
@@ -61,12 +62,21 @@ def lookup_hostname(str):
 			selection=int(raw_input("=>"))
 			selection = selection - 1
 			selected_ip=info[selection][4][0]
-		else:
+        else:
 			selected_ip=info[0][4][0]
 			print "Using IP: %s" % selected_ip
-	except socket.error:
-		return False
-       	return selected_ip 
+    except socket.error:
+        return False
+    return selected_ip
+
+def lookup_ip(ip):
+	try:
+		name, alias, addresslist = socket.gethostbyaddr(ip)
+	except Exception as e:
+		msg = "No PTR"
+		return msg
+	return name
+
 def usage(msg=None):
     if msg:
         print >>sys.stderr, msg
@@ -79,19 +89,20 @@ def usage(msg=None):
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
     --asn=ASnumber or -n ASnumber : limits the measurements to one AS (default is all ASes)
     --probes=N or -s N : selects the probes by giving explicit ID (one ID or a comma-separated list)
-    --old_measurement MSMID or - o MSMID : uses the probes of measurement #MSMID
+    --old_measurement MSMID or -o MSMID : uses the probes of measurement #MSMID
     --measurement_ID=N or -m N : do not start a measurement, just analyze a former one 
     --requested=N or -r N : requests N probes (default is %s)
     --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    --do_lookup : Enables IP lookup feature (default is disabled)
+    --do_lookup : Enables IP lookup feature (default is disabled, may become interactive if the machine has several addresses)
+    --do_reverse_lookup or -l : Enables reverse IP lookup feature for hops
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhds:",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:",
                                ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
                                 "protocol=", "old_measurement=",  "measurement_ID=",
-                               "verbose", "help", "do-lookup"])
+                               "verbose", "help", "do_lookup","do_reverse_lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -119,10 +130,12 @@ try:
         elif option == "--format" or option == "-f":
             format = True
         elif option == "--help" or option == "-h":
-	    usage()
+            usage()
             sys.exit(0)
         elif option == "--do_lookup" or option == "-d":
             do_lookup = True
+        elif option == "--do_reverse_lookup" or option == "-l":
+            do_reverse_lookup = True
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -136,9 +149,13 @@ if len(args) != 1:
     sys.exit(1)
 target = args[0]
 
-if do_lookup is not False:
-	target = lookup_hostname(target)
-
+if do_lookup:
+    hostname = target
+    target = lookup_hostname(hostname)
+    if not target:
+        print >>sys.stderr, ("Unknown host name \"%s\"" % hostname)
+        sys.exit(1)
+        
 if not is_ip_address(target):
     print >>sys.stderr, ("Target must be an IP address, NOT AN HOST NAME")
     sys.exit(1)
@@ -233,7 +250,7 @@ if format: # Code stolen from json2traceroute.py
             whois[ip] = (ASN,currenttime)
         return ASN
       except Exception as e:
-	print e
+	return e
     try:
         pkl_file = open('whois.pkl', 'rb')
         whois = pickle.load(pkl_file)
@@ -246,7 +263,10 @@ if format: # Code stolen from json2traceroute.py
             probefrom = probe["from"]
 	    if probefrom:
                	ASN = whoisrecord(probefrom)
-               	print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
+		try:
+			print "From: ",probefrom,"  ",ASN.asn,"  ",ASN.owner
+		except Exception as e:
+			print "From: ", probefrom," ","AS lookup error: ",e
             print "Source address: ",probe["src_addr"]
             print "Probe ID: ",probe["prb_id"]
             result = probe["result"]
@@ -261,7 +281,7 @@ if format: # Code stolen from json2traceroute.py
                         if "error" in hr:
                             rtt.append(hr["error"])
                         elif "x" in hr:
-                            rtt.append(hr["x"])
+                            rtt.append(str(hr["x"]))
                         elif "edst" in hr:
                             rtt.append("!")
                         else:
@@ -272,7 +292,14 @@ if format: # Code stolen from json2traceroute.py
 			    hopfrom = hr["from"]
                             ASN = whoisrecord(hopfrom)
                     if hopfrom:
-                        print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
+			try:
+				if do_reverse_lookup == False:
+                        		print hopfrom,"  ",ASN.asn,"  ",ASN.owner,"  ",
+		    		else:
+					reverse_lookup = lookup_ip(hopfrom)
+					print hopfrom,"  ",reverse_lookup,"  ",ASN.asn,"  ",ASN.owner,"  ",
+			except Exception as e:
+				print "Lookup failed because of", e, "  ",
                     print rtt
                 else:
                     print "Error: ",proberesult["error"]
