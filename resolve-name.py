@@ -256,104 +256,98 @@ for nameserver in nameservers:
         probe_id = result["prb_id"]
         first_error = ""
         probe_resolves = False
-        if result.has_key("resultset"):
-            for result_i in result['resultset']:
-                if result_i.has_key("result"):
-                    try:
-                        resolver = str(result_i['dst_addr'])
-                        answer = result_i['result']['abuf'] + "=="
-                        content = base64.b64decode(answer)
-                        msg = dns.message.from_wire(content)
-                        successes += 1
-                        myset = []
-                        if msg.rcode() == dns.rcode.NOERROR:
-                            probe_resolves = True
-                            for rrset in msg.answer:
-                                for rdata in rrset:
-                                    if rdata.rdtype == qtype_num:
-                                        myset.append(string.lower(str(rdata)))
+        resolver_responds = False
+        all_timeout = True
+        if result.has_key("result"):
+            result_set = [{'result': result['result']},]
+        elif result.has_key("resultset"):
+            result_set = result['resultset']
+        else:
+            raise RIPEAtlas.WrongAssumption("Neither result not resultset member")
+        for result_i in result_set:
+            try:
+                if result_i.has_key("dst_addr"):
+                    resolver = str(result_i['dst_addr'])
+                elif result_i.has_key("dst_name"): # Apparently, used when there was a problem
+                    resolver = str(result_i['dst_name'])
+                else:
+                    resolver = "UNKNOWN RESOLUTION ERROR"
+                myset = []
+                if not result_i.has_key("result"):
+                    if only_one_per_probe:
+                        continue
+                    else:
+                        if result_i['error'].has_key("timeout"):
+                            myset.append("TIMEOUT")
+                        elif result_i['error'].has_key("socket"):
+                            all_timeout = False
+                            myset.append("NETWORK PROBLEM WITH RESOLVER")
                         else:
-                            if only_one_per_probe and \
-                              msg.rcode() == dns.rcode.REFUSED: # Not SERVFAIL since
-                                # it can be legitimate (DNSSEC problem, for instance)
-                                if first_error == "":
-                                    first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
-                                continue # Try again
-                            else:
-                                myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
-                        myset.sort()
-                        set_str = " ".join(myset)
-                        sets[set_str].total += 1
-                        if display_probes:
-                            if probes_sets.has_key(set_str):
-                                probes_sets[set_str].append(probe_id)
-                            else:
-                                probes_sets[set_str] = [probe_id,]
-                        if display_resolvers:
-                            if resolvers_sets.has_key(set_str):
-                                if not (resolver in resolvers_sets[set_str]):
-                                    resolvers_sets[set_str].append(resolver)
-                            else:
-                                resolvers_sets[set_str] = [resolver,]
-                        if display_rtt:
-                            sets[set_str].rtt +=  result_i['result']['rt'] 
-                    except dns.name.BadLabelType:
-                        if not machine_readable:
-                            print "Probe %s failed (bad label in name)" % result['prb_id']
-                    except dns.message.TrailingJunk:
-                        if not machine_readable:
-                            print "Probe %s failed (trailing junk)" % result['prb_id']
-                if only_one_per_probe:
-                        break
-        elif result.has_key("result"):
-                try:
-                    resolver = str(result['dst_addr'])
-                    answer = result['result']['abuf'] + "=="
+                            all_timeout = False
+                            myset.append("NO RESPONSE FOR UNKNOWN REASON at probe %s" % probe_id)
+                else:
+                    all_timeout = False
+                    resolver_responds = True
+                    answer = result_i['result']['abuf'] + "=="
                     content = base64.b64decode(answer)
                     msg = dns.message.from_wire(content)
                     successes += 1
-                    myset = []
                     if msg.rcode() == dns.rcode.NOERROR:
                         probe_resolves = True
+                        # If we test an authoritative server, and it returns a delegation, we won't see anything...
+                        if result_i['result']['ANCOUNT'] == 0:
+                            print "Warning: reply at probe %s has no answers: may be the server returned a delegation?" % probe_id
                         for rrset in msg.answer:
                             for rdata in rrset:
-                                # TODO problem if asking for an old
-                                # measurement, -t may be absent (see
-                                # the warning in the usage)
                                 if rdata.rdtype == qtype_num:
                                     myset.append(string.lower(str(rdata)))
                     else:
-                        if only_one_per_probe and \
-                            msg.rcode() == dns.rcode.REFUSED:
-                            if first_error == "":
+                        if msg.rcode() == dns.rcode.REFUSED: # Not SERVFAIL since
+                            # it can be legitimate (DNSSEC problem, for instance)
+                            if only_one_per_probe:
+                                if first_error == "":
                                     first_error = "ERROR: %s" % dns.rcode.to_text(msg.rcode())
-                            continue # Try again
+                                continue # Try again
                         else:
-                            myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
-                    myset.sort()
-                    set_str = " ".join(myset)
-                    sets[set_str].total += 1
-                    if display_probes:
-                            if probes_sets.has_key(set_str):
-                                probes_sets[set_str].append(probe_id)
-                            else:
-                                probes_sets[set_str] = [probe_id,]
-                    if display_resolvers:
-                            if resolvers_sets.has_key(set_str):
-                                if not (resolver in resolvers_sets[set_str]):
-                                    resolvers_sets[set_str].append(resolver)
-                            else:
-                                resolvers_sets[set_str] = [resolver,]
-                    if display_rtt:
-                        sets[set_str].rtt +=  result['result']['rt'] 
-                except dns.name.BadLabelType:
-                    if not machine_readable:
-                        print "Probe %s failed (bad label in name)" % result['prb_id']
-                except dns.message.TrailingJunk:
-                    if not machine_readable:
-                        print "Probe %s failed (trailing junk)" % result['prb_id']
+                            probe_resolves = True # NXDOMAIN or SERVFAIL are legitimate
+                        myset.append("ERROR: %s" % dns.rcode.to_text(msg.rcode()))
+                myset.sort()
+                set_str = " ".join(myset)
+                sets[set_str].total += 1
+                if display_probes:
+                    if probes_sets.has_key(set_str):
+                        probes_sets[set_str].append(probe_id)
+                    else:
+                        probes_sets[set_str] = [probe_id,]
+                if display_resolvers:
+                    if resolvers_sets.has_key(set_str):
+                        if not (resolver in resolvers_sets[set_str]):
+                            resolvers_sets[set_str].append(resolver)
+                    else:
+                        resolvers_sets[set_str] = [resolver,]
+                if display_rtt:
+                    sets[set_str].rtt +=  result_i['rt'] 
+            except dns.name.BadLabelType:
+                if not machine_readable:
+                    print "Probe %s failed (bad label in name)" % probe_id
+            except dns.message.TrailingJunk:
+                if not machine_readable:
+                    print "Probe %s failed (trailing junk)" % probe_id
+            except dns.exception.FormError:
+                if not machine_readable:
+                    print "Probe %s failed (malformed DNS message)" % probe_id
+            if only_one_per_probe:
+                    break
         if not probe_resolves and first_error != "":
             print "Warning, probe %s has no working resolver (first error is \"%s\")" % (probe_id, first_error)
+        if not resolver_responds:
+            if all_timeout:
+                print "Warning, probe %s never got reply from any resolver" % (probe_id)
+                set_str = "TIMEOUT(S)"
+            else:
+                myset.sort()
+                set_str = " ".join(myset)
+            sets[set_str].total += 1
     if sort:
         sets_data = sorted(sets, key=lambda s: sets[s].total, reverse=True)
     else:
