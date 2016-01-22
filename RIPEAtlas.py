@@ -102,7 +102,8 @@ class Measurement():
         self.url = base_url + "/?key=%s" % key
         self.url_probes = base_url + "/%s/?fields=probes,status"
         self.url_status = base_url + "/%s/?fields=status" 
-        self.url_results = base_url + "/%s/result/" 
+        self.url_results = base_url + "/%s/result/"
+        self.url_all = base_url + "/%s/" 
         self.url_latest = base_url + "-latest/%s/?versions=%s"
 
         if data is not None:
@@ -148,7 +149,6 @@ class Measurement():
                     else:
                         raise InternalError("Internal error in #%s, unexpected status when querying the measurement fields: \"%s\"" % (self.id, meta["status"]))
                     conn.close()
-                    self.time = time.gmtime(meta["start_time"])
                 except urllib2.HTTPError as e:
                     raise FieldsQueryError("%s" % e.read())
         else:
@@ -162,9 +162,17 @@ class Measurement():
                     raise MeasurementAccessError("%s" % e.read())
             result_status = json.load(conn) 
             status = result_status["status"]["name"]
-            self.time = time.gmtime(result_status["start_time"])
             # TODO: test status
             self.num_probes = None # TODO: get it from the status?
+        try:
+                conn = urllib2.urlopen(JsonRequest(self.url_all % self.id))
+        except urllib2.HTTPError as e:
+                if e.code == 404:
+                        raise MeasurementNotFound
+                else:
+                        raise MeasurementAccessError("%s" % e.read())
+        result_status = json.load(conn)
+        self.time = time.gmtime(result_status["start_time"])
             
     def results(self, wait=True, percentage_required=0.9, latest=None):
         """Retrieves the result. "wait" indicates if you are willing to wait until
