@@ -64,6 +64,10 @@ class IncompatibleArguments(Exception):
 class InternalError(Exception):
     pass
 
+# Resut JSON file does not have the expected fields/members
+class WrongAssumption(Exception):
+    pass
+
 class JsonRequest(urllib2.Request):
     def __init__(self, url):
         urllib2.Request.__init__(self, url)
