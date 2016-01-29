@@ -262,6 +262,17 @@ for nameserver in nameservers:
             result_set = [{'result': result['result']},]
         elif result.has_key("resultset"):
             result_set = result['resultset']
+        elif result.has_key("error"):
+            result_set = []
+            myset = []
+            if result['error'].has_key("timeout"):
+                myset.append("TIMEOUT")
+            elif result['error'].has_key("socket"):
+                all_timeout = False
+                myset.append("NETWORK PROBLEM WITH RESOLVER")
+            else:
+                all_timeout = False
+                myset.append("NO RESPONSE FOR UNKNOWN REASON at probe %s" % probe_id)
         else:
             raise RIPEAtlas.WrongAssumption("Neither result not resultset member")
         for result_i in result_set:
