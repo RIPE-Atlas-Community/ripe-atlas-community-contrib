@@ -58,6 +58,32 @@ Software projects sreated during [DataViz Hackathon](https://labs.ripe.net/Membe
   for RIPE Atlas measurement results, actively maintained by the RIPE Atlas team.
 
 
+## NCC-staff-personal Tools
+
+* **[RIPE Atlas Command Line Manager](https://github.com/astrikos/ripe-atlas-cmdline)**:
+  Provides a command line manager.
+
+* **[Mesh Manager](https://github.com/robert-kisteleki/ripeatlas-meshmanager)** A simple application to manage traceroute meshes with RIPE Atlas.
+
+* **[Connection Streaming](https://github.com/astrikos/atlas-connections-stream)** RIPE ATLAS connection stream simple visualization
+
+* **[IXP Country Jedi](https://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
+
+* **[WebGL](https://github.com/danielquinn/RIPE-Atlas-WebGL-Globe-Prototype)**
+Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
+
+* **[IXP-country Jedi](http://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
+
+* **[OpenIPmap](https://github.com/RIPE-Atlas-Community/openipmap)** Geolocating Internet infrastructure by crowdsourcing
+
+* **[Datacenter latency map](https://github.com/RIPE-Atlas-Community/datacentre-latency-map)** 
+
+* **[LatencyMON](https://github.com/MaxCam/viz-atlas-latencymon)** See latencies measured from a set of RIPE Atlas probes to your service in realtime
+
+* **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
+
+
+
 ## Misc Community Tools 
 
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
@@ -113,34 +139,10 @@ Software projects sreated during [DataViz Hackathon](https://labs.ripe.net/Membe
 
 * **[atlas_scavenger](https://github.com/density215/atlas_scavenger)** Read measurements from the RIPE Atlas API and put the in a local postgres database in a jsonb field.
 
-
-## NCC-staff-personal Tools
-
-* **[RIPE Atlas Command Line Manager](https://github.com/astrikos/ripe-atlas-cmdline)**:
-  Provides a command line manager.
-
-* **[Mesh Manager](https://github.com/robert-kisteleki/ripeatlas-meshmanager)** A simple application to manage traceroute meshes with RIPE Atlas.
-
-* **[Connection Streaming](https://github.com/astrikos/atlas-connections-stream)** RIPE ATLAS connection stream simple visualization
-
-* **[IXP Country Jedi](https://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
-
-* **[WebGL](https://github.com/danielquinn/RIPE-Atlas-WebGL-Globe-Prototype)**
-Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
-
-* **[IXP-country Jedi](http://github.com/emileaben/ixp-country-jedi)** Set of scripts to measure and analyse countries and/or IXPs using RIPE Atlas
-
-* **[OpenIPmap](https://github.com/RIPE-Atlas-Community/openipmap)** Geolocating Internet infrastructure by crowdsourcing
-
-* **[Datacenter latency map](https://github.com/RIPE-Atlas-Community/datacentre-latency-map)** 
-
-* **[LatencyMON](https://github.com/MaxCam/viz-atlas-latencymon)** See latencies measured from a set of RIPE Atlas probes to your service in realtime
-
-* **[Eyeball traceroute](emileaben/eyeballtrace)** Do RIPE Atlas traceroutes from networks with significant user populations in a countr
-
 * **[Other CLI tools by ColdHakCA](coldhakca/atlas_tools)** (SSL Measurement, Traceroute data visualization, Maxmind GeoIP data integration) 
 
-* 
+
+
  
 
 
