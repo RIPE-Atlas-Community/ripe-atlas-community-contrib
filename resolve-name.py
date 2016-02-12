@@ -27,7 +27,6 @@ import dns.message
 import RIPEAtlas
 
 # Default values
-# TODO: bits DO and CD, UDP payload size https://atlas.ripe.net/docs/measurement-creation-api/
 country = None # World-wide
 asn = None # All
 prefix = None # All
@@ -40,6 +39,9 @@ measurement_id = None
 display_probes = False
 display_resolvers = False
 display_rtt = False
+display_validation = False
+dnssec = False
+dnssec_checking = True
 machine_readable = False
 nameserver = None
 sort = False
@@ -62,6 +64,9 @@ def usage(msg=None):
     --machinereadable or -b : machine-readable output, to be consumed by tools like grep or cut
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
+    --dnssec or -d : asks the resolver the DNSSEC records
+    --checkingdisabled or -k : asks the resolver to NOT perform DNSSEC validation
+    --displayvalidation or -j : displays the DNSSEC validation status
     --displayrtt or -i : displays the average RTT
     --sort or -s : sort the result sets
     --type or -t : query type (default is %s)
@@ -79,10 +84,11 @@ def usage(msg=None):
     """ % (qtype, requested)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:oe:hm:g:sp6u:f:vbli",
+    optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opr:st:u:v6",
                                ["requested=", "type=", "old_measurement=", "measurement_ID=",
                                 "displayprobes", "displayresolvers",
-                                "displayrtt", "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
+                                "displayrtt", "displayvalidation", "dnssec", "checkingdisabled",
+                                "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
         if option == "--type" or option == "-t":
@@ -97,6 +103,10 @@ try:
             prefix = value
         elif option == "--requested" or option == "-r":
             requested = int(value)
+        elif option == "--dnssec" or option == "-d":
+            dnssec = True
+        elif option == "--checkingdisabled" or option == "-k":
+            dnssec_checking = False
         elif option == "--sort" or option == "-s":
             sort = True
         elif option == "--old_measurement" or option == "-g":
@@ -115,6 +125,8 @@ try:
             display_probes = True
         elif option == "--displayresolvers" or option == "-l":
             display_resolvers = True
+        elif option == "--displayvalidation" or option == "-j":
+            display_validation = True
         elif option == "--displayrtt" or option == "-i":
             display_rtt = True
         elif option == "--severalperprobe" or option == "-p":
@@ -192,6 +204,10 @@ else:
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
+if dnssec or display_validation:
+    data["definitions"][0]["do"] = True
+if not dnssec_checking:
+    data["definitions"][0]["cd"] = True
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
     sys.exit(1)
@@ -312,6 +328,8 @@ for nameserver in nameservers:
                             for rdata in rrset:
                                 if rdata.rdtype == qtype_num:
                                     myset.append(string.lower(str(rdata)))
+                        if display_validation and (msg.flags & dns.flags.AD):
+                            myset.append(" (Authentic Data flag) ")
                     else:
                         if msg.rcode() == dns.rcode.REFUSED: # Not SERVFAIL since
                             # it can be legitimate (DNSSEC problem, for instance)
