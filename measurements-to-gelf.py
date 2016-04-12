@@ -18,6 +18,7 @@ import requests
 # Configuration
 gelf_server = 'localhost'
 gelf_port = 5555
+api_key = '<api_key>'
 
 # Parse Args
 if len(sys.argv) == 1:
@@ -27,7 +28,7 @@ if len(sys.argv) == 1:
 	print "#"
 	print "# Example: python measurements-to-gelf.py 12323 5"
 	print "#"
-	print "# Please define Server and Port inside the script"
+	print "# Please define Server and Port inside the script and you need an API Key for Geolocation from https://geocoder.opencagedata.com/pricing"
 	exit(1) 
 
 measurement_id = str(sys.argv[1])
@@ -36,17 +37,14 @@ time_window = int(sys.argv[2]) * 60
 
 
 def getplace(lat, lon):
-    url = "http://maps.googleapis.com/maps/api/geocode/json?"
-    url += "latlng=%s,%s&sensor=false" % (lat, lon)
+    url = "http://api.opencagedata.com/geocode/v1/json?q="
+    url += "%s+%s&key=%s" % (lat, lon, api_key)
     v = urlopen(url).read()
     j = json.loads(v)
-    components = j['results'][0]['address_components']
+    components = j['results'][0]['components']
     country = town = None
-    for c in components:
-        if "country" in c['types']:
-            country = c['long_name']
-        if "administrative_area_level_1" in c['types']:
-            state = c['long_name']
+    country = components['country']
+    state = components['state']
     return state, country
 
 
@@ -75,6 +73,7 @@ for probe in data:
 	log['short_message'] = 'RIPE Atlas Data of Probe ' + str(probe['prb_id'])
 	log['host'] = 'ripe-atlas'
 	log['level'] = syslog.LOG_INFO
+	log['timestamp'] = probe['timestamp']
 	log['_ripe_atlas_prbid'] = probe['prb_id']
 	log['_ripe_atlas_dst_addr'] = probe['dst_addr']
 	log['_ripe_atlas_src_addr'] = probe['from']
@@ -84,7 +83,6 @@ for probe in data:
 	log['_ripe_atlas_country'] = details['country_code']
 	log['_ripe_atlas_location'] = location[0] + ',' + location[1]
 	log['_ripe_atlas_rcvd_pkts'] = probe['rcvd']
-	log['_ripe_atlas_timestamp'] = probe['timestamp']
 	log['_ripe_atlas_avg_rtt'] = probe['avg']
 	log['_ripe_atlas_max_rtt'] = probe['max']
 	log['_ripe_atlas_min_rtt'] = probe['min']
