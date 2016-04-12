@@ -20,7 +20,6 @@ except ImportError:
     from urllib import urlencode
 
 
-
 # Configuration
 gelf_server = 'localhost'
 gelf_port = 5555
