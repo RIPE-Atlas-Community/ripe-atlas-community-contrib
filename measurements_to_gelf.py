@@ -45,7 +45,6 @@ time_frame = current_time - time_frame_secs
 
 
 # Get things done
-
 def get_place(lat, lon):
     url = "http://api.opencagedata.com/geocode/v1/json?q="
     url += "%s+%s&key=%s" % (lat, lon, api_key)
@@ -70,7 +69,7 @@ measurement_url = "https://atlas.ripe.net/api/v2/measurements/{}/results?{}".for
     })
 )
 
-print measurement_url
+print(measurement_url)
 
 try:
     d = requests.get(measurement_url)
@@ -82,7 +81,7 @@ data = d.json()
 
 gelf = UdpClient(gelf_server, port=gelf_port)
 for probe in data:
-    print probe['prb_id']
+    print(probe['prb_id'])
     log = {}
     content_probes_raw = requests.get('https://atlas.ripe.net/api/v1/probe/' + str(probe['prb_id']) + '/')
     details = content_probes_raw.json()
