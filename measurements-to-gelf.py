@@ -32,7 +32,7 @@ if len(sys.argv) == 1:
 	exit(1) 
 
 measurement_id = str(sys.argv[1])
-time_window = int(sys.argv[2]) * 60
+timeframe_secs = int(sys.argv[2]) * 60
 
 
 
@@ -43,15 +43,19 @@ def getplace(lat, lon):
     j = json.loads(v)
     components = j['results'][0]['components']
     country = town = None
-    country = components['country']
-    state = components['state']
+    try:
+    	country = components['country']
+    	state = components['state']
+    except Exception as e:
+	country = "N/A"
+	state = "N/A"
     return state, country
 
 
 currenttime = int(time.time())
-five_ago = currenttime - time_window
+timeframe = currenttime - timeframe_secs
 
-measurement_url = "https://atlas.ripe.net/api/v2/measurements/" + measurement_id + "/results?start=" + str(five_ago)  +"&stop=" + str(currenttime)  + "&format=json"
+measurement_url = "https://atlas.ripe.net/api/v2/measurements/%s/results?start=%s&stop=%s&format=json" % (measurement_id, str(timeframe), str(currenttime))
 
 print measurement_url
 
