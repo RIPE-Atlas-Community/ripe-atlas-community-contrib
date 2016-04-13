@@ -92,7 +92,7 @@ def get_place(lat, lon, current_time):
     connection = do_db_check()
     cursor = connection.cursor()
     location = do_db_select(cursor, lat, lon)
-    expiry = current_time + 30;
+    expiry = current_time + 3600;
     if location is None:
         try:    
             content_geo_raw = urlopen(url).read()
