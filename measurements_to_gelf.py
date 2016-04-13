@@ -14,6 +14,8 @@ import json
 import time
 import sys
 import requests
+import sqlite3
+from os.path import isfile, getsize
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -24,6 +26,7 @@ except ImportError:
 gelf_server = 'localhost'
 gelf_port = 5555
 api_key = '<api_key>'
+db_file = 'geocache.db'
 
 # Parse Args
 if len(sys.argv) == 1:
@@ -43,21 +46,71 @@ time_frame_secs = int(sys.argv[2]) * 60
 current_time = int(time.time())
 time_frame = current_time - time_frame_secs
 
+def do_db_check():
+    if not isfile(db_file):
+        connection = sqlite3.connect(db_file)
+        cursor = connection.cursor()
+        sql_command = """
+        CREATE TABLE geocache ( 
+        id INTEGER PRIMARY KEY, 
+        expiry INTEGER,
+        lat FLOAT, 
+        lon FLOAT, 
+        country VARCHAR(30), 
+        state VARCHAR(30));"""
+        cursor.execute(sql_command)
+    else:
+        connection = sqlite3.connect(db_file)
+    return connection
+
+def do_db_insert(connection, expiry, lat, lon, country, state):
+    cursor = connection.cursor()
+    format_str = """INSERT INTO geocache (id, expiry, lat, lon, country, state)
+    VALUES (NULL, {expiry}, {lat}, {lon}, "{country}", "{state}");"""
+    sql_command = format_str.format(expiry=expiry, lat=lat, lon=lon, country = country, state=state) 
+    cursor.execute(sql_command)
+    connection.commit()
+
+def do_db_select(cursor, lat, lon):
+    format_str = """SELECT expiry,country,state FROM geocache WHERE lat="{lat}" AND lon="{lon}";"""
+    sql_command = format_str.format(lat=lat, lon=lon)
+    cursor.execute(sql_command)
+    location = cursor.fetchone()
+    return location
+    
+def do_db_delete(connection, expiry):
+    cursor = connection.cursor()
+    format_str = """DELETE FROM geocache WHERE expiry = "{expiry}";"""
+    sql_command = format_str.format(expiry=expiry)
+    cursor.execute(sql_command)
+    connection.commit()
 
 # Get things done
-def get_place(lat, lon):
+def get_place(lat, lon, current_time):
     url = "http://api.opencagedata.com/geocode/v1/json?q="
     url += "%s+%s&key=%s" % (lat, lon, api_key)
-    try:    
-        content_geo_raw = urlopen(url).read()
-        content_geo_json = json.loads(content_geo_raw)
-        components = content_geo_json['results'][0]['components']
-        country = town = None
-        country = components['country']
-        state = components['state']
-    except Exception as e:
-        country = "N/A"
-        state = "N/A"
+    connection = do_db_check()
+    cursor = connection.cursor()
+    location = do_db_select(cursor, lat, lon)
+    expiry = current_time + 30;
+    if location is None:
+        try:    
+            content_geo_raw = urlopen(url).read()
+            content_geo_json = json.loads(content_geo_raw)
+            components = content_geo_json['results'][0]['components']
+            country = town = None
+            country = components['country']
+            state = components['state']
+        except Exception as e:
+            country = "N/A"
+            state = "N/A"
+        do_db_insert(connection, expiry, lat, lon, country, state)
+    else:
+        expiry = location[0]
+        state = location[1]
+        country = location[2]
+        if expiry <= current_time:
+            do_db_delete(connection, expiry)
     return state, country
 
 measurement_url = "https://atlas.ripe.net/api/v2/measurements/{}/results?{}".format(
@@ -85,7 +138,7 @@ for probe in data:
     log = {}
     content_probes_raw = requests.get('https://atlas.ripe.net/api/v1/probe/' + str(probe['prb_id']) + '/')
     details = content_probes_raw.json()
-    location = get_place(details['latitude'], details['longitude'])
+    location = get_place(details['latitude'], details['longitude'], current_time)
     log['short_message'] = 'RIPE Atlas Data of Probe ' + str(probe['prb_id'])
     log['host'] = 'ripe-atlas'
     log['level'] = syslog.LOG_INFO
