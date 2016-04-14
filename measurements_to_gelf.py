@@ -67,7 +67,7 @@ def do_db_insert(connection, expiry, lat, lon, country, state):
     cursor = connection.cursor()
     format_str = """INSERT INTO geocache (id, expiry, lat, lon, country, state)
     VALUES (NULL, {expiry}, {lat}, {lon}, "{country}", "{state}");"""
-    sql_command = format_str.format(expiry=expiry, lat=lat, lon=lon, country = country, state=state) 
+    sql_command = format_str.format(expiry=expiry, lat=lat, lon=lon, country = country.encode('utf8'), state=state.encode('utf8')) 
     cursor.execute(sql_command)
     connection.commit()
 
