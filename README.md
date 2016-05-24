@@ -7,6 +7,13 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Software projects from Interface(s) Hackathon 
+
+* **[Halo](https://github.com/RIPE-Atlas-Community/ripe-atlas-halo)** by Shane, Dan & Des 
+* **[Explorer](https://github.com/NZRS/IP-traceroute-explorer)** by Sebastian 
+* **[IXP Asymetry Check](https://github.com/inex/ixp-as)** by Barry, Drew & Jacob && http://asymcheck.inex.ie/
+* **[Traceroutes Streaming](https://github.com/dfkbg/Traceroute-Streaming)** offered by DFK as a project / data 
+
 ## Software projects from Tools-for-operators Hackathon 
 
 Software projects created during [Tools Hackathon in November 2015](https://labs.ripe.net/Members/becha/ripe-atlas-tools-hackathon-results): 
@@ -57,6 +64,7 @@ Software projects sreated during [DataViz Hackathon](https://labs.ripe.net/Membe
 * **[Sagan](https://github.com/RIPE-NCC/ripe.atlas.sagan)**: A parsing library
   for RIPE Atlas measurement results, actively maintained by the RIPE Atlas team.
 
+* **[DNSMON code](https://github.com/RIPE-NCC/dnsmon/)**: The RIPE NCC DNS Monitoring Service (DNSMON) provides a comprehensive, objective and up-to-date overview of the quality of the service offered by high-level Domain Name System (DNS) servers.
 
 ## NCC-staff-personal Tools
 
