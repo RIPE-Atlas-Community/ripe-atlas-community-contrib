@@ -10,11 +10,11 @@ Below are the links to other independantly hosted projects:
 ## Software projects from [RIPE Atlas Interfaces Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-interface-hackathon-results)  
 
 * **[Halo](https://github.com/RIPE-Atlas-Community/ripe-atlas-halo)** Halo (Network Outages Dashboard) by Shane Kerr,  Desire Milosevic, Daniel Quinn, 
-* ** IP traceroute [Explorer](https://github.com/NZRS/IP-traceroute-explorer)** by Sebastian Castro
+* **[IP traceroute Explorer](https://github.com/NZRS/IP-traceroute-explorer)** by Sebastian Castro
 * **[Geocoded IPv4/IPv6 traceroutes](https://github.com/NZRS/IP-traceroute-explorer/tree/dualtraceipmap)** by Asbjørn Sloth Tønnesen
 * **[Detecting Asymmetric Routing over IXPs](https://github.com/inex/ixp-as)** by Jacob Drabczyk, Barry O'Donovan, Drew Taylor  && http://asymcheck.inex.ie/
 * "IPv4 versus IPv6 - Who connects faster?" : http://dragon.eecs.jacobs-university.de:5000 by Vaibhav Bajpai 
-* **[Tartiflette](https://github.com/4a616d6573205265696c6c79/tartiflette) Near Real-Time Anomaly Detection from RIPE Atlas Stream by Razan K Abdallah, Randy Bush, Alexandru Manea, Cristel Pelsser, Wenqin Shao, James Reilly
+* **[Tartiflette](https://github.com/4a616d6573205265696c6c79/tartiflette)** Near Real-Time Anomaly Detection from RIPE Atlas Stream by Razan K Abdallah, Randy Bush, Alexandru Manea, Cristel Pelsser, Wenqin Shao, James Reilly
 * **[IXP-Country-Jedi 2.0](http://%20https//github.com/santiagorr/ixp-country-jedi)** Improvements for IXP-Country-Jedi based on TraIXroute, by Dimitris Mavrommatis, Edwards Mukasa, Gigis Petros, Santiago Ruano Rincón
 * **[Traceroutes Streaming](https://github.com/dfkbg/Traceroute-Streaming)** offered by DFK as a project / data 
 
