@@ -154,6 +154,8 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[Other CLI tools by ColdHakCA](coldhakca/atlas_tools)** (SSL Measurement, Traceroute data visualization, Maxmind GeoIP data integration) 
 
+* **[RIPE Atlas lowest latency](vincentbernat/ripe-atlas-lowest-latency)** determine the lowest possible latency to reach a set of endpoints 
+
 
 
  
