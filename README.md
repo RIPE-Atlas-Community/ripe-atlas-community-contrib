@@ -11,7 +11,11 @@ Below are the links to other independantly hosted projects:
 
 Software projects created during IXP-Tools Hackathon 
 
-* **[Make Peering Great Again] 
+* **[PeerMe aka "Make Peering Great Again"](https://github.com/cooperlees/peerme)** (Tool to discover and generate possible peerings between Internet Autonomous Systems) by Cooper Lees, James Paussa & Arnaud Fenioux 
+
+* **[Pinder aka Tiner for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship https://peer.sexy/) by Matthew W, David, Dan, Hannes, Andrea
+
+
 
 ## Software projects from [RIPE Atlas Interfaces Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-interface-hackathon-results)  
 
