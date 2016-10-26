@@ -13,7 +13,9 @@ Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/ha
 
 * **[PeerMe aka "Make Peering Great Again"](https://github.com/cooperlees/peerme)** (Tool to discover and generate possible peerings between Internet Autonomous Systems) by Cooper Lees, James Paussa & Arnaud Fenioux 
 
-* **[Pinder aka Tinder for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship https://peer.sexy/) by Matthew W, David, Dan, Hannes, Andrea
+* **[Pinder aka Tinder for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship)  by Andrea Beccaris, Daniel Quinn, David Barroso, Hannos Adollarsson, Matthew Walster 
+ * Site: http://peer.sexy/
+ * Slides: http://accel.waffle.sexy/pinder.pdfhttps://peer.sexy/
 
 * **[IXP Valuator](https://github.com/NZRS/IXP-valuator)**, by Sebastian Casto, James Reilly, Flavio Luciani, Khoudia Gueye, Guillermo Cicileo
 
