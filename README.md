@@ -15,7 +15,7 @@ Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/ha
 
 * **[Pinder aka Tinder for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship https://peer.sexy/) by Matthew W, David, Dan, Hannes, Andrea
 
-* **[IXP Valuator](https://github.com/NZRS/IXP-valuator)*, by Sebastian Casto, James Reilly, Flavio Luciani, Khoudia Gueye, Guillermo Cicileo
+* **[IXP Valuator](https://github.com/NZRS/IXP-valuator)**, by Sebastian Casto, James Reilly, Flavio Luciani, Khoudia Gueye, Guillermo Cicileo
 
 * Universal Looking Glass aka “One Looking Glass to Rule Them All” **[back-end](https://github.com/mathias4github/ulg-backend)** & **[front-end](https://github.com/mathias4github/ulg-frontend)** (Get MRT data from route collectors worldwide & Display it in familiar Looking Glass style)(e.g. BGPstream from CAIDA , RIPE RIS,  Open BMP  & PCH), by Benedikt Rudolph, Mathias Handsche, Orlin Tenchev, Alexander Ilin & Mikhail Grishin
 
