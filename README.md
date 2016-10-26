@@ -9,13 +9,34 @@ Below are the links to other independantly hosted projects:
 
 ## Software projects from IXP-Tools Hackathon 
 
-Software projects created during IXP-Tools Hackathon 
+Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/hackathon/ixp-tools/#!the-event) 
 
 * **[PeerMe aka "Make Peering Great Again"](https://github.com/cooperlees/peerme)** (Tool to discover and generate possible peerings between Internet Autonomous Systems) by Cooper Lees, James Paussa & Arnaud Fenioux 
 
-* **[Pinder aka Tiner for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship https://peer.sexy/) by Matthew W, David, Dan, Hannes, Andrea
+* **[Pinder aka Tinder for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship https://peer.sexy/) by Matthew W, David, Dan, Hannes, Andrea
 
+* **[IXP Valuator](https://github.com/NZRS/IXP-valuator)*, by Sebastian Casto, James Reilly, Flavio Luciani, Khoudia Gueye, Guillermo Cicileo
 
+* Universal Looking Glass aka “One Looking Glass to Rule Them All” **[back-end](https://github.com/mathias4github/ulg-backend)** & **[front-end](https://github.com/mathias4github/ulg-frontend)** (Get MRT data from route collectors worldwide & Display it in familiar Looking Glass style)(e.g. BGPstream from CAIDA , RIPE RIS,  Open BMP  & PCH), by Benedikt Rudolph, Mathias Handsche, Orlin Tenchev, Alexander Ilin & Mikhail Grishin
+
+Slides: https://labs.ripe.net/Members/becha/universal-looking-glass-slides/at_download/file
+Demo / prototype: http://bit.do/universallg
+
+* "Bird's eye":  A Simple Secure Micro Service for Querying Bird **[Backend - PHP API](https://github.com/inex/birdseye)** by Barry O'Donovan, **[Frontend CLI](https://github.com/dfkbg/birdseye)** by Daniel Karrenberg, **[Frontend Web](https://github.com/mhannig/birdseye)** by Matthias Hannig, **[Go API implementation](https://github.com/mchackorg/birdwatcher)** 
+ by Michael Cardell Widerkrantz, Daniel Melani, Jan Paul Dekker. 
+
+Live endpoints - INEX Cork production route collectors:
+1. http://rc1-cix-ipv4.inex.ie/
+2. http://rc1-cix-ipv6.inex.ie/
+web based consumer http://hannig.cc:8001/birdseye/app/
+Slides: https://dl.dropboxusercontent.com/u/42407394/2016-10-RIPE73-IXP-Tools/2016-10-RIPE73-IXP-Tools-BirdsEye.pdf
+
+* **["The remote peering Jedi” (Goal: Detecting remote peers at IXPs)](https://github.com/pgigis/remote-peering-jedi)** , by Vasileios Giotsas, Petros Gigis, Alexandros Milolidakis, Eric Nguyen Duy, Marios Isaakidis, Edward Mukasa
+
+Slides: https://labs.ripe.net/Members/becha/the-remote-peering-jedi-slides/at_download/file
+Peering portal: http://inspire.edu.gr/rp/
+
+* Peer Match-making (automate all the things!) by Matthew Stone & Edward Medvedev: https://emedvedev.github.io/peer-matchmaking-web/
 
 ## Software projects from [RIPE Atlas Interfaces Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-interface-hackathon-results)  
 
