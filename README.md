@@ -31,16 +31,16 @@ Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/ha
  * **[Frontend Web](https://github.com/mhannig/birdseye)** by Matthias Hannig
  * **[Go API implementation](https://github.com/mchackorg/birdwatcher)** by Michael Cardell Widerkrantz, Daniel Melani, Jan Paul Dekker. 
  * Live endpoints - INEX Cork production route collectors:
- * 1. http://rc1-cix-ipv4.inex.ie/
- * 2. http://rc1-cix-ipv6.inex.ie/
+  * 1. http://rc1-cix-ipv4.inex.ie/
+  * 2. http://rc1-cix-ipv6.inex.ie/
  * web based consumer http://hannig.cc:8001/birdseye/app/
  * Slides: https://dl.dropboxusercontent.com/u/42407394/2016-10-RIPE73-IXP-Tools/2016-10-RIPE73-IXP-Tools-BirdsEye.pdf
 
 * **["The remote peering Jedi” (Goal: Detecting remote peers at IXPs)](https://github.com/pgigis/remote-peering-jedi)** , by Vasileios Giotsas, Petros Gigis, Alexandros Milolidakis, Eric Nguyen Duy, Marios Isaakidis, Edward Mukasa
-* Slides: https://labs.ripe.net/Members/becha/the-remote-peering-jedi-slides/at_download/file
-* Peering portal: http://inspire.edu.gr/rp/
+ * Slides: https://labs.ripe.net/Members/becha/the-remote-peering-jedi-slides/at_download/file
+ * Peering portal: http://inspire.edu.gr/rp/
 
-* Peer Match-making (automate all the things!) by Matthew Stone & Edward Medvedev: https://emedvedev.github.io/peer-matchmaking-web/
+* **Peer Match-making** (Automate all the things!) by Matthew Stone & Edward Medvedev: https://emedvedev.github.io/peer-matchmaking-web/
 
 ## Software projects from [RIPE Atlas Interfaces Hackathon](https://labs.ripe.net/Members/becha/ripe-atlas-interface-hackathon-results)  
 
