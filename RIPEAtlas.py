@@ -16,9 +16,10 @@ import os
 import json
 import time
 import urllib2
+import random
 
 authfile = "%s/.atlas/auth" % os.environ['HOME']
-base_url = "https://atlas.ripe.net/api/v1/measurement"
+base_url = "https://atlas.ripe.net/api/v2/measurements"
 
 # The following parameters are currently not settable. Anyway, be
 # careful when changing these, you may get inconsistent results if you
@@ -73,6 +74,7 @@ class JsonRequest(urllib2.Request):
         urllib2.Request.__init__(self, url)
         self.add_header("Content-Type", "application/json")
         self.add_header("Accept", "application/json")
+        self.add_header("User-Agent", "RIPEAtlas.py")
 
 class Measurement():
     """ An Atlas measurement, identified by its ID (such as #1010569) in the field "id" """
@@ -106,7 +108,7 @@ class Measurement():
         self.url = base_url + "/?key=%s" % key
         self.url_probes = base_url + "/%s/?fields=probes,status"
         self.url_status = base_url + "/%s/?fields=status" 
-        self.url_results = base_url + "/%s/result/"
+        self.url_results = base_url + "/%s/results/"
         self.url_all = base_url + "/%s/" 
         self.url_latest = base_url + "-latest/%s/?versions=%s"
 
@@ -125,11 +127,14 @@ class Measurement():
                 raise RequestSubmissionError("Status %s, reason \"%s\"" % \
                                              (e.code, e.read()))
 
+
+            self.gen = random.Random()
             self.time = time.gmtime()
             if not wait:
                 return
             # Find out how many probes were actually allocated to this measurement
             enough = False
+            left = 30 # Maximum number of tests
             requested = data["probes"][0]["requested"] 
             fields_delay = fields_delay_base + (requested * fields_delay_factor)
             while not enough:
@@ -138,15 +143,19 @@ class Measurement():
                     self.notification(fields_delay)
                 time.sleep(fields_delay)
                 fields_delay *= 2
-                request = JsonRequest(self.url_probes % self.id)
                 try:
+                    request = JsonRequest((self.url_probes % self.id) + \
+                                          ("&defeatcaching=dc%s" % self.gen.randint(1,10000))) # A random
+                                # component is necesary to defeat caching (even Cache-Control sems ignored)
                     conn = urllib2.urlopen(request)
                     # Now, parse the answer
                     meta = json.load(conn)
                     if meta["status"]["name"] == "Specified" or \
                            meta["status"]["name"] == "Scheduled":
                         # Not done, loop
-                        pass
+                        left -= 1
+                        if left <= 0:
+                            raise FieldsQueryError("Maximum number of status queries reached")
                     elif meta["status"]["name"] == "Ongoing":
                         enough = True
                         self.num_probes = len(meta["probes"])
