@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
 """ Python code to start a RIPE Atlas UDM (User-Defined
-Measurement). This one is to test X.509 certificates in TLS servers.
+Measurement). This one is to test X.509/PKIX certificates in TLS servers.
 
 You'll need an API key in ~/.atlas/auth.
 
 After launching the measurement, it downloads the results and analyzes
-them, displaying the name ("subject" in X.509 parlance).
+them, displaying the name ("subject" in X.509 parlance) or issuer.
 
 Stephane Bortzmeyer <bortzmeyer@nic.fr>
 """
@@ -35,6 +35,7 @@ requested = 5 # Probes
 percentage_required = 0.9
 measurement_id = None
 display_probes = False
+display = "n" #Name
 
 class Set():
     def __init__(self):
@@ -43,10 +44,14 @@ class Set():
 def usage(msg=None):
     if msg:
         print >>sys.stderr, msg
-    print >>sys.stderr, "Usage: %s target-IP-address" % sys.argv[0]
+    print >>sys.stderr, "Usage: %s target-name-or-IP" % sys.argv[0]
     print >>sys.stderr, """Options are:
     --verbose or -v : makes the program more talkative
     --help or -h : this message
+    --issuer or -i : displays the issuer (default is to display the name)
+    --key or -k : displays the public key (default is to display the name)
+    --serial or -s : displays the serial number (default is to display the name)
+    --expiration or -e : displays the expiration datetime (default is to display the name)
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
@@ -57,9 +62,9 @@ def usage(msg=None):
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vh",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vhiske",
                                ["requested=", "country=", "area=", "asn=", "percentage=", "measurement-ID",
-                                "displayprobes", "verbose", "help"])
+                                "displayprobes", "verbose", "help", "issuer", "serial", "key"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -80,6 +85,14 @@ try:
         elif option == "--help" or option == "-h":
             usage()
             sys.exit(0)
+        elif option == "--issuer" or option == "-i":
+            display = "i"
+        elif option == "--key" or option == "-k":
+            display = "k"
+        elif option == "--serial" or option == "-s":
+            display = "s"
+        elif option == "--expiration" or option == "-e":
+            display = "e"
         else:
             # Should never occur, it is trapped by getopt
             usage("Unknown option %s" % option)
@@ -151,7 +164,21 @@ for result in rdata:
                 # TODO: handle chains of certificates
                 x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, str(result['cert'][0]))
                 detail = ""
-                value = "%s%s" % (x509.get_subject(), detail) # TODO better display of the name? https://pyopenssl.readthedocs.org/en/stable/api/crypto.html#x509name-objects
+                content = x509.get_subject()
+                if display == "i":
+                    content = x509.get_issuer()
+                elif display == "k":
+                    key = x509.get_pubkey()
+                    # TODO better display of the key
+                    content = "%s, type %s, %s bits" % (key, key.type(), key.bits())
+                elif display == "s":
+                    content = format(x509.get_serial_number(), '05x')
+                elif display == "e":
+                    if x509.has_expired():
+                        detail = " (EXPIRED)"
+                    # TODO: better format of the date?
+                    content = "%s%s" % (x509.get_notAfter(), detail)
+                value = "%s%s" % (content, detail) # TODO better display of the name? https://pyopenssl.readthedocs.org/en/stable/api/crypto.html#x509name-objects
         else:
                 value = "FAILED TO GET A CERT: %s" % result['err']
         sets[value].total += 1
@@ -168,4 +195,5 @@ for myset in sets_data:
         detail = "(probes %s)" % probes_sets[myset]
     print "[%s] : %i occurrences %s" % (myset, sets[myset].total, detail)
 
-print ("Test done at %s" % time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+print ("Test #%s done at %s" % (measurement.id,
+                                time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())))
