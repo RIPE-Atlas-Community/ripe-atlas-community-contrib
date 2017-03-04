@@ -1,0 +1,3 @@
+[submodule "ripe.atlas.sagan"]
+	path = ripe.atlas.sagan
+	url = https://github.com/RIPE-NCC/ripe.atlas.sagan
