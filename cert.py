@@ -36,6 +36,8 @@ percentage_required = 0.9
 measurement_id = None
 display_probes = False
 display = "n" #Name
+port = 443
+ipv6 = False
 
 class Set():
     def __init__(self):
@@ -52,6 +54,7 @@ def usage(msg=None):
     --key or -k : displays the public key (default is to display the name)
     --serial or -s : displays the serial number (default is to display the name)
     --expiration or -e : displays the expiration datetime (default is to display the name)
+    --port or -t : sets the destination port (default is of course 443)
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
@@ -62,9 +65,9 @@ def usage(msg=None):
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vhiske",
-                               ["requested=", "country=", "area=", "asn=", "percentage=", "measurement-ID",
-                                "displayprobes", "verbose", "help", "issuer", "serial", "key"])
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vhisket:6",
+                               ["requested=", "country=", "area=", "asn=", "port=", "percentage=", "measurement-ID",
+                                "displayprobes", "ipv6", "verbose", "help", "issuer", "serial", "key"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
@@ -76,10 +79,14 @@ try:
             percentage_required = float(value)
         elif option == "--requested" or option == "-r":
             requested = int(value)
+        elif option == "--port" or option == "-t":
+            port = int(value)
         elif option == "--measurement-ID" or option == "-m":
             measurement_id = value
         elif option == "--verbose" or option == "-v":
             verbose = True
+        elif option == "--ipv6" or option == "-6":
+            ipv6 = True
         elif option == "--displayprobes" or option == "-o":
             display_probes = True
         elif option == "--help" or option == "-h":
@@ -109,7 +116,7 @@ target = args[0]
 if measurement_id is None:
         data = { "definitions": [
                    { "target": target, "description": "X.509 cert of %s" % target,
-                   "type": "sslcert", "is_oneoff": True, "port": 443} ],
+                     "type": "sslcert", "is_oneoff": True, "port": port} ],
                  "probes": [
                      { "requested": requested} ] }
         if country is not None:
@@ -138,8 +145,10 @@ if measurement_id is None:
             data["probes"][0]["value"] = "WW"
             data["definitions"][0]["description"] += " from the whole world"
 
-        # TODO Allow to change the family
-        data["definitions"][0]['af'] = 4
+        if ipv6:
+            data["definitions"][0]['af'] = 6
+        else:
+            data["definitions"][0]['af'] = 4 
 
         if verbose:
             print data
