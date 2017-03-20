@@ -204,10 +204,12 @@ else:
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
-if dnssec or display_validation:
-    data["definitions"][0]["do"] = True
+if dnssec or display_validation: # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Dns_Type_Measurement_List_POST
+    data["definitions"][0]["set_do_bit"] = True
+    data["definitions"][0]["udp_payload_size"] = 4096
+# TODO: allow to specify payload size on the command-line
 if not dnssec_checking:
-    data["definitions"][0]["cd"] = True
+    data["definitions"][0]["set_cd_bit"] = True
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
     sys.exit(1)
