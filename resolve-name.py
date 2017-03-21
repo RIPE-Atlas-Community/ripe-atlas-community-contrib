@@ -155,7 +155,8 @@ domainname = args[0]
 if measurement_id is None:
     if probe_to_use is not None:
         requested = 1 # TODO allow several -u options
-data = { "definitions": [{ "type": "dns", "af": ip_family, "is_oneoff": True, 
+data = { "is_oneoff": True,
+         "definitions": [{ "type": "dns", "af": ip_family, 
                        "query_argument": domainname,
                        "description": "DNS resolution of %s" % domainname,
                        "query_class": "IN", "query_type": qtype, 

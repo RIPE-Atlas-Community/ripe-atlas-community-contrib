@@ -114,9 +114,10 @@ if len(args) != 1:
 target = args[0]
 
 if measurement_id is None:
-        data = { "definitions": [
+        data = { "is_oneoff": True,
+                 "definitions": [
                    { "target": target, "description": "X.509 cert of %s" % target,
-                     "type": "sslcert", "is_oneoff": True, "port": port} ],
+                     "type": "sslcert", "port": port} ],
                  "probes": [
                      { "requested": requested} ] }
         if country is not None:
