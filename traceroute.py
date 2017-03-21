@@ -162,9 +162,10 @@ if not is_ip_address(target):
 
 if the_probes is not None:
     requested = len(string.split(the_probes,","))
-data = { "definitions": [
+data = { "is_oneoff": True,
+         "definitions": [
            { "target": target, "description": "Traceroute %s" % target,
-            "type": "traceroute", "is_oneoff": True, "protocol": protocol} ],
+            "type": "traceroute", "protocol": protocol} ],
             "probes": [
              { "requested": requested} ] }
 if the_probes is not None:
