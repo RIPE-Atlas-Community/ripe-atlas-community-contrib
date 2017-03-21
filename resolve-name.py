@@ -48,6 +48,7 @@ sort = False
 only_one_per_probe = True
 ip_family = 4
 verbose = False
+protocol = "UDP"
 
 class Set():
     def __init__(self):
@@ -65,6 +66,7 @@ def usage(msg=None):
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
     --dnssec or -d : asks the resolver the DNSSEC records
+    --tcp: uses TCP (default is UDP)
     --checkingdisabled or -k : asks the resolver to NOT perform DNSSEC validation
     --displayvalidation or -j : displays the DNSSEC validation status
     --displayrtt or -i : displays the average RTT
@@ -87,7 +89,7 @@ try:
     optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opr:st:u:v6",
                                ["requested=", "type=", "old_measurement=", "measurement_ID=",
                                 "displayprobes", "displayresolvers",
-                                "displayrtt", "displayvalidation", "dnssec", "checkingdisabled",
+                                "displayrtt", "displayvalidation", "dnssec", "tcp", "checkingdisabled",
                                 "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
@@ -105,6 +107,8 @@ try:
             requested = int(value)
         elif option == "--dnssec" or option == "-d":
             dnssec = True
+        elif option == "--tcp":
+            protocol = "TCP"
         elif option == "--checkingdisabled" or option == "-k":
             dnssec_checking = False
         elif option == "--sort" or option == "-s":
@@ -211,6 +215,7 @@ if dnssec or display_validation: # https://atlas.ripe.net/docs/api/v2/reference/
 # TODO: allow to specify payload size on the command-line
 if not dnssec_checking:
     data["definitions"][0]["set_cd_bit"] = True
+data["definitions"][0]["protocol"] = protocol
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
     sys.exit(1)
