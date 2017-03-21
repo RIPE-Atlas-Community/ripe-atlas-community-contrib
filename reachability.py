@@ -207,6 +207,7 @@ for target in targets:
         data["definitions"][0]["description"] += (" from prefix %s" % prefix)
     if string.find(target, ':') > -1:
         af = 6
+        # TODO allows to specify stable probes https://labs.ripe.net/Members/chris_amin/new-ripe-atlas-probe-stability-system-tags
         if include is None:
             data["probes"][0]["tags"]["include"] = ["system-ipv6-works"]
     else:
