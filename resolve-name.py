@@ -358,7 +358,10 @@ for nameserver in nameservers:
                     else:
                         resolvers_sets[set_str] = [resolver,]
                 if display_rtt:
-                    sets[set_str].rtt +=  result_i['rt'] 
+                    if not result_i.has_key("result"):
+                        sets[set_str].rtt +=  result_i['rt']
+                    else:
+                        sets[set_str].rtt +=  result_i['result']['rt']
             except dns.name.BadLabelType:
                 if not machine_readable:
                     print "Probe %s failed (bad label in name)" % probe_id
