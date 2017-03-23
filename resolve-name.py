@@ -48,6 +48,7 @@ sort = False
 only_one_per_probe = True
 ip_family = 4
 verbose = False
+protocol = "UDP"
 
 class Set():
     def __init__(self):
@@ -65,6 +66,7 @@ def usage(msg=None):
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
     --dnssec or -d : asks the resolver the DNSSEC records
+    --tcp: uses TCP (default is UDP)
     --checkingdisabled or -k : asks the resolver to NOT perform DNSSEC validation
     --displayvalidation or -j : displays the DNSSEC validation status
     --displayrtt or -i : displays the average RTT
@@ -87,7 +89,7 @@ try:
     optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opr:st:u:v6",
                                ["requested=", "type=", "old_measurement=", "measurement_ID=",
                                 "displayprobes", "displayresolvers",
-                                "displayrtt", "displayvalidation", "dnssec", "checkingdisabled",
+                                "displayrtt", "displayvalidation", "dnssec", "tcp", "checkingdisabled",
                                 "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
@@ -105,6 +107,8 @@ try:
             requested = int(value)
         elif option == "--dnssec" or option == "-d":
             dnssec = True
+        elif option == "--tcp":
+            protocol = "TCP"
         elif option == "--checkingdisabled" or option == "-k":
             dnssec_checking = False
         elif option == "--sort" or option == "-s":
@@ -211,6 +215,7 @@ if dnssec or display_validation: # https://atlas.ripe.net/docs/api/v2/reference/
 # TODO: allow to specify payload size on the command-line
 if not dnssec_checking:
     data["definitions"][0]["set_cd_bit"] = True
+data["definitions"][0]["protocol"] = protocol
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
     sys.exit(1)
@@ -294,12 +299,25 @@ for nameserver in nameservers:
                 myset.append("NO RESPONSE FOR UNKNOWN REASON at probe %s" % probe_id)
         else:
             raise RIPEAtlas.WrongAssumption("Neither result not resultset member")
+        if len(result_set) == 0:
+            myset.sort()
+            set_str = " ".join(myset)
+            sets[set_str].total += 1
+            if display_probes:
+                if probes_sets.has_key(set_str):
+                    probes_sets[set_str].append(probe_id)
+                else:
+                    probes_sets[set_str] = [probe_id,]
         for result_i in result_set:
             try:
                 if result_i.has_key("dst_addr"):
                     resolver = str(result_i['dst_addr'])
                 elif result_i.has_key("dst_name"): # Apparently, used when there was a problem
                     resolver = str(result_i['dst_name'])
+                elif result.has_key("dst_addr"): # Used when specifying a name server
+                    resolver = str(result['dst_addr'])
+                elif result.has_key("dst_name"): # Apparently, used when there was a problem
+                    resolver = str(result['dst_name'])
                 else:
                     resolver = "UNKNOWN RESOLUTION ERROR"
                 myset = []
@@ -326,7 +344,8 @@ for nameserver in nameservers:
                         probe_resolves = True
                         # If we test an authoritative server, and it returns a delegation, we won't see anything...
                         if result_i['result']['ANCOUNT'] == 0:
-                            print "Warning: reply at probe %s has no answers: may be the server returned a delegation?" % probe_id
+                            if verbose:
+                                print "Warning: reply at probe %s has no answers: may be the server returned a delegation?" % probe_id
                         for rrset in msg.answer:
                             for rdata in rrset:
                                 if rdata.rdtype == qtype_num:
@@ -373,11 +392,13 @@ for nameserver in nameservers:
                     print "Probe %s failed (malformed DNS message)" % probe_id
             if only_one_per_probe:
                     break
-        if not probe_resolves and first_error != "":
+        if not probe_resolves and first_error != "" and verbose:
             print "Warning, probe %s has no working resolver (first error is \"%s\")" % (probe_id, first_error)
         if not resolver_responds:
             if all_timeout:
-                print "Warning, probe %s never got reply from any resolver" % (probe_id)
+                if verbose:
+                    print "Warning, probe %s never got reply from any resolver" % (probe_id)
+                # TODO these results appear as duplicate(s)
                 set_str = "TIMEOUT(S)"
             else:
                 myset.sort()
