@@ -7,6 +7,68 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Software projects from DNS Measurements Hackathon 
+
+In April 2017 we organised a DNS Measurements Hackahton, and here are the links to the code that was produced during the event: 
+
+* “Monitoring DNS Propagation Time”, by “Team USA and Friends” {Tom Arnfeld (Cloudflare), Shane Kerr (Dyn), Kai Storbeck (xs4all), Jon Mercereau (ex-LinkedIn) } 
+
+** Slides: https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/dns-measurements-hackathon/1.%20new%20RIPE%20NCC%20Hackathon%20-%20Team%20USA%20%26%20FRIENDS.pdf
+** Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
+
+
+* “I know what you did…” aka “DNS resolver hijack tester” aka “DNS Censorship” by Edward Zambrano (Spotify), Nick Wolf (consultant), Sergey Krasnopivets (Selectel) , Konstantin Novakovsky (Selectel) }  
+
+** Slides: (@ADD LINK TO PDF!) “DNS resolver hijack tester” 
+** Code: https://github.com/bigzaqui/ripe-hackaton-apr-2017 
+
+* 3. “DNS Fingerprinting” by “Polish Guys” {Pawel Formski (FarSight Security), Maciej Andzinski (NASK), Marta van der Haagen (design), Mateusz Kaczanowsk (Facebook)} 
+
+** Documentation: https://recdnsfp.github.io/ 
+** Code: https://github.com/recdnsfp/parsejson 
+** Comments on HackerNews /  YCombinator: https://news.ycombinator.com/item?id=14166467
+
+* Reverse DNS statistics by “RIR team” {Sofia (APNIC, ex-LACNIC), Anand & Max (RIPE NCC), Sara Bagheri (student) } 
+
+Slides: (PDF) 
+
+* “Everything you ever wanted to know about caching resolvers but were afraid to ask” by Team  “DNSThought” { Andrea Barberio (Facebook), Petros Gigis (RIPE NCC/FORTH), Jerry Lundström (DNS-OARC),  Teemu Rytilahti (HGI, Ruhr-University Bochum), Willem Tooroop (NLNetLabs) } 
+
+Slides: https://github.com/DNS-OARC/ripe-hackathon-dns-caching/raw/master/RipeDnsHack17DnsThought.pdf
+
+Code: https://github.com/DNS-OARC/ripe-hackathon-dns-caching 
+
+https://github.com/DNS-OARC/ripe-hackathon-dns-caching 
+
+Demo: http://sg-pub.ripe.net/petros/dnsthought/ 
+
+Go bindings for RIPE Atlas API (work in progress) https://github.com/DNS-OARC/ripeatlas 
+
+* “Passive DNS collection (and statistics) from RIPE Atlas Sensors” by Alexandre Dulaunoy (CIRLL.lu) 
+
+Code: https://github.com/adulau/passive-dns-atlas 
+
+Results:  https://www.foo.be/ripe-atlas/
+
+Example:  https://www.foo.be/ripe-atlas/MASTERSERVERNAME.html 
+
+* “Anomaly Detection on DNS Auths” by Team Anomalizers aka Platypus {Christian Doerr (TU Delft)
+  Ella Titova (VivaCell), Giovane Moura (SIDN Labs), Jan Harm Kuipers (University of Twente/SIDN Labs), Moritz Mueller (SIDN Labs/University of Twente),  Ricardo Schmidt (University of Twente)   Wouter de Vries (University of Twente) } 
+
+Slides: https://github.com/ripe-dns-anomaly/anomalyDetector/blob/master/presentation/presentation.pdf
+
+Code: https://github.com/orgs/ripe-dns-anomaly/   
+
+Demo: https://ripe-dns-anomaly.github.io
+
+Blog: https://www.sidnlabs.nl/a/weblog/ripe-ncc-dns-measurements-hackathon
+
+
+* “Ripe Atlas Stream To Anywhere” by Team “World Peace” {Ulrich Wisser (IIS), Stefan Jakob (DENIC), 
+
+Slides: 
+
+
 ## Software projects from IXP-Tools Hackathon 
 
 Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/hackathon/ixp-tools/#!the-event) 
