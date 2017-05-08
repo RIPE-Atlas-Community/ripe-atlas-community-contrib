@@ -12,10 +12,8 @@ Below are the links to other independantly hosted projects:
 In April 2017 we organised a DNS Measurements Hackahton. All presnetation slides are in the "slides" directory, and here are the links to the code that was produced during the event: 
 
 * “Monitoring DNS Propagation Time”, by “Team USA and Friends” {Tom Arnfeld (Cloudflare), Shane Kerr (Dyn), Kai Storbeck (xs4all), Jon Mercereau (ex-LinkedIn) } 
-
   Slides: https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/dns-measurements-hackathon/1.%20new%20RIPE%20NCC%20Hackathon%20-%20Team%20USA%20%26%20FRIENDS.pdf
-
-Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
+  Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
 
 * “I know what you did…” aka “DNS resolver hijack tester” aka “DNS Censorship” by Edward Zambrano (Spotify), Nick Wolf (consultant), Sergey Krasnopivets (Selectel) , Konstantin Novakovsky (Selectel) }  
 
