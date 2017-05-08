@@ -9,10 +9,9 @@ Below are the links to other independantly hosted projects:
 
 ## Software projects from DNS Measurements Hackathon 
 
-In April 2017 we organised a DNS Measurements Hackahton. All presnetation slides are in the "slides" directory, and here are the links to the code that was produced during the event: 
+In April 2017 we had a [DNS Measurements Hackathon](https://labs.ripe.net/Members/becha/results-dns-measurements-hackathon/view). All presnetation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/dns-measurements-hackathon), and here are the links to the code that was produced during the event: 
 
 * “Monitoring DNS Propagation Time”, by “Team USA and Friends” {Tom Arnfeld (Cloudflare), Shane Kerr (Dyn), Kai Storbeck (xs4all), Jon Mercereau (ex-LinkedIn) } 
-  * Slides: https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/dns-measurements-hackathon/1.%20new%20RIPE%20NCC%20Hackathon%20-%20Team%20USA%20%26%20FRIENDS.pdf
   * Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
 
 * “I know what you did…” aka “DNS resolver hijack tester” aka “DNS Censorship” by Edward Zambrano (Spotify), Nick Wolf (consultant), Sergey Krasnopivets (Selectel) , Konstantin Novakovsky (Selectel) }  
@@ -24,7 +23,6 @@ In April 2017 we organised a DNS Measurements Hackahton. All presnetation slides
   * Comments on HackerNews /  YCombinator: https://news.ycombinator.com/item?id=14166467
 
 * Reverse DNS statistics by “RIR team” {Sofia (APNIC, ex-LACNIC), Anand & Max (RIPE NCC), Sara Bagheri (student) } 
-  * Slides: (PDF) 
 
 * “Everything you ever wanted to know about caching resolvers but were afraid to ask” by Team  “DNSThought” { Andrea Barberio (Facebook), Petros Gigis (RIPE NCC/FORTH), Jerry Lundström (DNS-OARC),  Teemu Rytilahti (HGI, Ruhr-University Bochum), Willem Tooroop (NLNetLabs) } 
 
@@ -41,20 +39,12 @@ In April 2017 we organised a DNS Measurements Hackahton. All presnetation slides
 
 * “Anomaly Detection on DNS Auths” by Team Anomalizers aka Platypus {Christian Doerr (TU Delft)
   Ella Titova (VivaCell), Giovane Moura (SIDN Labs), Jan Harm Kuipers (University of Twente/SIDN Labs), Moritz Mueller (SIDN Labs/University of Twente),  Ricardo Schmidt (University of Twente)   Wouter de Vries (University of Twente) } 
+  * Slides: https://github.com/ripe-dns-anomaly/anomalyDetector/blob/master/presentation/presentation.pdf
+  * Code: https://github.com/orgs/ripe-dns-anomaly/   
+  * Demo: https://ripe-dns-anomaly.github.io
+  * Blog: https://www.sidnlabs.nl/a/weblog/ripe-ncc-dns-measurements-hackathon
 
-Slides: https://github.com/ripe-dns-anomaly/anomalyDetector/blob/master/presentation/presentation.pdf
-
-Code: https://github.com/orgs/ripe-dns-anomaly/   
-
-Demo: https://ripe-dns-anomaly.github.io
-
-Blog: https://www.sidnlabs.nl/a/weblog/ripe-ncc-dns-measurements-hackathon
-
-
-* “Ripe Atlas Stream To Anywhere” by Team “World Peace” {Ulrich Wisser (IIS), Stefan Jakob (DENIC), 
-
-Slides: 
-
+* “Ripe Atlas Stream To Anywhere” by Team “World Peace” {Ulrich Wisser (IIS), Stefan Jakob (DENIC), } 
 
 ## Software projects from IXP-Tools Hackathon 
 
@@ -63,31 +53,31 @@ Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/ha
 * **[PeerMe aka "Make Peering Great Again"](https://github.com/cooperlees/peerme)** (Tool to discover and generate possible peerings between Internet Autonomous Systems) by Cooper Lees, James Paussa & Arnaud Fenioux 
 
 * **[Pinder aka Tinder for Peering](https://github.com/dotwaffle/pinder)** (Swipe Right On A New Peering Relationship)  by Andrea Beccaris, Daniel Quinn, David Barroso, Hannos Adollarsson, Matthew Walster 
- * Site: http://peer.sexy/
- * Slides: http://accel.waffle.sexy/pinder.pdfhttps://peer.sexy/
+  * Site: http://peer.sexy/
+  * Slides: http://accel.waffle.sexy/pinder.pdfhttps://peer.sexy/
 
 * **[IXP Valuator](https://github.com/NZRS/IXP-valuator)**, by Sebastian Casto, James Reilly, Flavio Luciani, Khoudia Gueye, Guillermo Cicileo
 
 * Universal Looking Glass aka “One Looking Glass to Rule Them All”: Get MRT data from route collectors worldwide & Display it in familiar Looking Glass style)(e.g. BGPstream from CAIDA , RIPE RIS,  Open BMP  & PCH), by Benedikt Rudolph, Mathias Handsche, Orlin Tenchev, Alexander Ilin & Mikhail Grishin
- * **[back-end](https://github.com/mathias4github/ulg-backend)**
- * **[front-end](https://github.com/mathias4github/ulg-frontend)** 
- * Slides: https://labs.ripe.net/Members/becha/universal-looking-glass-slides/at_download/file
- * Demo / prototype: http://bit.do/universallg
+  * **[back-end](https://github.com/mathias4github/ulg-backend)**
+  * **[front-end](https://github.com/mathias4github/ulg-frontend)** 
+  * Slides: https://labs.ripe.net/Members/becha/universal-looking-glass-slides/at_download/file
+  * Demo / prototype: http://bit.do/universallg
 
 * "Bird's eye":  A Simple Secure Micro Service for Querying Bird 
- * **[Backend - PHP API](https://github.com/inex/birdseye)** by Barry O'Donovan
- * **[Frontend CLI](https://github.com/dfkbg/birdseye)** by Daniel Karrenberg
- * **[Frontend Web](https://github.com/mhannig/birdseye)** by Matthias Hannig
- * **[Go API implementation](https://github.com/mchackorg/birdwatcher)** by Michael Cardell Widerkrantz, Daniel Melani, Jan Paul Dekker. 
- * Live endpoints - INEX Cork production route collectors:
-  * 1. http://rc1-cix-ipv4.inex.ie/
-  * 2. http://rc1-cix-ipv6.inex.ie/
- * web based consumer http://hannig.cc:8001/birdseye/app/
- * Slides: https://dl.dropboxusercontent.com/u/42407394/2016-10-RIPE73-IXP-Tools/2016-10-RIPE73-IXP-Tools-BirdsEye.pdf
+  * **[Backend - PHP API](https://github.com/inex/birdseye)** by Barry O'Donovan
+  * **[Frontend CLI](https://github.com/dfkbg/birdseye)** by Daniel Karrenberg
+  * **[Frontend Web](https://github.com/mhannig/birdseye)** by Matthias Hannig
+  * **[Go API implementation](https://github.com/mchackorg/birdwatcher)** by Michael Cardell Widerkrantz, Daniel Melani, Jan Paul Dekker. 
+  * Live endpoints - INEX Cork production route collectors:
+   * 1. http://rc1-cix-ipv4.inex.ie/
+   * 2. http://rc1-cix-ipv6.inex.ie/
+  * web based consumer http://hannig.cc:8001/birdseye/app/
+  * Slides: https://dl.dropboxusercontent.com/u/42407394/2016-10-RIPE73-IXP-Tools/2016-10-RIPE73-IXP-Tools-BirdsEye.pdf
 
 * **["The remote peering Jedi” (Goal: Detecting remote peers at IXPs)](https://github.com/pgigis/remote-peering-jedi)** , by Vasileios Giotsas, Petros Gigis, Alexandros Milolidakis, Eric Nguyen Duy, Marios Isaakidis, Edward Mukasa
- * Slides: https://labs.ripe.net/Members/becha/the-remote-peering-jedi-slides/at_download/file
- * Peering portal: http://inspire.edu.gr/rp/
+  * Slides: https://labs.ripe.net/Members/becha/the-remote-peering-jedi-slides/at_download/file
+  * Peering portal: http://inspire.edu.gr/rp/
 
 * **Peer Match-making** (Automate all the things!) by Matthew Stone & Edward Medvedev: https://emedvedev.github.io/peer-matchmaking-web/
 
@@ -101,7 +91,6 @@ Software projects created during [IXP-Tools Hackathon](https://atlas.ripe.net/ha
 * **[Tartiflette](https://github.com/4a616d6573205265696c6c79/tartiflette)** Near Real-Time Anomaly Detection from RIPE Atlas Stream by Razan K Abdallah, Randy Bush, Alexandru Manea, Cristel Pelsser, Wenqin Shao, James Reilly
 * **[IXP-Country-Jedi 2.0](https://github.com/santiagorr/ixp-country-jedi)** Improvements for IXP-Country-Jedi based on TraIXroute, by Dimitris Mavrommatis, Edwards Mukasa, Gigis Petros, Santiago Ruano Rincón
 * **[Traceroutes Streaming](https://github.com/dfkbg/Traceroute-Streaming)** offered by DFK as a project / data 
-
 
 ## Software projects from Tools-for-operators Hackathon 
 
