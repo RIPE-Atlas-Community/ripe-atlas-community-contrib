@@ -132,6 +132,8 @@ Software projects sreated during [DataViz Hackathon](https://labs.ripe.net/Membe
 
 * **[CLI traceroute](https://github.com/emileaben/cmdline-atlas-trace)** Do RIPE Atlas traceroutes on the commandline
 
+* **[Visualizing unsual latencies](https://github.com/darkk/atls-hktn)** Created at the second Russian hackathon on Internet measurements, with the Original goal: measure latency between geographically close points and pinpoint abnormally high latencies (bad peering?) compared to speed of light in fiber.
+
 ## RIPE NCC Tools 
 
 * **[Official RIPE Atlas CLI toolset](https://github.com/RIPE-NCC/ripe-atlas-tools/)** Official command-line client for RIPE Atlas *PULL REQUESTS WELCOME!*  
