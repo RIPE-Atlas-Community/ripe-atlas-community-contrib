@@ -40,15 +40,21 @@ display_probes = False
 display_resolvers = False
 display_rtt = False
 display_validation = False
+edns_size = None
 dnssec = False
 dnssec_checking = True
 machine_readable = False
 nameserver = None
+recursive = True
 sort = False
 only_one_per_probe = True
 ip_family = 4
 verbose = False
 protocol = "UDP"
+# TODO set NSID bit?
+
+# Constants
+MAXLEN = 80 # Maximum length of a displayed resource record
 
 class Set():
     def __init__(self):
@@ -65,7 +71,9 @@ def usage(msg=None):
     --machinereadable or -b : machine-readable output, to be consumed by tools like grep or cut
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
+    --norecursive or -z : asks the resolver to NOT recurse (default is to recurse, WARNING OPTION CURRENTLY IGNORED BY THE PROBES)
     --dnssec or -d : asks the resolver the DNSSEC records
+    --ednssize=N or -q N : asks for EDNS with the "payload size" option (default is very old DNS, without EDNS)
     --tcp: uses TCP (default is UDP)
     --checkingdisabled or -k : asks the resolver to NOT perform DNSSEC validation
     --displayvalidation or -j : displays the DNSSEC validation status
@@ -86,10 +94,10 @@ def usage(msg=None):
     """ % (qtype, requested)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opr:st:u:v6",
-                               ["requested=", "type=", "old_measurement=", "measurement_ID=",
+    optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opq:r:st:u:v6z",
+                               ["requested=", "type=", "old_measurement=", "measurement_ID=", "ednssize=",
                                 "displayprobes", "displayresolvers",
-                                "displayrtt", "displayvalidation", "dnssec", "tcp", "checkingdisabled",
+                                "displayrtt", "displayvalidation", "dnssec", "norecursive", "tcp", "checkingdisabled",
                                 "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
@@ -105,8 +113,12 @@ try:
             prefix = value
         elif option == "--requested" or option == "-r":
             requested = int(value)
+        elif option == "--norecursive" or option == "-z":
+            recursive = False
         elif option == "--dnssec" or option == "-d":
             dnssec = True
+        elif option == "--ednssize" or option == "-q":
+            edns_size = int(value)
         elif option == "--tcp":
             protocol = "TCP"
         elif option == "--checkingdisabled" or option == "-k":
@@ -163,8 +175,7 @@ data = { "is_oneoff": True,
          "definitions": [{ "type": "dns", "af": ip_family, 
                        "query_argument": domainname,
                        "description": "DNS resolution of %s" % domainname,
-                       "query_class": "IN", "query_type": qtype, 
-                       "recursion_desired": True}],
+                       "query_class": "IN", "query_type": qtype}],
      "probes": [{"requested": requested, "type": "area", "value": "WW"}] }
 if probe_to_use is not None:
     # TODO: should warn if --requested was specified
@@ -209,12 +220,18 @@ else:
     else:
         data["probes"][0]["type"] = "area"
         data["probes"][0]["value"] = "WW"
+if edns_size is not None and protocol == "UDP":
+    data["definitions"][0]["udp_payload_size"] = edns_size
 if dnssec or display_validation: # https://atlas.ripe.net/docs/api/v2/reference/#!/measurements/Dns_Type_Measurement_List_POST
     data["definitions"][0]["set_do_bit"] = True
-    data["definitions"][0]["udp_payload_size"] = 4096
-# TODO: allow to specify payload size on the command-line
+    if edns_size is None and protocol == "UDP":
+        data["definitions"][0]["udp_payload_size"] = 4096
 if not dnssec_checking:
     data["definitions"][0]["set_cd_bit"] = True
+if recursive:
+    data["definitions"][0]["set_rd_bit"] = True
+else:
+    data["definitions"][0]["set_rd_bit"] = False
 data["definitions"][0]["protocol"] = protocol
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
@@ -349,9 +366,11 @@ for nameserver in nameservers:
                         for rrset in msg.answer:
                             for rdata in rrset:
                                 if rdata.rdtype == qtype_num:
-                                    myset.append(string.lower(str(rdata)))
+                                    myset.append(string.lower(str(rdata)[0:MAXLEN])) # We truncate because DNSKEY can be very long
                         if display_validation and (msg.flags & dns.flags.AD):
                             myset.append(" (Authentic Data flag) ")
+                        if (msg.flags & dns.flags.TC):
+                            myset.append(" (TRUNCATED May have to use --ednssize) ")
                     else:
                         if msg.rcode() == dns.rcode.REFUSED: # Not SERVFAIL since
                             # it can be legitimate (DNSSEC problem, for instance)
