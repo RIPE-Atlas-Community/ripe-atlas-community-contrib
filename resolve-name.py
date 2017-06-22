@@ -150,6 +150,7 @@ try:
         elif option == "--ipv6" or option == "-6":
             ip_family = 6
             # TODO: when using option --nameserver, set it automatically depending on the address family?
+            # TODO : when using option -6 use tags to select only probes with working IPv6
         elif option == "--verbose" or option == "-v":
             verbose = True
         elif option == "--machinereadable" or option == "-b":
