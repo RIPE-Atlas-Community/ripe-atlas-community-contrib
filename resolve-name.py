@@ -71,7 +71,7 @@ def usage(msg=None):
     --machinereadable or -b : machine-readable output, to be consumed by tools like grep or cut
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
-    --norecursive or -z : asks the resolver to NOT recurse (default is to recurse, WARNING OPTION CURRENTLY IGNORED BY THE PROBES)
+    --norecursive or -z : asks the resolver to NOT recurse (default is to recurse, note --norecursive works ONLY if asking a specific resolver, not with the default one)
     --dnssec or -d : asks the resolver the DNSSEC records
     --ednssize=N or -q N : asks for EDNS with the "payload size" option (default is very old DNS, without EDNS)
     --tcp: uses TCP (default is UDP)
