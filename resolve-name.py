@@ -47,11 +47,11 @@ machine_readable = False
 nameserver = None
 recursive = True
 sort = False
+nsid = False
 only_one_per_probe = True
 ip_family = 4
 verbose = False
 protocol = "UDP"
-# TODO set NSID bit?
 
 # Constants
 MAXLEN = 80 # Maximum length of a displayed resource record
@@ -73,6 +73,7 @@ def usage(msg=None):
     --displayresolvers or -l : display the resolvers IP addresses (WARNING: big lists)
     --norecursive or -z : asks the resolver to NOT recurse (default is to recurse, note --norecursive works ONLY if asking a specific resolver, not with the default one)
     --dnssec or -d : asks the resolver the DNSSEC records
+    --nsid : asks the resolver with NSID (name server identification)
     --ednssize=N or -q N : asks for EDNS with the "payload size" option (default is very old DNS, without EDNS)
     --tcp: uses TCP (default is UDP)
     --checkingdisabled or -k : asks the resolver to NOT perform DNSSEC validation
@@ -97,7 +98,7 @@ try:
     optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opq:r:st:u:v6z",
                                ["requested=", "type=", "old_measurement=", "measurement_ID=", "ednssize=",
                                 "displayprobes", "displayresolvers",
-                                "displayrtt", "displayvalidation", "dnssec", "norecursive", "tcp", "checkingdisabled",
+                                "displayrtt", "displayvalidation", "dnssec", "nsid", "norecursive", "tcp", "checkingdisabled",
                                 "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
     for option, value in optlist:
@@ -117,6 +118,8 @@ try:
             recursive = False
         elif option == "--dnssec" or option == "-d":
             dnssec = True
+        elif option == "--nsid":
+            nsid = True
         elif option == "--ednssize" or option == "-q":
             edns_size = int(value)
         elif option == "--tcp":
@@ -227,6 +230,10 @@ if dnssec or display_validation: # https://atlas.ripe.net/docs/api/v2/reference/
     data["definitions"][0]["set_do_bit"] = True
     if edns_size is None and protocol == "UDP":
         data["definitions"][0]["udp_payload_size"] = 4096
+if nsid: 
+    data["definitions"][0]["set_nsid_bit"] = True
+    if edns_size is None and protocol == "UDP":
+        data["definitions"][0]["udp_payload_size"] = 1024
 if not dnssec_checking:
     data["definitions"][0]["set_cd_bit"] = True
 if recursive:
@@ -357,6 +364,10 @@ for nameserver in nameservers:
                     answer = result_i['result']['abuf'] + "=="
                     content = base64.b64decode(answer)
                     msg = dns.message.from_wire(content)
+                    if nsid:
+                        for opt in msg.options:
+                            if opt.otype == dns.edns.NSID:
+                                myset.append("NSID: " + opt.data)
                     successes += 1
                     if msg.rcode() == dns.rcode.NOERROR:
                         probe_resolves = True
