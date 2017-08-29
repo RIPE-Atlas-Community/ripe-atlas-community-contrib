@@ -112,6 +112,8 @@ class Measurement():
         self.url_all = base_url + "/%s/" 
         self.url_latest = base_url + "-latest/%s/?versions=%s"
 
+        self.status = None
+        
         if data is not None:
             self.json_data = json.dumps(data)
             self.notification = sleep_notification
@@ -150,6 +152,7 @@ class Measurement():
                     conn = urllib2.urlopen(request)
                     # Now, parse the answer
                     meta = json.load(conn)
+                    self.status = meta["status"]["name"] 
                     if meta["status"]["name"] == "Specified" or \
                            meta["status"]["name"] == "Scheduled":
                         # Not done, loop
@@ -166,6 +169,7 @@ class Measurement():
                     raise FieldsQueryError("%s" % e.read())
         else:
             self.id = id
+            self.notification = None
             try:
                 conn = urllib2.urlopen(JsonRequest(self.url_status % self.id))
             except urllib2.HTTPError as e:
@@ -175,8 +179,18 @@ class Measurement():
                     raise MeasurementAccessError("%s" % e.read())
             result_status = json.load(conn) 
             status = result_status["status"]["name"]
-            # TODO: test status
-            self.num_probes = None # TODO: get it from the status?
+            self.status = status
+            if status != "Ongoing" and status != "Stopped":
+                raise MeasurementAccessError("Invalid status \"%s\"" % status)
+            try:
+                conn = urllib2.urlopen(JsonRequest(self.url_probes % self.id))
+            except urllib2.HTTPError as e:
+                if e.code == 404:
+                    raise MeasurementNotFound
+                else:
+                    raise MeasurementAccessError("%s" % e.read())
+            result_status = json.load(conn) 
+            self.num_probes = len(result_status["probes"])
         try:
                 conn = urllib2.urlopen(JsonRequest(self.url_all % self.id))
         except urllib2.HTTPError as e:
@@ -186,6 +200,8 @@ class Measurement():
                         raise MeasurementAccessError("%s" % e.read())
         result_status = json.load(conn)
         self.time = time.gmtime(result_status["start_time"])
+        self.description = result_status["description"]
+        self.interval = result_status["interval"]
             
     def results(self, wait=True, percentage_required=0.9, latest=None):
         """Retrieves the result. "wait" indicates if you are willing to wait until
