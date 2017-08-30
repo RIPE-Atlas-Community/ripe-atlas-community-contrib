@@ -34,6 +34,7 @@ prefix = None # All
 verbose = False
 requested = 5 # Probes
 tests = 3 # ICMP packets per probe
+size = 64
 by_probe = False # Default is to count by test, not by probe
 percentage_required = 0.9
 the_probes = None
@@ -76,15 +77,16 @@ def usage(msg=None):
     --exclude TAGS or -e TAGS : excludes from measurements the probes with these tags (a comma-separated list)
     --requested=N or -r N : requests N probes (default is %s)
     --tests=N or -t N : send N ICMP packets from each probe (default is %s)
+    --size=N or -z N : packets of size N (in bytes, default is %s)
     --by_probe : count the percentage of success by probe, not by test (useless if --tests=1)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
-    """ % (requested, tests, percentage_required)
+    """ % (requested, tests, size, percentage_required)
     
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:m:vbhf:g:e:i:os:",
+    optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:t:p:m:vbhf:g:e:i:os:z:",
                                ["requested=", "country=", "area=", "prefix=", "asn=", "percentage=", "probes=",
                                 "exclude=", "include=", "by_probe",
-                                "tests=", "verbose", "machinereadable", "old_measurement=", "measurement_ID=",
+                                "tests=", "size=", "verbose", "machinereadable", "old_measurement=", "measurement_ID=",
                                 "displayprobes", "help"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
@@ -103,6 +105,8 @@ try:
             requested = int(value)
         elif option == "--tests" or option == "-t":
             tests = int(value)
+        elif option == "--size" or option == "-z":
+            size = int(value)
         elif option == "--exclude" or option == "-e":
             exclude = string.split(value, ",")
         elif option == "--include" or option == "-i":
@@ -145,7 +149,7 @@ if display_probes and machine_readable:
     sys.exit(1)
 data = { "is_oneoff": True,
          "definitions": [
-           { "type": "ping", "packets": tests} ],
+           { "type": "ping", "packets": tests, "size": size} ],
          "probes": [
              { "requested": requested} ] }
 data["probes"][0]["tags"] = {}
