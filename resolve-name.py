@@ -152,8 +152,9 @@ try:
             only_one_per_probe = False
         elif option == "--ipv6" or option == "-6":
             ip_family = 6
-            # TODO: when using option --nameserver, set it automatically depending on the address family?
-            # TODO : when using option -6 use tags to select only probes with working IPv6
+            # TODO: when using option --nameserver, set it
+            # automatically depending on the address family? Not easy,
+            # the nameserver can be identified by name. Forbid it?
         elif option == "--verbose" or option == "-v":
             verbose = True
         elif option == "--machinereadable" or option == "-b":
@@ -252,17 +253,21 @@ if nameserver is None:
     nameservers = [None,]
 
 for nameserver in nameservers:
+    data["probes"][0]["tags"] = {}
     if nameserver is None:
         data["definitions"][0]["use_probe_resolver"] = True
         # Exclude probes which do not have at least one working resolver
-        data["probes"][0]["tags"] = {}
         data["probes"][0]["tags"]["include"] = ["system-resolves-a-correctly",
                                                 "system-resolves-aaaa-correctly"] 
     else:
+        data["probes"][0]["tags"]["include"] = []
         data["definitions"][0]["use_probe_resolver"] = False
         data["definitions"][0]["target"] = nameserver
         data["definitions"][0]["description"] += (" via nameserver %s" % nameserver) # TODO if several nameservers, they addresses are added after each other :-( 
-
+    if ip_family == 6:
+        data["probes"][0]["tags"]["include"].append("system-ipv6-works")
+    else:
+        data["probes"][0]["tags"]["include"].append("system-ipv4-works")
     if old_measurement is not None:
         data["probes"][0]["requested"] = 500 # Dummy value, anyway, 
                                                 # but necessary to get
