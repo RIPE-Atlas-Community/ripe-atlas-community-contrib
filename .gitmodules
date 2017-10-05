@@ -1,3 +1,6 @@
 [submodule "ripeatlas-probe-geoselect"]
 	path = ripeatlas-probe-geoselect
 	url = https://github.com/emileaben/ripeatlas-probe-geoselect.git
+[submodule "ipdetailscache"]
+	path = ipdetailscache
+	url = https://github.com/pierky/ipdetailscache.git

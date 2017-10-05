@@ -1,30 +1,30 @@
 Scripts for alerts
 
 RIPE Atlas functionality: 
-https://atlas.ripe.net/docs/status-checks/
+https://atlas.ripe.net/docs/api/v2/manual/measurements/status-checks.html
 
 Examples of home-made scripts for using RIPE Atlas for automatic notifications using existing monitoring systems (nagios, icing and similar) 
 
-Wolfgang Nagele: 
+Wolfgang Nagele (note: edited for API v2 compatibility):
 
-check_http -S -H atlas.ripe.net -j HEAD -d 'X-RIPE-Atlas-Global-Alert: 0' -u /api/v1/status-checks/<msm_id>/?key=<api_key>
+check_http -S -H atlas.ripe.net -j HEAD -d 'X-RIPE-Atlas-Global-Alert: 0' -u /api/v2/measurements/<MSM_ID>/status-check[?key=<api_key>]
 
 & https://www.nagios-plugins.org/doc/man/check_http.html 
 
 
 Stephane Bortzmeyer 
 
-Here is what I use in Icinga :
+Here is what I use in Icinga (note: edited for API v2 compatibility):
 
 define service {
      use generic-service
      host_name madiba
      service_description Test_Atlas
-     check_command check_http!-I atlas.ripe.net  -r 'global_alert":false' --ssl=1 -u /api/v1/status-checks/1040425/?permitted_total_alerts=1
+     check_command check_http!-H atlas.ripe.net -I atlas.ripe.net  -r 'global_alert":false' --ssl=1 -u /api/v2/measurements/1963375/status-check?permitted_total_alerts=1
 }
 
 
-Michael Friedrich:
+Michael Friedrich (note: edited for API v2 compatibility):
 
 Modifed the example above for usage with Icinga 2
 https://wiki.icinga.org/display/howtos/RIPE+Atlas+Monitoring
@@ -33,16 +33,17 @@ object CheckCommand "ripe-atlas" {
   import "plugin-check-command"
 
   command = [ PluginDir + "/check_http",
+              "-H", "$apiaddress$",
               "-I", "$apiaddress$",
               "-r", "$apiresult$",
               "--ssl=1",
-              "-u", "/api/v$apiversion$/status-checks/$measureid$/?permitted_total_alerts=$critalerts$",
+              "-u", "/api/v$apiversion$/measurements/$measureid$/status-check?permitted_total_alerts=$critalerts$",
               "-t", "$timeout$"
   ]
 
   vars.apiaddress = "atlas.ripe.net"
   vars.apiresult = "global_alert\":false"
-  vars.apiversion = "1"
+  vars.apiversion = "2"
   vars.critalerts = "1"
   vars.timeout = 30
 }

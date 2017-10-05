@@ -16,9 +16,10 @@ import os
 import json
 import time
 import urllib2
+import random
 
 authfile = "%s/.atlas/auth" % os.environ['HOME']
-base_url = "https://atlas.ripe.net/api/v1/measurement"
+base_url = "https://atlas.ripe.net/api/v2/measurements"
 
 # The following parameters are currently not settable. Anyway, be
 # careful when changing these, you may get inconsistent results if you
@@ -38,6 +39,9 @@ maximum_time_for_results_factor = 5
 # above have been found mostly with trial-and-error.
 
 class AuthFileNotFound(Exception):
+    pass
+
+class AuthFileEmpty(Exception):
     pass
 
 class RequestSubmissionError(Exception):
@@ -61,11 +65,16 @@ class IncompatibleArguments(Exception):
 class InternalError(Exception):
     pass
 
+# Resut JSON file does not have the expected fields/members
+class WrongAssumption(Exception):
+    pass
+
 class JsonRequest(urllib2.Request):
     def __init__(self, url):
         urllib2.Request.__init__(self, url)
         self.add_header("Content-Type", "application/json")
         self.add_header("Accept", "application/json")
+        self.add_header("User-Agent", "RIPEAtlas.py")
 
 class Measurement():
     """ An Atlas measurement, identified by its ID (such as #1010569) in the field "id" """
@@ -90,15 +99,21 @@ class Measurement():
             if not os.path.exists(authfile):
                 raise AuthFileNotFound("Authentication file %s not found" % authfile)
             auth = open(authfile)
-            key = auth.readline()[:-1]
+            key = auth.readline()
+            if key is None or key == "":
+                raise AuthFileEmpty("Authentication file %s empty or missing a end-of-line at the end" % authfile)
+            key = key.rstrip('\n')
             auth.close()
 
         self.url = base_url + "/?key=%s" % key
         self.url_probes = base_url + "/%s/?fields=probes,status"
         self.url_status = base_url + "/%s/?fields=status" 
-        self.url_results = base_url + "/%s/result/" 
+        self.url_results = base_url + "/%s/results/"
+        self.url_all = base_url + "/%s/" 
         self.url_latest = base_url + "-latest/%s/?versions=%s"
 
+        self.status = None
+        
         if data is not None:
             self.json_data = json.dumps(data)
             self.notification = sleep_notification
@@ -114,10 +129,14 @@ class Measurement():
                 raise RequestSubmissionError("Status %s, reason \"%s\"" % \
                                              (e.code, e.read()))
 
+
+            self.gen = random.Random()
+            self.time = time.gmtime()
             if not wait:
                 return
             # Find out how many probes were actually allocated to this measurement
             enough = False
+            left = 30 # Maximum number of tests
             requested = data["probes"][0]["requested"] 
             fields_delay = fields_delay_base + (requested * fields_delay_factor)
             while not enough:
@@ -126,15 +145,20 @@ class Measurement():
                     self.notification(fields_delay)
                 time.sleep(fields_delay)
                 fields_delay *= 2
-                request = JsonRequest(self.url_probes % self.id)
                 try:
+                    request = JsonRequest((self.url_probes % self.id) + \
+                                          ("&defeatcaching=dc%s" % self.gen.randint(1,10000))) # A random
+                                # component is necesary to defeat caching (even Cache-Control sems ignored)
                     conn = urllib2.urlopen(request)
                     # Now, parse the answer
                     meta = json.load(conn)
+                    self.status = meta["status"]["name"] 
                     if meta["status"]["name"] == "Specified" or \
                            meta["status"]["name"] == "Scheduled":
                         # Not done, loop
-                        pass
+                        left -= 1
+                        if left <= 0:
+                            raise FieldsQueryError("Maximum number of status queries reached")
                     elif meta["status"]["name"] == "Ongoing":
                         enough = True
                         self.num_probes = len(meta["probes"])
@@ -145,6 +169,7 @@ class Measurement():
                     raise FieldsQueryError("%s" % e.read())
         else:
             self.id = id
+            self.notification = None
             try:
                 conn = urllib2.urlopen(JsonRequest(self.url_status % self.id))
             except urllib2.HTTPError as e:
@@ -154,8 +179,29 @@ class Measurement():
                     raise MeasurementAccessError("%s" % e.read())
             result_status = json.load(conn) 
             status = result_status["status"]["name"]
-            # TODO: test status
-            self.num_probes = None # TODO: get it from the status?
+            self.status = status
+            if status != "Ongoing" and status != "Stopped":
+                raise MeasurementAccessError("Invalid status \"%s\"" % status)
+            try:
+                conn = urllib2.urlopen(JsonRequest(self.url_probes % self.id))
+            except urllib2.HTTPError as e:
+                if e.code == 404:
+                    raise MeasurementNotFound
+                else:
+                    raise MeasurementAccessError("%s" % e.read())
+            result_status = json.load(conn) 
+            self.num_probes = len(result_status["probes"])
+        try:
+                conn = urllib2.urlopen(JsonRequest(self.url_all % self.id))
+        except urllib2.HTTPError as e:
+                if e.code == 404:
+                        raise MeasurementNotFound
+                else:
+                        raise MeasurementAccessError("%s" % e.read())
+        result_status = json.load(conn)
+        self.time = time.gmtime(result_status["start_time"])
+        self.description = result_status["description"]
+        self.interval = result_status["interval"]
             
     def results(self, wait=True, percentage_required=0.9, latest=None):
         """Retrieves the result. "wait" indicates if you are willing to wait until
