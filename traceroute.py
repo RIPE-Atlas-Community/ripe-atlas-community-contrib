@@ -38,6 +38,8 @@ the_probes = None
 format = False
 do_lookup = False
 do_reverse_lookup = False
+size = None
+port = None
 
 def is_ip_address(str):
     try:
@@ -92,15 +94,17 @@ def usage(msg=None):
     --old_measurement MSMID or -o MSMID : uses the probes of measurement #MSMID
     --measurement_ID=N or -m N : do not start a measurement, just analyze a former one 
     --requested=N or -r N : requests N probes (default is %s)
-    --protocol=PROTO or -t PROTO : uses this protocol (UDP or ICMP, default is UDP)
+    --protocol=PROTO or -t PROTO : uses this protocol (UDP, TCP or ICMP, default is UDP)
     --percentage=X or -p X : stops the program as soon as X %% of the probes reported a result (default is %2.2f)
     --do_lookup : Enables IP lookup feature (default is disabled, may become interactive if the machine has several addresses)
     --do_reverse_lookup or -l : Enables reverse IP lookup feature for hops
+    --size=N or -i N : number of bytes in the packet (default unknown)
+    --port=N or -b N : destination port for TCP (default is 80)
     """ % (requested, percentage_required)
 
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:",
-                               ["format", "requested=", "country=", "area=", "asn=", "percentage=", "probes=",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:i:b:",
+                               ["format", "requested=", "country=", "area=", "size=", "port=", "asn=", "percentage=", "probes=",
                                 "protocol=", "old_measurement=",  "measurement_ID=",
                                "verbose", "help", "do_lookup","do_reverse_lookup"])
     for option, value in optlist:
@@ -115,8 +119,8 @@ try:
         elif option == "--measurement_ID" or option == "-m":
             measurement_id = value
         elif option == "--protocol" or option == "-t":
-            if value.upper() != "UDP" and value.upper() != "ICMP":
-                usage("Protocol must be UDP or ICMP")
+            if value.upper() != "UDP" and value.upper() != "ICMP" and value.upper() != "TCP":
+                usage("Protocol must be UDP or ICMP or TCP")
                 sys.exit(1)
             protocol = value.upper()
         elif option == "--probes" or option == "-s":
@@ -125,6 +129,10 @@ try:
             percentage_required = float(value)
         elif option == "--requested" or option == "-r":
             requested = int(value)
+        elif option == "--size" or option == "-i":
+            size = int(value)
+        elif option == "--port" or option == "-b":
+            port = value
         elif option == "--verbose" or option == "-v":
             verbose = True
         elif option == "--format" or option == "-f":
@@ -168,6 +176,10 @@ data = { "is_oneoff": True,
             "type": "traceroute", "protocol": protocol} ],
             "probes": [
              { "requested": requested} ] }
+if size is not None:
+    data["definitions"][0]['size'] = size    
+if port is not None:
+    data["definitions"][0]['port'] = port    
 if the_probes is not None:
     if country is not None or area is not None or asn is not None:
         usage("Specify the probes ID *or* country *or* area *or* ASn")
