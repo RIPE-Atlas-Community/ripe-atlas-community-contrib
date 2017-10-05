@@ -40,6 +40,8 @@ do_lookup = False
 do_reverse_lookup = False
 size = None
 port = None
+first_hop = None
+max_hops = None
 
 def is_ip_address(str):
     try:
@@ -100,12 +102,20 @@ def usage(msg=None):
     --do_reverse_lookup or -l : Enables reverse IP lookup feature for hops
     --size=N or -i N : number of bytes in the packet (default unknown)
     --port=N or -b N : destination port for TCP (default is 80)
+    --first_hop=N or -d N : TTL/max hop count for the first hop  (default 1)
+    --max_hops=N or -x N : TTL/max hop count for the last hop  (default 32)
     """ % (requested, percentage_required)
 
+    """For "TCP Ping"
+    <https://labs.ripe.net/Members/wilhelm/measuring-your-web-server-reachability-with-tcp-ping>,
+    you need --size=0 --port=$PORT --first_hop=64
+
+    """
+
 try:
-    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:n:o:t:p:vhdls:i:b:",
+    optlist, args = getopt.getopt (sys.argv[1:], "fr:c:a:m:d:x:n:o:t:p:vhdls:i:b:",
                                ["format", "requested=", "country=", "area=", "size=", "port=", "asn=", "percentage=", "probes=",
-                                "protocol=", "old_measurement=",  "measurement_ID=",
+                                "protocol=", "old_measurement=",  "measurement_ID=", "first_hop=", "max_hops=",
                                "verbose", "help", "do_lookup","do_reverse_lookup"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
@@ -131,6 +141,10 @@ try:
             requested = int(value)
         elif option == "--size" or option == "-i":
             size = int(value)
+        elif option == "--first_hop" or option == "-d":
+            first_hop = int(value)
+        elif option == "--max_hops" or option == "-x":
+            max_hops = int(value)
         elif option == "--port" or option == "-b":
             port = value
         elif option == "--verbose" or option == "-v":
@@ -180,6 +194,10 @@ if size is not None:
     data["definitions"][0]['size'] = size    
 if port is not None:
     data["definitions"][0]['port'] = port    
+if first_hop is not None:
+    data["definitions"][0]['first_hop'] = first_hop
+if max_hops is not None:
+    data["definitions"][0]['max_hops'] = max_hops    
 if the_probes is not None:
     if country is not None or area is not None or asn is not None:
         usage("Specify the probes ID *or* country *or* area *or* ASn")
