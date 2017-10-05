@@ -108,7 +108,7 @@ def usage(msg=None):
 
     """For "TCP Ping"
     <https://labs.ripe.net/Members/wilhelm/measuring-your-web-server-reachability-with-tcp-ping>,
-    you need --size=0 --port=$PORT --first_hop=64
+    you need --protocol TCP --size=0 --port=$PORT --first_hop=64
 
     """
 
