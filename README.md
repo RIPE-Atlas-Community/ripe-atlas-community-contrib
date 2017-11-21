@@ -9,7 +9,7 @@ Below are the links to other independantly hosted projects:
 
 ## Software projects from DNS Measurements Hackathon 
 
-In April 2017 we had a [DNS Measurements Hackathon](https://labs.ripe.net/Members/becha/results-dns-measurements-hackathon/view). All presnetation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/dns-measurements-hackathon), and here are the links to the code that was produced during the event: 
+In April 2017 we had a [DNS Measurements Hackathon](https://labs.ripe.net/Members/becha/results-dns-measurements-hackathon/view). All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/dns-measurements-hackathon), and here are the links to the code that was produced during the event: 
 
 * “Monitoring DNS Propagation Time”, by “Team USA and Friends” {Tom Arnfeld (Cloudflare), Shane Kerr (Dyn), Kai Storbeck (xs4all), Jon Mercereau (ex-LinkedIn) } 
   * Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
