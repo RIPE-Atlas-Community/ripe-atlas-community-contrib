@@ -7,9 +7,19 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Software projects from Hackathon Version 6 
+
+In November 2017 we had a [Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6/view) in Copenhagen. All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/hackathon-version-6), and here are the links to the code that was produced during the event: 
+
+*“PCAP or it didn’t happen”
+* “Pocket Internet”
+* IPvizzz6
+* “IPv4 and IPv6 Disparities” & TraceMonks
+• “The Status of IPv6”
+
 ## Software projects from DNS Measurements Hackathon 
 
-In April 2017 we had a [DNS Measurements Hackathon](https://labs.ripe.net/Members/becha/results-dns-measurements-hackathon/view). All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/dns-measurements-hackathon), and here are the links to the code that was produced during the event: 
+In April 2017 we had a [DNS Measurements Hackathon](https://labs.ripe.net/Members/becha/results-dns-measurements-hackathon/view) in Amsterdam. All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/dns-measurements-hackathon), and here are the links to the code that was produced during the event: 
 
 * “Monitoring DNS Propagation Time”, by “Team USA and Friends” {Tom Arnfeld (Cloudflare), Shane Kerr (Dyn), Kai Storbeck (xs4all), Jon Mercereau (ex-LinkedIn) } 
   * Code: https://github.com/tarnfeld/ripe-ncc-hackathon-2017
