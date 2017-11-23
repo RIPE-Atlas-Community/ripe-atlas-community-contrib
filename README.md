@@ -11,11 +11,11 @@ Below are the links to other independantly hosted projects:
 
 In November 2017 we had a [Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6/view) in Copenhagen. All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/hackathon-version-6), and here are the links to the code that was produced during the event: 
 
-*“PCAP or it didn’t happen”
+* “PCAP or it didn’t happen”
 * “Pocket Internet”
 * IPvizzz6
 * “IPv4 and IPv6 Disparities” & TraceMonks
-• “The Status of IPv6”
+* “The Status of IPv6”
 
 ## Software projects from DNS Measurements Hackathon 
 
