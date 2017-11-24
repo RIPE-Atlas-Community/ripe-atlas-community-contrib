@@ -11,7 +11,7 @@ Below are the links to other independantly hosted projects:
 
 In November 2017 we had a [Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6/view) in Copenhagen. All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/hackathon-version-6), and here are the links to the code that was produced during the event: 
 
-* “PCAP or it didn’t happen”: ICMPv6 support for libpcap by Matthias Hannig, Moritz Wilhelmy, Daniel Lublin: already merged by the "the-tcpdump-group" ! 
+* “PCAP or it didn’t happen”: ICMPv6 support for libpcap by Matthias Hannig, Moritz Wilhelmy, Daniel Lublin: already merged by the "the-tcpdump-group" ! [1](https://github.com/the-tcpdump-group/libpcap/commit/2c2bcb6b7e0e8358df9aefe3aba03448ecc1fa9b), [2](https://github.com/the-tcpdump-group/libpcap/commit/7d572e74efdbec768a06da9dc2680e838b18b9e8), [3](https://github.com/the-tcpdump-group/libpcap/commit/2bddb7cea8177549bc1c08627d084ce3584b34bf)
 
 * [Pocket Internet](https://github.com/inognet/pocketinternet) by Henrik Kramshøj, Cristian Sirbu, Evangelos Balaskas, Harry Reeder, Andy Mindnich, Samer Lahoud
 
