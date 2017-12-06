@@ -38,6 +38,7 @@ display_probes = False
 display = "n" #Name
 port = 443
 ipv6 = False
+sni = True
 
 class Set():
     def __init__(self):
@@ -55,6 +56,7 @@ def usage(msg=None):
     --serial or -s : displays the serial number (default is to display the name)
     --expiration or -e : displays the expiration datetime (default is to display the name)
     --port or -t : sets the destination port (default is of course 443)
+    --nosni : do not send the SNI (Server Name Indication) (default is to send it)
     --displayprobes or -o : display the probes numbers (WARNING: big lists)
     --country=2LETTERSCODE or -c 2LETTERSCODE : limits the measurements to one country (default is world-wide)
     --area=AREACODE or -a AREACODE : limits the measurements to one area such as North-Central (default is world-wide)
@@ -66,7 +68,7 @@ def usage(msg=None):
 
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vhisket:6",
-                               ["requested=", "country=", "area=", "asn=", "port=", "percentage=", "measurement-ID",
+                               ["requested=", "country=", "area=", "asn=", "port=", "percentage=", "nosni", "measurement-ID",
                                 "displayprobes", "ipv6", "verbose", "help", "issuer", "serial", "key"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
@@ -87,6 +89,8 @@ try:
             verbose = True
         elif option == "--ipv6" or option == "-6":
             ipv6 = True
+        elif option == "--nosni":
+            sni = False
         elif option == "--displayprobes" or option == "-o":
             display_probes = True
         elif option == "--help" or option == "-h":
@@ -150,6 +154,8 @@ if measurement_id is None:
             data["definitions"][0]['af'] = 6
         else:
             data["definitions"][0]['af'] = 4 
+        if sni:
+            data["definitions"][0]['hostname'] = target
 
         if verbose:
             print data
