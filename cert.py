@@ -69,7 +69,7 @@ def usage(msg=None):
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "r:c:a:n:p:om:vhisket:6",
                                ["requested=", "country=", "area=", "asn=", "port=", "percentage=", "nosni", "measurement-ID",
-                                "displayprobes", "ipv6", "verbose", "help", "issuer", "serial", "key"])
+                                "displayprobes", "ipv6", "verbose", "help", "issuer", "serial", "expiration", "key"])
     for option, value in optlist:
         if option == "--country" or option == "-c":
             country = value
