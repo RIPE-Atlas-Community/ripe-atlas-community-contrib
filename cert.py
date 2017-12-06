@@ -190,7 +190,11 @@ for result in rdata:
                     content = "%s%s" % (x509.get_notAfter(), detail)
                 value = "%s%s" % (content, detail) # TODO better display of the name? https://pyopenssl.readthedocs.org/en/stable/api/crypto.html#x509name-objects
         else:
-                value = "FAILED TO GET A CERT: %s" % result['err']
+            if result.has_key('err'):
+                error = result['err']
+            else:
+                error = result['alert']
+            value = "FAILED TO GET A CERT: %s" % error
         sets[value].total += 1
         if display_probes:
             if probes_sets.has_key(value):
