@@ -52,6 +52,7 @@ only_one_per_probe = True
 ip_family = 4
 verbose = False
 protocol = "UDP"
+probe_id = False
 
 # Constants
 MAXLEN = 80 # Maximum length of a displayed resource record
@@ -92,12 +93,13 @@ def usage(msg=None):
     --old_measurement MSMID or -g MSMID : uses the probes of measurement #MSMID
     --measurement_ID=N or -m N : do not start a measurement, just analyze a former one (do *not* forget to use the same -t)
     --nameserver=IPaddr[,...] or -e IPaddr : query this name server (default is to query the probe's resolver)
+    --probe_id : prepend probe ID (and timestamp) to the domain name (default is to abstain)
     """ % (qtype, requested)
     
 try:
     optlist, args = getopt.getopt (sys.argv[1:], "a:bc:de:f:g:hijklm:n:opq:r:st:u:v6z",
                                ["requested=", "type=", "old_measurement=", "measurement_ID=", "ednssize=",
-                                "displayprobes", "displayresolvers",
+                                "displayprobes", "displayresolvers", "probe_id",
                                 "displayrtt", "displayvalidation", "dnssec", "nsid", "norecursive", "tcp", "checkingdisabled",
                                 "probetouse=", "country=", "area=", "asn=", "prefix=", "nameserver=",
                                 "sort", "help", "severalperprobe", "ipv6", "verbose", "machine_readable"])
@@ -120,6 +122,8 @@ try:
             dnssec = True
         elif option == "--nsid":
             nsid = True
+        elif option == "--probe_id":
+            probe_id = True
         elif option == "--ednssize" or option == "-q":
             edns_size = int(value)
         elif option == "--tcp":
@@ -241,6 +245,8 @@ if recursive:
     data["definitions"][0]["set_rd_bit"] = True
 else:
     data["definitions"][0]["set_rd_bit"] = False
+if probe_id:
+    data["definitions"][0]["prepend_probe_id"] = True
 data["definitions"][0]["protocol"] = protocol
 if verbose and machine_readable:
     usage("Specify verbose *or* machine-readable output")
