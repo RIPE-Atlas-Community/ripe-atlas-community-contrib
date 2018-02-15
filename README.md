@@ -189,6 +189,8 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 ## Misc Community Tools 
 
+* https://gist.github.com/samerlahoud/f893814265e7534d395000005329cbda#file-anchor-voronoi-cells-py & http://lahoud.fr/anchor-voronoi.html
+
 * Created during LACNIC hackathon: https://github.com/LACNIC/hackathon/tree/master/17%20MVD/entrebagles/RIPE%20Atlas 
 
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
