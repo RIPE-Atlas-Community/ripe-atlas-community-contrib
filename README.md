@@ -189,6 +189,8 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 ## Misc Community Tools 
 
+* Created during LACNIC hackathon: https://github.com/LACNIC/hackathon/tree/master/17%20MVD/entrebagles/RIPE%20Atlas 
+
 * **[Atlas Tools](https://github.com/NullHypothesis/atlas_tools)**: Allows
   you to create measurements, parse JSON-formatted results & select RIPE Atlas
   probes based on their area.
