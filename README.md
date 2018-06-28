@@ -7,6 +7,26 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+
+## Software projects from Network Operators Tools Hackathon 
+
+In June 2018 we had a [Netowrk Operaors Tools Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6) in Dublin. All presentation slides are [in the "presentations" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/network-operators-tools-hackathon), and here are the links to the code that was produced during the event: 
+
+* The first group forked the RIPE Atlas tools repository and put it in: https://github.com/kramse/ripe-atlas-tools . In this repo we tracked the quick changes being made during the hackathon, which are documented in the specific presentation we did. The results are a few small Git pull requests and branches while we learned git and python
+
+* BioRouting 
+
+* AS Interdepandancy VIZ: https://github.com/chufia/ASinterdependenceViz
+
+* https://github.com/ripe-stackstorm/go-netconf-refactored
+
+* https://github.com/ripe-stackstorm .
+
+* with Arista to get telemetry streaming data integrated in OpenNMS: Epic is in our public JIRA for where our Open Source project deals with issues: https://issues.opennms.org/browse/NMS-10223 ; The working branch which is published here: https://github.com/OpenNMS/opennms/tree/jira/NMS-10223 Docs go here: https://wiki.opennms.org/wiki/DevProjects/Telemetry_Arista_EOS
+
+* RuotingDB https://github.com/pgigis/routingdb
+
+
 ## Software projects from Hackathon Version 6 
 
 In November 2017 we had a [Hackathon Version 6](https://labs.ripe.net/Members/becha/results-hackathon-version-6) in Copenhagen. All presentation slides are [in the "slides" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/hackathon-version-6), and here are the links to the code that was produced during the event: 
