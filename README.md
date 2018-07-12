@@ -10,11 +10,11 @@ Below are the links to other independantly hosted projects:
 
 ## Software projects from Network Operators Tools Hackathon 
 
-In June 2018 we had a [Netowrk Operaors Tools Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6) in Dublin. All presentation slides are [in the "presentations" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/network-operators-tools-hackathon), and here are the links to the code that was produced during the event: 
+In June 2018 we had a [Netowrk Operators Tools Hackathon](https://labs.ripe.net/Members/becha/results-hackathon-version-6) in Dublin. All presentation slides are [in the "presentations" directory](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/network-operators-tools-hackathon), and here are the links to the code that was produced during the event: 
 
 * The first group forked the RIPE Atlas tools repository and put it in: https://github.com/kramse/ripe-atlas-tools . In this repo we tracked the quick changes being made during the hackathon, which are documented in the specific presentation we did. The results are a few small Git pull requests and branches while we learned git and python
 
-* BioRouting 
+* BioRouting : https://github.com/bio-routing 
 
 * AS Interdepandancy VIZ: https://github.com/chufia/ASinterdependenceViz
 
