@@ -18,9 +18,9 @@ In June 2018 we had a [Netowrk Operators Tools Hackathon](https://labs.ripe.net/
 
 * AS Interdepandancy VIZ: https://github.com/chufia/ASinterdependenceViz
 
-* https://github.com/ripe-stackstorm/go-netconf-refactored
+* https://github.com/ripe-stackstorm/go-netconf-refactored & https://github.com/ripe-stackstorm/GoNETCONF 
 
-* https://github.com/ripe-stackstorm .
+* https://github.com/ripe-stackstorm 
 
 * with Arista to get telemetry streaming data integrated in OpenNMS: Epic is in our public JIRA for where our Open Source project deals with issues: https://issues.opennms.org/browse/NMS-10223 ; The working branch which is published here: https://github.com/OpenNMS/opennms/tree/jira/NMS-10223 Docs go here: https://wiki.opennms.org/wiki/DevProjects/Telemetry_Arista_EOS
 
