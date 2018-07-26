@@ -110,7 +110,7 @@ class Measurement():
         self.url_status = base_url + "/%s/?fields=status" 
         self.url_results = base_url + "/%s/results/"
         self.url_all = base_url + "/%s/" 
-        self.url_latest = base_url + "-latest/%s/?versions=%s"
+        self.url_latest = base_url + "/%s/latest/?versions=%s"
 
         self.status = None
         
@@ -216,6 +216,8 @@ class Measurement():
         """
         if latest is not None:
             wait = False
+            if latest < 1 or latest > 10:
+                raise IncompatibleArguments("Latest can only be a value between 1 and 10. %s is out of that range." % latest)
         if latest is None:
             request = JsonRequest(self.url_results % self.id)
         else:
