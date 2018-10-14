@@ -27,7 +27,7 @@ A lot of people had problems installing and starting SimulaQron. Here's a very b
 * Quantum Disconsensus (Wojciech Kozlowski & team) 
   * https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/quantum-internet-hackathon/quantum-disconsensus.md 
 
-* Quantum Digital Signature (Shota Nagayama)
+* [Quantum Digital Signature (Shota Nagayama & team)](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/quantum-internet-hackathon/quantum-digital-signature.md)
 
 We implement quantum digital signature algorithm on SimulaQron. https://en.wikipedia.org/wiki/Quantum_digital_signature
 
