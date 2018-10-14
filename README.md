@@ -20,11 +20,21 @@ In October 2018, we held a [Quantum Internet Hackahton in Amsterdam](https://lab
   * Project repository: https://github.com/cgmcintyr/SimulaQron 
   * https://github.com/cgmcintyr/SimulaQron/projects/1
 
+* Simple Docker image of SimulaQron
+
+A lot of people had problems installing and starting SimulaQron. Here's a very basic SimulaQron Docker image that runs the default startAll.sh giving you five nodes:  https://hub.docker.com/r/mchackorg/simulaqron/ The ports exposed are 8081--8085. Get it easily with docker pull mchackorg/simulaqron 
+
+* Quantum Digital Signature (Shota Nagayama)
+
+We implement quantum digital signature algorithm on SimulaQron. https://en.wikipedia.org/wiki/Quantum_digital_signature
+
 ### Other projects 
 
 * Team QHamser (QChat challenges)
+   https://github.com/mdskrzypczyk/QChat 
   * Project repo+branch: https://github.com/mdskrzypczyk/QChat/tree/hackathon
 
+* Quantum BitCoin (Wojciech Kozlowski & team) 
 
 ## Software projects from Network Operators Tools Hackathon 
 
