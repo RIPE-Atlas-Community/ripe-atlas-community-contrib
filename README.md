@@ -9,19 +9,22 @@ Below are the links to other independantly hosted projects:
 
 ## Projects at Quantum Internet Hackathon 
 
+In October 2018, we held a [Quantum Internet Hackahton in Amsterdam](https://labs.ripe.net/Members/becha/join-the-quantum-internet-hackathon-2018): RIPE NCC, QuTech / Quanntum Internet Alliance and Juniper. 
+
 ### Main project - adding functionality to SimulaQron 
 
 * Current development tree: https://github.com/SoftwareQuTech/SimulaQron/tree/Develop
-** Not yet merged: https://github.com/SoftwareQuTech/SimulaQron/pulls
+ * Not yet merged: https://github.com/SoftwareQuTech/SimulaQron/pulls
 
 * Team aMBiQuouC (Blind Quantum Computation)
-** Project repository: https://github.com/cgmcintyr/SimulaQron 
-** https://github.com/cgmcintyr/SimulaQron/projects/1
+ * Project repository: https://github.com/cgmcintyr/SimulaQron 
+ * https://github.com/cgmcintyr/SimulaQron/projects/1
 
 ### Other projects 
 
 * Team QHamser (QChat challenges)
-** Project repo+branch: https://github.com/mdskrzypczyk/QChat/tree/hackathon
+ * Project repo+branch: https://github.com/mdskrzypczyk/QChat/tree/hackathon
+
 
 ## Software projects from Network Operators Tools Hackathon 
 
