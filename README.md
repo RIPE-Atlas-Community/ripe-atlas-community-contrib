@@ -7,6 +7,21 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Projects at Quantum Internet Hackathon 
+
+### Main project - adding functionality to SimulaQron 
+
+* Current development tree: https://github.com/SoftwareQuTech/SimulaQron/tree/Develop
+** Not yet merged: https://github.com/SoftwareQuTech/SimulaQron/pulls
+
+* Team aMBiQuouC (Blind Quantum Computation)
+** Project repository: https://github.com/cgmcintyr/SimulaQron 
+** https://github.com/cgmcintyr/SimulaQron/projects/1
+
+### Other projects 
+
+* Team QHamser (QChat challenges)
+** Project repo+branch: https://github.com/mdskrzypczyk/QChat/tree/hackathon
 
 ## Software projects from Network Operators Tools Hackathon 
 
