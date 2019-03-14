@@ -1,11 +1,19 @@
 # RIPE Atlas Community Contrib
 
-(Collection of links to other tools)
+(Collection of links to tools and hackathons documentation)
+
+Welcome to the Community Contributions repository! It started as a collection of RIPE Atlas related tools, and developed  into a place to collect the documentation from the various hackathons organised by RIPE NCC. 
 
 In the main repository are contributions by the community of the [RIPE Atlas](https://atlas.ripe.net)
 visualizations, tools for analysing measurements data.  
 
 Below are the links to other independantly hosted projects: 
+
+## RPKI Deployathon Amsterdam (Routing Security event)
+
+In March 2019, we held a first [RPKI Deployathon in Amsterdam](https://labs.ripe.net/Members/becha/join-the-amsterdam-rpki-deployathon-2019) : an event simmilar to a hackathon, but foocused on BGP routing security. It was organised & supported by RIPE NCC, Juniper NEtworks & Tesuto (Lab). 
+
+Here you can find [presentations slides & other documentation](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/RPKI-deployathon-nl) 
 
 ## Projects at Quantum Internet Hackathon 
 
