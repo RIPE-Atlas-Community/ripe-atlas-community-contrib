@@ -15,6 +15,8 @@ In March 2019, we held a first [RPKI Deployathon in Amsterdam](https://labs.ripe
 
 Here you can find [presentations slides & other documentation](https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/tree/master/RPKI-deployathon-nl) 
 
+You can read the [report from the event on RIPE Labs](https://labs.ripe.net/Members/antony_stergiopoulos/results-of-the-first-rpki-deployathon). 
+
 ## Projects at Quantum Internet Hackathon 
 
 In October 2018, we held a [Quantum Internet Hackahton in Amsterdam](https://labs.ripe.net/Members/becha/join-the-quantum-internet-hackathon-2018): RIPE NCC, QuTech / Quanntum Internet Alliance and Juniper. 
