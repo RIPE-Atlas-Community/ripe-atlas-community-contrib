@@ -22,7 +22,7 @@ In October 2019, we held a first [IoT Hackathon, in Rotterdam, next to RIPE79](h
 * Project “Survival Layer” (Arman, Demian, Desiree, Pouyan, Renan, Tasos) : Goal was to disseminate and authenticate official warnings/alerts in fragmented networks, where users have no access to the broader global Internet: solving it through ICN: information centric networking & Named data networking framework as core ICN (NDN: named-data.net)
 
 * Project “Aethernauts” (Christoph, Craig, Michael, Cristian) Coding an WLAN probe, that should measure WLAN performance indicators, using MicroPython on a ESP32, by befactoring the code to get a better oversight and better maintenace. Including reading config files for variables, which are now hardcoded.
- * https://github.com/zhristoph/wlanprobe 
+  * https://github.com/zhristoph/wlanprobe 
 
 Here you can find [presentations slides & other documentation] COMING UP 
 
