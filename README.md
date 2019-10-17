@@ -9,15 +9,15 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
-## Projects from the IoT HAckathon Rotterdam 
+## Projects from the IoT Hackathon Rotterdam 
 
 In October 2019, we held a first [IoT Hackathon, in Rotterdam, next to RIPE79](https://labs.ripe.net/Members/becha/iot-hackathon-at-ripe-79-in-rotterdam ) . We had four teams and four resulting projects: 
 
 * Project “PRAVAG” (Privacy Aware Research of Generic Anomalies and Visualisations) (Anna, Antonios, Grissel, Peter, Petros, Robert, Vasileios) Worked on finding methods to identify network anomalies by analyzing network traffic patterns, for example: detecting malicious device behaviour to prevent/stop i.e. DDoS attacks.
- * Proof of concept : https://github.com/vgiotsas/pargav-iot-hackathon
+   * Proof of concept : https://github.com/vgiotsas/pargav-iot-hackathon
 
 * Project “Maria” (Anup, Vladislav, Cristel, Marco, Philip, Randy) Added RIPE probe functionality to TTN LoRaWAN Gateway and RPi in general
- * Original code: https://github.com/RIPE-NCC/ripe-atlas-software-probe & more info:   https://atlas.ripe.net/docs/software-probe/
+  * Original code: https://github.com/RIPE-NCC/ripe-atlas-software-probe & more info:   https://atlas.ripe.net/docs/software-probe/
  
 * Project “Survival Layer” (Arman, Demian, Desiree, Pouyan, Renan, Tasos) : Goal was to disseminate and authenticate official warnings/alerts in fragmented networks, where users have no access to the broader global Internet: solving it through ICN: information centric networking & Named data networking framework as core ICN (NDN: named-data.net)
 
