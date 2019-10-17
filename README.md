@@ -9,6 +9,25 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Projects from the IoT HAckathon Rotterdam 
+
+In October 2019, we held a first [IoT Hackathon, in Rotterdam, next to RIPE79](https://labs.ripe.net/Members/becha/iot-hackathon-at-ripe-79-in-rotterdam ) . We had four teams and four resulting projects: 
+
+* Project “PRAVAG” (Privacy Aware Research of Generic Anomalies and Visualisations) (Anna, Antonios, Grissel, Peter, Petros, Robert, Vasileios) Worked on finding methods to identify network anomalies by analyzing network traffic patterns, for example: detecting malicious device behaviour to prevent/stop i.e. DDoS attacks.
+ * Proof of concept : https://github.com/vgiotsas/pargav-iot-hackathon
+
+* Project “Maria” (Anup, Vladislav, Cristel, Marco, Philip, Randy) Added RIPE probe functionality to TTN LoRaWAN Gateway and RPi in general
+ * Original code: https://github.com/RIPE-NCC/ripe-atlas-software-probe & more info:   https://atlas.ripe.net/docs/software-probe/
+ 
+* Project “Survival Layer” (Arman, Demian, Desiree, Pouyan, Renan, Tasos) : Goal was to disseminate and authenticate official warnings/alerts in fragmented networks, where users have no access to the broader global Internet: solving it through ICN: information centric networking & Named data networking framework as core ICN (NDN: named-data.net)
+
+* Project “Aethernauts” (Christoph, Craig, Michael, Cristian) Coding an WLAN probe, that should measure WLAN performance indicators, using MicroPython on a ESP32, by befactoring the code to get a better oversight and better maintenace. Including reading config files for variables, which are now hardcoded.
+ * https://github.com/zhristoph/wlanprobe 
+
+Here you can find [presentations slides & other documentation] COMING UP 
+
+You can read the [report from the event on RIPE Labs] COMING UP 
+
 ## RPKI Deployathon Amsterdam (Routing Security event)
 
 In March 2019, we held a first [RPKI Deployathon in Amsterdam](https://labs.ripe.net/Members/becha/join-the-amsterdam-rpki-deployathon-2019) : an event simmilar to a hackathon, but foocused on BGP routing security. It was organised & supported by RIPE NCC, Juniper NEtworks & Tesuto (Lab). 
