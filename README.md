@@ -9,6 +9,27 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## RIPE Atlas Deployathon, 25 November 2020
+
+(Draft) 
+
+https://labs.ripe.net/Members/becha/lets-deploy-together-ripe-atlas-software-probes-deployathon
+
+https://github.com/RIPE-NCC/ripe-atlas-probe-doc
+
+
+
+## Measuring Internet Health: Virtual Hackathon 
+
+(Draft) 
+
+https://labs.ripe.net/Members/becha/report-from-the-first-virtual-ripe-ncc-hackathon
+
+https://labs.ripe.net/Members/becha/hackathons-in-the-time-of-corona
+
+https://labs.ripe.net/Members/becha/wfh-hackathons
+
+
 ## Projects from the IoT Hackathon Rotterdam 
 
 In October 2019, we held a first [IoT Hackathon, in Rotterdam, next to RIPE79](https://labs.ripe.net/Members/becha/iot-hackathon-at-ripe-79-in-rotterdam ) . We had four teams and four resulting projects: 
