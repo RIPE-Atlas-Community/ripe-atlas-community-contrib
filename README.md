@@ -11,11 +11,9 @@ Below are the links to other independantly hosted projects:
 
 ## RIPE Atlas Deployathon, 25 November 2020
 
-(Draft) 
+Announcement & event info https://labs.ripe.net/Members/becha/lets-deploy-together-ripe-atlas-software-probes-deployathon
 
-https://labs.ripe.net/Members/becha/lets-deploy-together-ripe-atlas-software-probes-deployathon
-
-https://github.com/RIPE-NCC/ripe-atlas-probe-doc
+Place for storing documentation, slides, code:  https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/atlas-deployathon-2020/README.md 
 
 
 
