@@ -27,6 +27,19 @@ https://labs.ripe.net/Members/becha/hackathons-in-the-time-of-corona
 
 https://labs.ripe.net/Members/becha/wfh-hackathons
 
+## PanEuropean Quantum Internet Hackathon
+
+Distributed hackathon, simultaneously in Delft, Dublin, Geneva, Padova, Paris, and Sarajevo; 5-6 November 2019  
+
+Challenges: https://github.com/PEQI19/challenges
+
+End Results: https://labs.ripe.net/author/becha/results-of-the-pan-european-quantum-internet-hackathon/ 
+
+Mid-event live reporting: https://labs.ripe.net/author/ulka_athale_1/live-from-the-pan-european-quantum-internet-hackathon/
+
+Announcement: 
+
+
 
 ## Projects from the IoT Hackathon Rotterdam 
 
