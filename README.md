@@ -341,6 +341,8 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[API access in Go](https://github.com/keltia/ripe-atlas)** RIPE Atlas API access in Go.
 
+* **[API access in Rust](https://github.com/keltia/atlas-rs)** RIPE Atlas API access in Rust (Work in Progress)
+
 * **[Interference](https://github.com/nsg-ethz/atlas_interference)** Quantifying interference between measurements on the RIPE Atlas platform 
 
 * **[jAtlasX](https://github.com/de-cix/jAtlasX)** Access RIPE Atlas through Java 
