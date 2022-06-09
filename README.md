@@ -9,6 +9,13 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## Project by Hoge School Utrecht: "RIPE Alerts", May 2022 
+
+* https://github.com/Wolframfriele/ripe-alerts 
+* Presented at RIPE84 MAT-WG: https://ripe84.ripe.net/archives/video/798/ 
+* https://ripe84.ripe.net/presentations/86-RIPE-Alerts-idea-1.pdf 
+
+
 ## RIPE Atlas Deployathon, 25 November 2020
 
 Announcement & event info https://labs.ripe.net/Members/becha/lets-deploy-together-ripe-atlas-software-probes-deployathon
