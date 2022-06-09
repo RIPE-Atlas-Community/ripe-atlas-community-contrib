@@ -18,13 +18,15 @@ Below are the links to other independantly hosted projects:
 
 ## RIPE Atlas Deployathon, 25 November 2020
 
+Report: https://labs.ripe.net/author/becha/report-from-the-ripe-atlas-software-probes-deployathon/ 
+
 Announcement & event info https://labs.ripe.net/Members/becha/lets-deploy-together-ripe-atlas-software-probes-deployathon
 
 Place for storing documentation, slides, code:  https://github.com/RIPE-Atlas-Community/ripe-atlas-community-contrib/blob/master/atlas-deployathon-2020/README.md 
 
 
 
-## Measuring Internet Health: Virtual Hackathon 
+## Measuring Internet Health: Virtual Hackathon, March-July 2020 
 
 (Draft) 
 
@@ -34,7 +36,7 @@ https://labs.ripe.net/Members/becha/hackathons-in-the-time-of-corona
 
 https://labs.ripe.net/Members/becha/wfh-hackathons
 
-## PanEuropean Quantum Internet Hackathon
+## PanEuropean Quantum Internet Hackathon, November 2019
 
 Distributed hackathon, simultaneously in Delft, Dublin, Geneva, Padova, Paris, and Sarajevo; 5-6 November 2019  
 
@@ -44,11 +46,9 @@ End Results: https://labs.ripe.net/author/becha/results-of-the-pan-european-quan
 
 Mid-event live reporting: https://labs.ripe.net/author/ulka_athale_1/live-from-the-pan-european-quantum-internet-hackathon/
 
-Announcement: 
+Announcement: https://labs.ripe.net/author/ulka_athale_1/take-part-in-pan-european-quantum-internet-hackathon/ 
 
-
-
-## Projects from the IoT Hackathon Rotterdam 
+## Projects from the IoT Hackathon Rotterdam, October 2019 
 
 In October 2019, we held a first [IoT Hackathon, in Rotterdam, next to RIPE79](https://labs.ripe.net/Members/becha/iot-hackathon-at-ripe-79-in-rotterdam ) . We had four teams and four resulting projects: 
 
