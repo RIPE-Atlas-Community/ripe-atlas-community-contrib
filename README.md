@@ -9,6 +9,15 @@ visualizations, tools for analysing measurements data.
 
 Below are the links to other independantly hosted projects: 
 
+## DNS Hackathon 2023 
+
+Materials from this hackathons have been documented in another repository: https://github.com/DNS-Hackathon-2023/ 
+
+## Quantum Internet Hackathon 2022 
+
+Materials from this hackathons have been documented in another repository: https://github.com/Lizaterdag/QIH-2022/ 
+
+
 ## Project by Hoge School Utrecht: "RIPE Alerts", May 2022 
 
 * https://github.com/Wolframfriele/ripe-alerts 
