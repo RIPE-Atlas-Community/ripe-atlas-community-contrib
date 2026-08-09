@@ -375,10 +375,5 @@ Experimenting with visualising RIPE Atals measurement data on a WebGL globe.
 
 * **[Other CLI tools by ColdHakCA](coldhakca/atlas_tools)** (SSL Measurement, Traceroute data visualization, Maxmind GeoIP data integration) 
 
-* **[RIPE Atlas lowest latency](vincentbernat/ripe-atlas-lowest-latency)** determine the lowest possible latency to reach a set of endpoints 
-
-
-
- 
-
-
+* **[RIPE Atlas lowest latency](vincentbernat/ripe-atlas-lowest-latency)** determine the lowest possible latency to reach a set of endpoints
+* **[GeoCables](https://geocables.com)** Submarine cable health monitoring combining RIPE Atlas measurements with an independent probe network; publishes incident reports with verifiable measurement IDs and an open latency dataset (CC BY 4.0).
